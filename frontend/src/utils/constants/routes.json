@@ -1,0 +1,5 @@
+{
+  "LOGIN": "/",
+  "STUDENT": "/student",
+  "ADMIN": "/admin"
+}
