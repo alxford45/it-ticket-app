@@ -11,8 +11,11 @@ import {
     EuiPageHeaderSection,
     EuiTitle,
 } from '@elastic/eui';
+import {NavBar} from "../../components/navbar/navbar";
 
-export const AdminRoute = () => (
+export const AdminRoute = (props) => (
+    <>
+        <NavBar location={props.location}/>
     <EuiPage>
         <EuiPageBody component="div">
             <EuiPageHeader>
@@ -34,4 +37,5 @@ export const AdminRoute = () => (
             </EuiPageContent>
         </EuiPageBody>
     </EuiPage>
+        </>
 );
