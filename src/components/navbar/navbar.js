@@ -22,7 +22,7 @@ export const NavBar = (props) => {
                     <EuiHeaderLinks>
                         <EuiHeaderLink onClick={(e) => {history.push(routes.LOGIN)}}>IT Support Demo</EuiHeaderLink>,
                     </EuiHeaderLinks>, <EuiHeaderLinks>
-                        <EuiHeaderLink isActive={props.location.pathname === routes.STUDENT} onClick = {(e) => {history.push(routes.STUDENT)}}>Student View</EuiHeaderLink>
+                        <EuiHeaderLink isActive={props.location.pathname === routes.USER} onClick = {(e) => {history.push(routes.USER)}}>Student View</EuiHeaderLink>
                         <EuiHeaderLink isActive={props.location.pathname === routes.ADMIN} onClick = {(e) => {history.push(routes.ADMIN)}}>Admin View</EuiHeaderLink>
                         <EuiHeaderLink isActive={props.location.pathname === routes.ABOUT} onClick = {(e) => {history.push(routes.ABOUT)}}>Project Details</EuiHeaderLink>
                     </EuiHeaderLinks>,
