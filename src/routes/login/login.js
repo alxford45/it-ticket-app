@@ -27,8 +27,9 @@ const UserSelect = () => {
         <EuiFlexItem key={1}>
             <EuiCard
                 icon={<EuiIcon size={"xxl"} type={"user"} color={"#461D7C"}/>}
-                title={"Student View"}
-                onClick={(e) => history.push(routes.STUDENT)}
+                title={"User View"}
+                onClick={(e) => history.push(routes.USER)}
+                description={""}
 
             />
         </EuiFlexItem>
@@ -44,6 +45,7 @@ const AdminSelect = () => {
                 icon={<EuiIcon size={"xxl"} type={"wrench"} color={"#461D7C"}/>}
                 title={"Admin View"}
                 onClick={(e) => history.push(routes.ADMIN)}
+                description={""}
             />
         </EuiFlexItem>
     )
@@ -58,6 +60,7 @@ const AboutSelect = () => {
                 icon={<EuiIcon size={"xxl"} type={"help"} color={"#461D7C"}/>}
                 title={"About This Project"}
                 onClick={(e) => history.push(routes.ABOUT)}
+                description={""}
             />
         </EuiFlexItem>
     )
