@@ -22,6 +22,13 @@ import {
 import {NavBar} from "../../components/navbar/navbar";
 import {addToast} from "../../components/toast";
 
+var _ = require('lodash');
+
+const errorMessages = [
+    {error_type: 'required', error_message: 'This field is required.'}
+]
+
+
 const priorityOptions = [
     {value: 'low', text: 'Low'},
     {value: 'medium', text: 'Medium'},
@@ -39,26 +46,54 @@ const departmentOptions = [
     {value: 'chemical_engineering', text: 'Chemical Engineering'}
 ]
 
+const fields = [
+    {name: 'first_name', label: 'First Name', value: '', error: false, error_type: 'required'},
+    {name: 'last_name', label: 'Last Name', value: '', error: false, error_type: 'required'},
+    {name: 'lsu_id', label: 'LSU ID', value: '', error: false, error_type: 'required'},
+    {
+        name: 'department',
+        label: 'Department/College',
+        value: departmentOptions[0].value,
+        error: false,
+        error_type: 'required'
+    },
+
+    {name: 'email', label: 'Email Address', value: '', error: false, error_type: 'required'},
+    {name: 'phone_number', label: 'Phone Number', value: '', error: false, error_type: 'required'},
+
+    {name: 'priority', label: 'Priority', value: priorityOptions[1].value, error: false, error_type: 'required'},
+
+    {name: 'manufacturer', label: 'Manufacturer', value: '', error: false, error_type: 'required'},
+    {name: 'model', label: 'Model', value: '', error: false, error_type: 'required'},
+    {name: 'operating_system', label: 'Operating System', value: '', error: false, error_type: 'required'},
+    {
+        name: 'operating_system_version',
+        label: 'Operating System Version',
+        value: '',
+        error: false,
+        error_type: 'required'
+    },
+
+    {
+        name: 'problem_category',
+        label: 'Problem Category',
+        value: problemCategoryOptions[0].value,
+        error: false,
+        error_type: 'required'
+    },
+    {name: 'description', label: 'Description', value: '', error: false, error_type: 'required'},
+
+
+]
 
 export const UserRoute = (props) => {
-    const [data, setData] = useState({});
-    const [priority, setPriority] = useState(priorityOptions[1].value);
-    const [problemCategory, setProblemCategory] = useState(problemCategoryOptions[0].value);
-    const [department, setDepartment] = useState(departmentOptions[0].value)
+    const [data, setData] = useState(fields);
+    const [showErrors, setShowErrors] = useState(false);
 
+    const [priority, setPriority] = useState(priorityOptions[1].value);
 
     const onPriorityChange = (e) => {
         setPriority(e.target.value)
-        handleChange(e);
-    }
-
-    const onProblemCategoryChange = (e) => {
-        setProblemCategory(e.target.value)
-        handleChange(e);
-    }
-
-    const onDepartmentChange = (e) => {
-        setDepartment(e.target.value)
         handleChange(e);
     }
 
@@ -67,11 +102,12 @@ export const UserRoute = (props) => {
         const value = target.value;
         const name = target.name;
 
-        const newData = {...data}
-        newData[name] = value;
+        const newData = data;
+        const index = newData.findIndex(o => o.name === name);
 
-        setData(
-            {...newData}
+        newData[index].value = value;
+
+        setData([...newData]
         );
     }
 
@@ -83,6 +119,24 @@ export const UserRoute = (props) => {
         });
     }
 
+    const handleBlur = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        const newData = data;
+        const index = newData.findIndex(o => o.name === name);
+
+        if (value === '') {
+            newData[index].error = true;
+            newData[index].error_msg = 'required';
+        } else {
+            newData[index].error = false;
+        }
+
+        setData(
+            [...newData]
+        );
+    }
 
     return (<>
         <NavBar location={props.location}/>
@@ -110,21 +164,44 @@ export const UserRoute = (props) => {
                                 <h3>My Information</h3>
                             </EuiTitle>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
+
                                 <EuiFlexItem>
-                                    <EuiFormRow label="First name">
-                                        <EuiFieldText name={'first_name'} onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'first_name']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'first_name']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'first_name']).error}
+                                    >
+                                        <EuiFieldText name={_.find(data, ['name', 'first_name']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}
+                                        />
                                     </EuiFormRow>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label="Last name">
-                                        <EuiFieldText name={'last_name'}
-                                                      onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'last_name']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'last_name']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'last_name']).error}>
+                                        <EuiFieldText name={_.find(data, ['name', 'last_name']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label="LSU ID">
-                                        <EuiFieldText name={'lsu_id'}
-                                                      onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'lsu_id']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'lsu_id']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'lsu_id']).error}
+                                    >
+                                        <EuiFieldText name={_.find(data, ['name', 'lsu_id']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
@@ -132,24 +209,38 @@ export const UserRoute = (props) => {
                                         <EuiSelect name="department"
                                                    id={'department'}
                                                    options={departmentOptions}
-                                                   value={department}
-                                                   onChange={(e) => onDepartmentChange(e)}
-                                                   onChange={(e) => handleChange(e)}/>
+                                                   value={_.find(data, ['name', 'department']).value}
+                                                   onChange={(e) => handleChange(e)}
+                                                   onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
 
                             </EuiFlexGroup>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
                                 <EuiFlexItem grow={false} style={{width: 250}}>
-                                    <EuiFormRow label="Email Address">
-                                        <EuiFieldText name={'email_address'}
-                                                      onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'email']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'email']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'email']).error}
+                                    >
+                                        <EuiFieldText name={_.find(data, ['name', 'email']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                                 <EuiFlexItem grow={false} style={{width: 200}}>
-                                    <EuiFormRow label="Phone Number">
-                                        <EuiFieldText name={'phone_number'}
-                                                      onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'phone_number']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'phone_number']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'phone_number']).error}
+                                    >
+                                        <EuiFieldText name={_.find(data, ['name', 'phone_number']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
@@ -163,35 +254,64 @@ export const UserRoute = (props) => {
                                         <EuiSelect name="priority"
                                                    id={'priority'}
                                                    options={priorityOptions}
-                                                   value={priority}
-                                                   onChange={(e) => onPriorityChange(e)}
-                                                   onChange={(e) => handleChange(e)}/>
+                                                   value={_.find(data, ['name', 'priority']).value}
+                                                   onChange={(e) => handleChange(e)}
+                                                   onBlur={(e) => handleBlur(e)}
+                                        />
                                     </EuiFormRow>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Manufacturer'}>
-                                        <EuiFieldText name={'manufacturer'}
-                                                      onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'manufacturer']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'manufacturer']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'manufacturer']).error}
+                                    >
+                                        <EuiFieldText name={_.find(data, ['name', 'manufacturer']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Model'}>
-                                        <EuiFieldText name={'model'}
-                                                      onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'model']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'model']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'model']).error}
+                                    >
+                                        <EuiFieldText name={_.find(data, ['name', 'model']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Operating System'}>
-                                        <EuiFieldText name={'operating_system'}
-                                                      onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'operating_system']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'operating_system']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'operating_system']).error}
+                                    >
+                                        <EuiFieldText name={_.find(data, ['name', 'operating_system']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Operating System Version'}>
-                                        <EuiFieldText name={'operating_system_version'}
-                                                      onChange={(e) => handleChange(e)}/>
+                                    <EuiFormRow label={_.find(data, ['name', 'operating_system_version']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'operating_system_version']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'operating_system_version']).error}
+                                    >
+                                        <EuiFieldText name={_.find(data, ['name', 'operating_system_version']).name}
+                                                      onChange={(e) => handleChange(e)}
+                                                      onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
@@ -205,19 +325,25 @@ export const UserRoute = (props) => {
                                         <EuiSelect name="problem_category"
                                                    id={'problem_category'}
                                                    options={problemCategoryOptions}
-                                                   value={problemCategory}
-                                                   onChange={(e) => onProblemCategoryChange(e)}
-                                                   onChange={(e) => handleChange(e)}/>
+                                                   value={_.find(data, ['name', 'problem_category']).value}
+                                                   onChange={(e) => handleChange(e)}
+                                                   onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                             </EuiFlexGrid>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Description'}>
-                                        <EuiTextArea
-                                            fullWidth={true}
-                                            placeholder="Computer crashes when..."
-                                        />
+                                    <EuiFormRow label={_.find(data, ['name', 'description']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'description']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'description']).error}
+                                    >
+                                        <EuiTextArea placeholder={'Computer crashes when...'}
+                                                     name={_.find(data, ['name', 'description']).name}
+                                                     onChange={(e) => handleChange(e)}
+                                                     onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
@@ -228,6 +354,15 @@ export const UserRoute = (props) => {
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                         </EuiForm>
+                        <EuiSpacer/>
+                        <div style={{maxWidth: 1000}}>
+                            Debug:
+                            <EuiSpacer/>
+                            <EuiCode language="json" isCopyable={true} color={'dark'} paddingSize={'m'}
+                                     whiteSpace={'pre'} style={{maxWidth: 1000}}>
+                                {JSON.stringify(data, null, 4)}
+                            </EuiCode>
+                        </div>
                     </EuiPageContentBody>
                 </EuiPageContent>
             </EuiPageBody>
