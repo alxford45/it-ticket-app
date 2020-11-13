@@ -21,68 +21,156 @@ import {
 } from '@elastic/eui';
 import {NavBar} from "../../components/navbar/navbar";
 import {addToast} from "../../components/toast";
+import {DEBUG} from "../../components/app/app";
 
-const priorityOptions = [
-    {value: 'low', text: 'Low'},
-    {value: 'medium', text: 'Medium'},
-    {value: 'high', text: 'High'}
+var _ = require('lodash');
+
+const errorMessages = [
+    {error_type: 'required', error_message: 'This field is required.'}
 ]
 
-const problemCategoryOptions = [
-    {value: 'general_help', text: "General Help"},
-    {value: 'problem_2', text: 'Problem 2'}
+const selectOptions = [
+    {
+        name: 'priority', options: [
+            {value: 'low', text: 'Low'},
+            {value: 'medium', text: 'Medium'},
+            {value: 'high', text: 'High'}
+        ]
+    },
+    {
+        name: 'problem_category', options: [
+            {value: 'general_help', text: "General Help"},
+            {value: 'problem_2', text: 'Problem 2'}
+        ]
+    },
+    {
+        name: 'department', options: [
+            {value: 'computer_science', text: 'Computer Science'},
+            {value: 'petroleum_engineering', text: 'Petroleum Engineering'},
+            {value: 'chemical_engineering', text: 'Chemical Engineering'}
+        ]
+    }
 ]
+const fields = [
+    {name: 'first_name', label: 'First Name', value: '', error: false, error_type: 'required'},
+    {name: 'last_name', label: 'Last Name', value: '', error: false, error_type: 'required'},
+    {name: 'lsu_id', label: 'LSU ID', value: '', error: false, error_type: 'required'},
+    {
+        name: 'department',
+        label: 'Department/College',
+        value: selectOptions.find(o => o.name === 'department').options[0],
+        error: false,
+        error_type: 'required'
+    },
 
-const departmentOptions = [
-    {value: 'computer_science', text: 'Computer Science'},
-    {value: 'petroleum_engineering', text: 'Petroleum Engineering'},
-    {value: 'chemical_engineering', text: 'Chemical Engineering'}
+    {name: 'email', label: 'Email Address', value: '', error: false, error_type: 'required'},
+    {name: 'phone_number', label: 'Phone Number', value: '', error: false, error_type: 'required'},
+
+    {name: 'priority', label: 'Priority', value: selectOptions.find(o => o.name === 'priority').options[1].value, error: false, error_type: 'required'},
+
+    {name: 'manufacturer', label: 'Manufacturer', value: '', error: false, error_type: 'required'},
+    {name: 'model', label: 'Model', value: '', error: false, error_type: 'required'},
+    {name: 'operating_system', label: 'Operating System', value: '', error: false, error_type: 'required'},
+    {
+        name: 'operating_system_version',
+        label: 'Operating System Version',
+        value: '',
+        error: false,
+        error_type: 'required'
+    },
+
+    {
+        name: 'problem_category',
+        label: 'Problem Category',
+        value: selectOptions.find(o => o.name === 'problem_category').options[0].value,
+        error: false,
+        error_type: 'required'
+    },
+    {name: 'description', label: 'Description', value: '', error: false, error_type: 'required'},
+
+
 ]
+const MySelectField = ({name, data, handleChange, handleBlur}, ...props) => {
+    const item = _.find(data, ['name', name]);
 
+    return (<EuiFormRow label={item.label}>
+        <EuiSelect name={item.name}
+                   id={item.name}
+                   options={selectOptions.find(o => o.name === name).options}
+                   value={item.value}
+                   onChange={(e) => handleChange(e)}
+                   onBlur={(e) => handleBlur(e)}/>
+    </EuiFormRow>);
+}
+const MyTextField = ({name, data, handleChange, handleBlur}, ...props) => {
+    const item = _.find(data, ['name', name]);
+    return (<EuiFormRow label={item.label}
+                        error={[_.find(errorMessages,
+                            ['error_type',
+                                item.error_type
+                            ]).error_message]}
+                        isInvalid={item.error}
+    >
+        <EuiFieldText name={item.name}
+                      onChange={(e) => handleChange(e)}
+                      onBlur={(e) => handleBlur(e)}
+        />
+    </EuiFormRow>)
+}
 
 export const UserRoute = (props) => {
-    const [data, setData] = useState({});
-    const [priority, setPriority] = useState(priorityOptions[1].value);
-    const [problemCategory, setProblemCategory] = useState(problemCategoryOptions[0].value);
-    const [department, setDepartment] = useState(departmentOptions[0].value)
-
-
-    const onPriorityChange = (e) => {
-        setPriority(e.target.value)
-        handleChange(e);
-    }
-
-    const onProblemCategoryChange = (e) => {
-        setProblemCategory(e.target.value)
-        handleChange(e);
-    }
-
-    const onDepartmentChange = (e) => {
-        setDepartment(e.target.value)
-        handleChange(e);
-    }
+    const [data, setData] = useState(fields);
+    const [errors, setErrors] = useState(false);
 
     const handleChange = (e) => {
         const target = e.target;
         const value = target.value;
         const name = target.name;
 
-        const newData = {...data}
-        newData[name] = value;
+        const newData = data;
+        const index = newData.findIndex(o => o.name === name);
 
-        setData(
-            {...newData}
+        newData[index].value = value;
+
+        setData([...newData]
         );
     }
 
     const handleSubmit = (e) => {
-        console.log(data);
-        addToast({
-            title: "Ticket Submitted!",
-            color: "success"
-        });
+        const errors = _.find(data, ['error', true])
+        if (errors === undefined) {
+            console.log(data);
+            addToast({
+                title: "Ticket Submitted!",
+                color: "success"
+            });
+        } else {
+            addToast({
+                title: "Check Form for Errors",
+                color: "danger"
+            })
+        }
+
     }
 
+    const handleBlur = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+
+        const newData = data;
+        const index = newData.findIndex(o => o.name === name);
+
+        if (value === '') {
+            newData[index].error = true;
+            newData[index].error_msg = 'required';
+        } else {
+            newData[index].error = false;
+        }
+
+        setData(
+            [...newData]
+        );
+    }
 
     return (<>
         <NavBar location={props.location}/>
@@ -110,47 +198,33 @@ export const UserRoute = (props) => {
                                 <h3>My Information</h3>
                             </EuiTitle>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
+
                                 <EuiFlexItem>
-                                    <EuiFormRow label="First name">
-                                        <EuiFieldText name={'first_name'} onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'first_name'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label="Last name">
-                                        <EuiFieldText name={'last_name'}
-                                                      onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'last_name'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label="LSU ID">
-                                        <EuiFieldText name={'lsu_id'}
-                                                      onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'lsu_id'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label="Department/College">
-                                        <EuiSelect name="department"
-                                                   id={'department'}
-                                                   options={departmentOptions}
-                                                   value={department}
-                                                   onChange={(e) => onDepartmentChange(e)}
-                                                   onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'department'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
 
                             </EuiFlexGroup>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
                                 <EuiFlexItem grow={false} style={{width: 250}}>
-                                    <EuiFormRow label="Email Address">
-                                        <EuiFieldText name={'email_address'}
-                                                      onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'email'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                                 <EuiFlexItem grow={false} style={{width: 200}}>
-                                    <EuiFormRow label="Phone Number">
-                                        <EuiFieldText name={'phone_number'}
-                                                      onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'phone_number'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                             <EuiSpacer/>
@@ -159,40 +233,26 @@ export const UserRoute = (props) => {
                             </EuiTitle>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
                                 <EuiFlexItem grow={false} style={{width: 150}}>
-                                    <EuiFormRow label={'Priority'}>
-                                        <EuiSelect name="priority"
-                                                   id={'priority'}
-                                                   options={priorityOptions}
-                                                   value={priority}
-                                                   onChange={(e) => onPriorityChange(e)}
-                                                   onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MySelectField name={'priority'} data={data} handleChange={handleChange}
+                                                   handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Manufacturer'}>
-                                        <EuiFieldText name={'manufacturer'}
-                                                      onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'manufacturer'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Model'}>
-                                        <EuiFieldText name={'model'}
-                                                      onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'model'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Operating System'}>
-                                        <EuiFieldText name={'operating_system'}
-                                                      onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'operating_system'} data={data} handleChange={handleChange}
+                                                 handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Operating System Version'}>
-                                        <EuiFieldText name={'operating_system_version'}
-                                                      onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MyTextField name={'operating_system_version'} data={data}
+                                                 handleChange={handleChange} handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                             <EuiSpacer/>
@@ -201,23 +261,23 @@ export const UserRoute = (props) => {
                             </EuiTitle>
                             <EuiFlexGrid>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Problem Category'}>
-                                        <EuiSelect name="problem_category"
-                                                   id={'problem_category'}
-                                                   options={problemCategoryOptions}
-                                                   value={problemCategory}
-                                                   onChange={(e) => onProblemCategoryChange(e)}
-                                                   onChange={(e) => handleChange(e)}/>
-                                    </EuiFormRow>
+                                    <MySelectField name={'problem_category'} data={data} handleChange={handleChange}
+                                                   handleBlur={handleBlur}/>
                                 </EuiFlexItem>
                             </EuiFlexGrid>
                             <EuiFlexGroup style={{maxWidth: 1000}}>
                                 <EuiFlexItem>
-                                    <EuiFormRow label={'Description'}>
-                                        <EuiTextArea
-                                            fullWidth={true}
-                                            placeholder="Computer crashes when..."
-                                        />
+                                    <EuiFormRow label={_.find(data, ['name', 'description']).label}
+                                                error={[_.find(errorMessages,
+                                                    ['error_type',
+                                                        _.find(data, ['name', 'description']).error_type
+                                                    ]).error_message]}
+                                                isInvalid={_.find(data, ['name', 'description']).error}
+                                    >
+                                        <EuiTextArea placeholder={'Computer crashes when...'}
+                                                     name={_.find(data, ['name', 'description']).name}
+                                                     onChange={(e) => handleChange(e)}
+                                                     onBlur={(e) => handleBlur(e)}/>
                                     </EuiFormRow>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
@@ -228,6 +288,15 @@ export const UserRoute = (props) => {
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                         </EuiForm>
+                        <EuiSpacer/>
+                        {DEBUG ? (<div style={{maxWidth: 1000}}>
+                            Debug:
+                            <EuiSpacer/>
+                            <EuiCode language="json" isCopyable={true} color={'dark'} paddingSize={'m'}
+                                     whiteSpace={'pre'} style={{maxWidth: 1000}}>
+                                {JSON.stringify(data, null, 4)}
+                            </EuiCode>
+                        </div>) : null}
                     </EuiPageContentBody>
                 </EuiPageContent>
             </EuiPageBody>
