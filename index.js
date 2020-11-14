@@ -3,7 +3,7 @@ const {Client} = require('pg');
 
 var port = process.env.PORT;
 if(port === undefined) {
-    port = 3000;
+    port = 5000;
 }
 /*
 const client = new Client({
