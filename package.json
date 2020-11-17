@@ -1,0 +1,12 @@
+{
+  "name": "CSC_4402_DB_Project",
+  "version": "1.0.0",
+  "repository": "https://github.com/cdalton713/CSC_4402_DB_Project.git",
+  "license": "MIT",
+  "scripts": {
+    "start": "cd api && yarn run start:prod",
+    "build": "yarn run build:client && yarn run build:api",
+    "build:client": "cd client && yarn install && yarn run build",
+    "build:api": "cd api && yarn install && yarn run build"
+  }
+}
