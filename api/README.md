@@ -23,17 +23,17 @@ yarn start:dev
 
 # Routes
 
-### Base localhost/\*
+## Base: localhost/\*
 
 Client site routing served statically.
 
-<link href="http://localhost:5000">http://localhost:5000</link>
+<a href="http://localhost:5000">http://localhost:5000</a>
 
-### API localhost/api/\*
+## Api: localhost/api/\*
 
 API (cors only)
 
-<link href="http://localhost:5000/api">http://localhost:5000/api</link>
+<a href="http://localhost:5000/api">http://localhost:5000/api</a>
 
 Examples:
 
@@ -46,8 +46,8 @@ Examples:
 (update)   PUT/  http://localhost:5000/api/user
 </pre>
 
-### Swagger docs
+## Docs: localhost/docs
 
 View/test available REST endpoints using swagger UI
 
-<link href="http://localhost:5000/docs">http://localhost:5000/docs</link>
+<a href="http://localhost:5000/docs">http://localhost:5000/docs</a>
