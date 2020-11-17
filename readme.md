@@ -29,35 +29,6 @@ postgres://brvuirrqqcjzsb:37f36b1e7cb6167c12f84c9e356c14535824e0a6c7e0dfe5fb7141
 Heroku CLI
 heroku pg:psql postgresql-octagonal-80370 --app lsu-it-support-demo
 
-##### Scripts:
+#### Scripts:
 
-install client from base directory
-
-```
-cd client && yarn install
-```
-
-run client from base directory
-
-```
-cd client && yarn start
-```
-
-install server from base directory
-
-```
-cd api && yarn install
-```
-
-run server from base directory
-
-(Must be run at least once )
-
-```
-cd client && yarn run build
-cd ..
-```
-
-```
-cd api && yarn start:dev
-```
+Root directory package.json used for heroku deployment or for running production mode in local environment.
