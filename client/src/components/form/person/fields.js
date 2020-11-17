@@ -23,8 +23,7 @@ export const selectOptions = [
     ],
   },
 ];
-
-export const fields = [
+export const personFields = [
   {
     name: "first_name",
     label: "First Name",
@@ -49,7 +48,7 @@ export const fields = [
   {
     name: "department",
     label: "Department/College",
-    value: selectOptions.find((o) => o.name === "department").options[0],
+    value: selectOptions.find((o) => o.name === "department").options[0].value,
     error: false,
     error_type: "required",
   },
@@ -68,61 +67,4 @@ export const fields = [
     error: false,
     error_type: "required",
   },
-
-  {
-    name: "priority",
-    label: "Priority",
-    value: selectOptions.find((o) => o.name === "priority").options[1].value,
-    error: false,
-    error_type: "required",
-  },
-
-  {
-    name: "manufacturer",
-    label: "Manufacturer",
-    value: "",
-    error: false,
-    error_type: "required",
-  },
-  {
-    name: "model",
-    label: "Model",
-    value: "",
-    error: false,
-    error_type: "required",
-  },
-  {
-    name: "operating_system",
-    label: "Operating System",
-    value: "",
-    error: false,
-    error_type: "required",
-  },
-  {
-    name: "operating_system_version",
-    label: "Operating System Version",
-    value: "",
-    error: false,
-    error_type: "required",
-  },
-
-  {
-    name: "problem_category",
-    label: "Problem Category",
-    value: selectOptions.find((o) => o.name === "problem_category").options[0]
-      .value,
-    error: false,
-    error_type: "required",
-  },
-  {
-    name: "description",
-    label: "Description",
-    value: "",
-    error: false,
-    error_type: "required",
-  },
-];
-
-export const errorMessages = [
-  { error_type: "required", error_message: "This field is required." },
 ];

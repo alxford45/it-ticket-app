@@ -1,6 +1,6 @@
 import { EuiFieldText, EuiFormRow } from "@elastic/eui";
 import React from "react";
-import { errorMessages } from "./fields";
+import { errorMessages } from "./ManageTicketForm/fields";
 
 var _ = require("lodash");
 export const MyTextField = (

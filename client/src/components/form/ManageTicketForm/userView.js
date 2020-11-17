@@ -10,12 +10,13 @@ import {
   EuiTitle,
 } from "@elastic/eui";
 import React, { useState } from "react";
-import { MyTextField } from "./MyTextField";
-import { MySelectField } from "./MySelectField";
-import { addToast } from "../toast";
-import { DEBUG } from "../app/app";
-import { errorMessages, selectOptions } from "./fields";
+import { MyTextField } from "../MyTextField";
+import { MySelectField } from "../MySelectField";
+import { addToast } from "../../toast";
+import { DEBUG } from "../../app/app";
+import { errorMessages } from "./fields";
 import { handleFormFieldBlur, handleFormFieldChange } from "./handlers";
+import { selectOptions } from "../person/fields";
 
 var _ = require("lodash");
 
