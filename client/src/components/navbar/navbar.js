@@ -10,6 +10,19 @@ import {
 } from "@elastic/eui";
 import routes from "../../utils/constants/routes.json";
 import { useHistory } from "react-router-dom";
+
+const TechName = ({ technician, setTechnician }, props) => {
+  return (
+    <EuiHeaderLink
+      onClick={(e) => {
+        setTechnician(false);
+      }}
+    >
+      {technician[0].value}
+    </EuiHeaderLink>
+  );
+};
+
 export const NavBar = (props) => {
   const history = useHistory();
 
@@ -56,6 +69,18 @@ export const NavBar = (props) => {
                 Project Details
               </EuiHeaderLink>
             </EuiHeaderLinks>,
+          ],
+        },
+        {
+          borders: "right",
+          items: [
+            props.technician === undefined ||
+            props.technician === false ? null : (
+              <TechName
+                technician={props.technician}
+                setTechnician={props.setTechnician}
+              />
+            ),
           ],
         },
       ]}

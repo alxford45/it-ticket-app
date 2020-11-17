@@ -10,4 +10,4 @@ export const App = () => {
   );
 };
 
-export const DEBUG = true;
+export const DEBUG_ON = true;
