@@ -27,10 +27,10 @@ import {
   EuiCode,
 } from "@elastic/eui";
 import { NavBar } from "../../components/navbar/navbar";
-import { UserView } from "../../components/form/userView";
-import { fields } from "../../components/form/fields";
-import { DEBUG } from "../../components/app/app";
-import { handleFormSubmit } from "../../components/form/handlers";
+import { UserView } from "../../components/form/ManageTicketForm/userView";
+import { fields } from "../../components/form/ManageTicketForm/fields";
+import { handleFormSubmit } from "../../components/form/ManageTicketForm/handlers";
+import { Debug } from "../../components/debug/debug";
 
 var _ = require("lodash");
 
@@ -75,23 +75,7 @@ export const UserRoute = (props) => {
                   </EuiFlexItem>
                 </EuiFlexGroup>
               </EuiForm>
-              <EuiSpacer />
-              {DEBUG ? (
-                <div style={{ maxWidth: 1000 }}>
-                  Debug:
-                  <EuiSpacer />
-                  <EuiCode
-                    language="json"
-                    isCopyable={true}
-                    color={"dark"}
-                    paddingSize={"m"}
-                    whiteSpace={"pre"}
-                    style={{ maxWidth: 1000 }}
-                  >
-                    {JSON.stringify(data, null, 4)}
-                  </EuiCode>
-                </div>
-              ) : null}
+              <Debug data={data} />
             </EuiPageContentBody>
           </EuiPageContent>
         </EuiPageBody>

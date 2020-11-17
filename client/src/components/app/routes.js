@@ -3,9 +3,8 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import routes from "../../utils/constants/routes.json";
 import { LoginSelect } from "../../routes/login/login";
 import { UserRoute } from "../../routes/user/user";
-import { AdminRoute } from "../../routes/admin/admin";
 import { AboutRoute } from "../../routes/about/about";
-import { NavBar } from "../navbar/navbar";
+import { AdminRoute } from "../../routes/admin/admin";
 
 export const GlobalRouter = (props) => {
   return (

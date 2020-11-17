@@ -1,4 +1,4 @@
-import { addToast } from "../toast";
+import { addToast } from "../../toast";
 var _ = require("lodash");
 
 export const handleFormSubmit = (e, data) => {
