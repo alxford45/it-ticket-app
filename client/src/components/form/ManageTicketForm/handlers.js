@@ -30,6 +30,15 @@ export const handleFormFieldChange = (e, data, setData) => {
   setData([...newData]);
 };
 
+export const handleDateChange = (date, name, data, setData) => {
+  const newData = data;
+  const index = newData.findIndex((o) => o.name === name);
+
+  newData[index].value = date.toJSON();
+
+  setData([...newData]);
+};
+
 export const handleFormFieldBlur = (e, data, setData) => {
   const name = e.target.name;
   const value = e.target.value;
