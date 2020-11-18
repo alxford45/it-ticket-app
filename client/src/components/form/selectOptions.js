@@ -41,4 +41,11 @@ export const selectOptions = [
       { value: "gpu", text: "GPU" },
     ],
   },
+  {
+    name: "status",
+    options: [
+      { value: "open", text: "Open" },
+      { value: "closed", text: "Closed" },
+    ],
+  },
 ];
