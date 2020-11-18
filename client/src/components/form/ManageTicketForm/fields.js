@@ -90,6 +90,13 @@ export const fields = [
     error: false,
     error_type: "none",
   },
+  {
+    name: "status",
+    label: "Status",
+    value: "Open",
+    error: false,
+    error_type: "none",
+  },
 ];
 
 export const errorMessages = [

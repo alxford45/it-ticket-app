@@ -58,7 +58,7 @@ export const AdminView = ({ data, setData }, ...props) => {
         <h3>Ticket Information</h3>
       </EuiTitle>
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
-        <EuiFlexItem>
+        <EuiFlexItem style={{ maxWidth: 1000 }}>
           <EuiFormRow
             label={_.find(data, ["name", "description"]).label}
             error={[
@@ -76,28 +76,41 @@ export const AdminView = ({ data, setData }, ...props) => {
               onBlur={(e) => handleFormFieldBlur(e, data, setData)}
             />
           </EuiFormRow>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+      <EuiFlexGroup style={{ maxWidth: 1000 }}>
+        <EuiFlexItem>
           <EuiFormRow>
-            <EuiFlexGroup>
-              <EuiFlexItem>
-                <MyDatePicker
-                  data={data}
-                  name={"start_datetime"}
-                  handleChange={(date) =>
-                    handleDateChange(date, "start_datetime", data, setData)
-                  }
-                />
-              </EuiFlexItem>
-              <EuiFlexItem>
-                <MyDatePicker
-                  data={data}
-                  name={"end_datetime"}
-                  // handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
-                  handleChange={(e) =>
-                    handleDateChange(e, "end_datetime", data, setData)
-                  }
-                />
-              </EuiFlexItem>
-            </EuiFlexGroup>
+            <MyDatePicker
+              data={data}
+              name={"start_datetime"}
+              handleChange={(date) =>
+                handleDateChange(date, "start_datetime", data, setData)
+              }
+            />
+          </EuiFormRow>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiFormRow>
+            <MyDatePicker
+              data={data}
+              name={"end_datetime"}
+              // handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              handleChange={(e) =>
+                handleDateChange(e, "end_datetime", data, setData)
+              }
+            />
+          </EuiFormRow>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiFormRow>
+            <MySelectField
+              handleChange={(e) => handleFormFieldChange(e, data, setData)}
+              handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              selectOptions={selectOptions}
+              data={data}
+              name={"status"}
+            />
           </EuiFormRow>
         </EuiFlexItem>
       </EuiFlexGroup>
