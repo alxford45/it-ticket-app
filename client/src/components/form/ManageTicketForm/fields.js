@@ -1,4 +1,5 @@
-import { personFields, selectOptions } from "../person/fields";
+import { personFields } from "../person/fields";
+import { selectOptions } from "../selectOptions";
 
 export const fields = [
   ...personFields,
@@ -58,6 +59,41 @@ export const fields = [
     name: "notes",
     label: "Notes",
     value: "",
+    error: false,
+    error_type: "none",
+  },
+  {
+    name: "core_issue",
+    label: "Core Issue",
+    value: "",
+    error: false,
+    error_type: "none",
+  },
+  {
+    name: "component",
+    label: "Component",
+    value: "",
+    error: false,
+    error_type: "none",
+  },
+  {
+    name: "start_datetime",
+    label: "Start Datetime",
+    value: "",
+    error: false,
+    error_type: "none",
+  },
+  {
+    name: "end_datetime",
+    label: "End Datetime",
+    value: "",
+    error: false,
+    error_type: "none",
+  },
+  {
+    name: "status",
+    label: "Status",
+    value: "Open",
     error: false,
     error_type: "none",
   },
