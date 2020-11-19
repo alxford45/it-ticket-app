@@ -10,9 +10,7 @@ INSERT INTO customer (
     password,
     phone_number,
     department
-) VALUES (
-    :customers
-);
+) VALUES :customers RETURNING *;
 
 /*
 @name getAllCustomers
@@ -29,10 +27,8 @@ INSERT INTO technician (
     last_name,
     email,
     password,
-    phone_number,
-) VALUES (
-    :technicians
-);
+    phone_number
+) VALUES :technicians RETURNING *;
 
 /*
 @name getAllTechnicians
@@ -51,12 +47,12 @@ INSERT INTO ticket (
     description,
     device,
     os,
-    os_version,
-) VALUES (
-    :ticket
-);
+    os_version
+) VALUES :tickets RETURNING *;
 
 /*
 @name getAllTickets
 */
 SELECT * FROM ticket;
+
+
