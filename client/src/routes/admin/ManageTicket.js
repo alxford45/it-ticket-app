@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   EuiPage,
@@ -24,10 +24,11 @@ import { NavBar } from "../../components/navbar/navbar";
 import { Table } from "../../components/table/openTickets";
 import { AdminTicketFlyout } from "../../components/flyout/flyout";
 import { UserView } from "../../components/form/ManageTicketForm/userView";
-import { fields } from "../../components/form/ManageTicketForm/fields";
 import { handleFormSubmit } from "../../components/form/ManageTicketForm/handlers";
 import { AdminView } from "../../components/form/ManageTicketForm/adminView";
 import { Debug } from "../../components/debug/debug";
+import axios from "../../api/api";
+import { fields } from "../../components/form/ManageTicketForm/fields";
 var _ = require("lodash");
 
 const TicketForm = ({ data, setData }, ...props) => {
@@ -60,9 +61,12 @@ export const ManageTicket = (props) => {
   const [isLoadingStat, setStatLoading] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(false);
 
-  // TODO: useEffect to download data and to auto update changes. save to data variable.
   const [data, setData] = useState(fields);
 
+  // TODO: get request for open and closed tickets.  /api/ticket
+  // useEffect(async () => {
+  //   const result = await axios.get();
+  // });
   const handleTicketSelection = (e, id) => {
     setSelectedTicket(id);
   };
