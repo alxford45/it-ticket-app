@@ -1,0 +1,14 @@
+{
+  "name": "seed",
+  "version": "1.0.0",
+  "repository": "https://github.com/cdalton713/CSC_4402_DB_Project.git",
+  "description": "create and seed tables",
+  "main": "index.js",
+  "license": "NONE",
+  "private": true,
+  "scripts": {
+    "start:dev": "ts-node src/index",
+    "start:prod": "node dist/index",
+    "build": "tsc"
+  }
+}
