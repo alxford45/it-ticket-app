@@ -13,11 +13,6 @@ INSERT INTO customer (
 ) VALUES :customers RETURNING *;
 
 /*
-@name getAllCustomers
-*/
-SELECT * FROM customer;
-
-/*
 @name seedTechnician
 @param technicians -> ((lsu_id, first_name, last_name, email, password, phone_number)...)
 */
@@ -31,15 +26,9 @@ INSERT INTO technician (
 ) VALUES :technicians RETURNING *;
 
 /*
-@name getAllTechnicians
-*/
-SELECT * FROM technician;
-
-/*
 @name seedTicket
 @param tickets -> ((priority, status, category, description, device, os, os_version)...)
 */
- 
 INSERT INTO ticket (
     priority,
     status,
@@ -50,9 +39,5 @@ INSERT INTO ticket (
     os_version
 ) VALUES :tickets RETURNING *;
 
-/*
-@name getAllTickets
-*/
-SELECT * FROM ticket;
 
 
