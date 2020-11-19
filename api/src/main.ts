@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 
 const PORT = process.env.PORT || 5000;
 async function bootstrap() {
-  const appOptions: NestApplicationOptions = {cors: true, bodyParser:true}
+  const appOptions: NestApplicationOptions = { cors: true, bodyParser: true };
   const app = await NestFactory.create(AppModule, appOptions);
 
   const options = new DocumentBuilder()
@@ -17,9 +17,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document);
 
-   // Starts listening for shutdown hooks emitted by heroku
+  // Starts listening for shutdown hooks emitted by heroku
   app.enableShutdownHooks();
 
-  await app.listen(PORT,() => console.log(`Now listening on port ${PORT}`));
+  await app.listen(PORT, () => console.log(`Now listening on port ${PORT}`));
 }
 bootstrap();
