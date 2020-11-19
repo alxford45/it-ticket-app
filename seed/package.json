@@ -10,5 +10,8 @@
     "start:dev": "ts-node src/index",
     "start:prod": "node dist/index",
     "build": "tsc"
+  },
+  "dependencies": {
+    "typescript": "^4.0.5"
   }
 }
