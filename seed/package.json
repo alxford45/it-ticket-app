@@ -7,9 +7,8 @@
   "license": "NONE",
   "private": true,
   "scripts": {
-    "start:dev": "ts-node src/index",
-    "start:prod": "node dist/index",
-    "build": "tsc",
+    "start": "ts-node src/index",
+    "init": "ts-node src/init",
     "typegen": "pgtyped -c pgtyped.config.json"
   },
   "dependencies": {
