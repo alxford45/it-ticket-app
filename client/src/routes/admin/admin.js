@@ -21,7 +21,7 @@ import {
   EuiCode,
 } from "@elastic/eui";
 import { NavBar } from "../../components/navbar/navbar";
-import { Table } from "../../components/table/openTickets";
+import { TicketsTable } from "../../components/table/openTickets";
 import { AdminTicketFlyout } from "../../components/flyout/flyout";
 import { UserView } from "../../components/form/ManageTicketForm/userView";
 import { fields } from "../../components/form/ManageTicketForm/fields";
