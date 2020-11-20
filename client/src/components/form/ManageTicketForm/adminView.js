@@ -23,6 +23,9 @@ import {
 } from "./handlers";
 import { selectOptions } from "../selectOptions";
 import { MyDatePicker } from "../MyDatePicker";
+import { TicketAssignmentTable } from "../../table/assignedTo";
+import { AddTechnicianPopover } from "../../popover/TechnicianPopover";
+import { TimeLogTable } from "../../table/TimeLogTable";
 
 var _ = require("lodash");
 
@@ -57,6 +60,7 @@ export const AdminView = ({ data, setData }, ...props) => {
       <EuiTitle size={"s"}>
         <h3>Ticket Information</h3>
       </EuiTitle>
+
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
         <EuiFlexItem style={{ maxWidth: 1000 }}>
           <EuiFormRow
@@ -78,8 +82,36 @@ export const AdminView = ({ data, setData }, ...props) => {
           </EuiFormRow>
         </EuiFlexItem>
       </EuiFlexGroup>
+      <EuiSpacer size={"l"} />
+      <EuiTitle size={"m"}>
+        <h2>Administration</h2>
+      </EuiTitle>
+      <EuiTitle size={"s"}>
+        <h2>Assigned Technicians</h2>
+      </EuiTitle>
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
-        <EuiFlexItem>
+        <EuiFlexItem style={{ maxWidth: 500 }}>
+          <EuiFormRow hasEmptyLabelSpace={true}>
+            <>
+              <TicketAssignmentTable />
+              <EuiSpacer size={"s"} />
+              <AddTechnicianPopover />
+            </>
+          </EuiFormRow>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+      <EuiSpacer size={"l"} />
+      <EuiTitle size={"s"}>
+        <h2>Work Log</h2>
+      </EuiTitle>
+      <EuiFlexGroup style={{ maxWidth: 1000 }}>
+        <EuiFlexItem style={{ maxWidth: 400 }}>
+          <TimeLogTable />
+        </EuiFlexItem>
+      </EuiFlexGroup>
+
+      <EuiFlexGroup style={{ maxWidth: 1000 }}>
+        <EuiFlexItem style={{ maxWidth: 200 }}>
           <EuiFormRow>
             <MyDatePicker
               data={data}
@@ -90,7 +122,7 @@ export const AdminView = ({ data, setData }, ...props) => {
             />
           </EuiFormRow>
         </EuiFlexItem>
-        <EuiFlexItem>
+        <EuiFlexItem style={{ maxWidth: 200 }}>
           <EuiFormRow>
             <MyDatePicker
               data={data}
@@ -102,6 +134,13 @@ export const AdminView = ({ data, setData }, ...props) => {
             />
           </EuiFormRow>
         </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiFormRow hasEmptyLabelSpace={true}>
+            <EuiButton>Add Time Entry</EuiButton>
+          </EuiFormRow>
+        </EuiFlexItem>
+      </EuiFlexGroup>
+      <EuiFlexGroup style={{ maxWidth: 1000 }}>
         <EuiFlexItem>
           <EuiFormRow>
             <MySelectField
