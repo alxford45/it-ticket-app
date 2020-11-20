@@ -1,0 +1,15 @@
+{
+  "srcDir": "./src/",
+  "transforms": [
+    {
+      "mode": "sql",
+      "include": "sql/*.sql",
+      "emitTemplate": "./src/queries/{{name}}.queries.ts"
+    }
+  ],
+  "db": {
+    "dbName": "lsu_test",
+    "user": "lsu_user",
+    "password": "password"
+  }
+}
