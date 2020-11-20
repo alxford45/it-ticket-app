@@ -16,7 +16,7 @@ import { addToast } from "../../toast";
 import { DEBUG } from "../../app/app";
 import { errorMessages } from "./fields";
 import { handleFormFieldBlur, handleFormFieldChange } from "./handlers";
-import { selectOptions } from "../person/fields";
+import { selectOptions } from "../selectOptions";
 
 var _ = require("lodash");
 
