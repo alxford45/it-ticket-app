@@ -17,7 +17,7 @@ export const handleFormSubmit = (e, data) => {
   }
 };
 
-export const handleFormFieldChange = (e, data, setData) => {
+export const handleFormFieldChange = (e, data, dispatch) => {
   const target = e.target;
   const value = target.value;
   const name = target.name;
@@ -26,20 +26,18 @@ export const handleFormFieldChange = (e, data, setData) => {
   const index = newData.findIndex((o) => o.name === name);
 
   newData[index].value = value;
-
-  setData([...newData]);
+  dispatch({ type: "UPDATE_DATA", payload: newData });
 };
 
-export const handleDateChange = (date, name, data, setData) => {
+export const handleDateChange = (date, name, data, dispatch) => {
   const newData = data;
   const index = newData.findIndex((o) => o.name === name);
 
   newData[index].value = date.toJSON();
-
-  setData([...newData]);
+  dispatch({ type: "UPDATE_DATA", payload: newData });
 };
 
-export const handleFormFieldBlur = (e, data, setData) => {
+export const handleFormFieldBlur = (e, data, dispatch) => {
   const name = e.target.name;
   const value = e.target.value;
 
@@ -53,5 +51,5 @@ export const handleFormFieldBlur = (e, data, setData) => {
     newData[index].error = false;
   }
 
-  setData([...newData]);
+  dispatch({ type: "UPDATE_DATA", payload: newData });
 };

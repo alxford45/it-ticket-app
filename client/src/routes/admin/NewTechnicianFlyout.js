@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 
 import {
   EuiFlyout,
@@ -16,13 +16,34 @@ import { NewTechnicianForm } from "../../components/form/ManageTechnicianForm/Ne
 import { personFields } from "../../components/form/person/fields";
 import { handleFormSubmit } from "../../components/form/ManageTicketForm/handlers";
 import { Debug } from "../../components/debug/debug";
+import { dataFetchReducer } from "../../api/reducers";
+import axios from "../../api/api";
 
 export const NewTechnicianFlyout = (
   { isFlyoutVisible, setIsFlyoutVisible },
   ...props
 ) => {
   const closeFlyout = () => setIsFlyoutVisible(false);
-  const [data, setData] = useState(personFields);
+  const [state, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: null,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_INIT" });
+      // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA FOR TABLE
+      try {
+        const result = await axios.get("ticket");
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE" });
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const showFlyout = () => setIsFlyoutVisible(true);
 
@@ -41,17 +62,17 @@ export const NewTechnicianFlyout = (
         </EuiFlyoutHeader>
         <EuiFlyoutBody>
           <EuiForm>
-            <NewTechnicianForm data={data} setData={setData} />
+            <NewTechnicianForm data={state.data} dispatch={dispatch} />
             <EuiSpacer />
             <EuiFlexItem grow={false}>
               <EuiButton
                 type={"submit"}
-                onClick={(e) => handleFormSubmit(e, data)}
+                onClick={(e) => handleFormSubmit(e, state.data)}
               >
                 Save
               </EuiButton>
             </EuiFlexItem>
-            <Debug data={data} />
+            <Debug data={state.data} />
           </EuiForm>
         </EuiFlyoutBody>
       </EuiFlyout>
