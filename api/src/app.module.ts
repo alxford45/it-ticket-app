@@ -4,10 +4,10 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TechModule } from './tech/tech.module';
-import { UserModule } from './user/user.module';
 import { TicketModule } from './ticket/ticket.module';
 import { TicketWorkModule } from './ticket/work/ticketwork.module';
 import { TicketAssignModule } from './ticket/assign/ticketassign.module';
+import { CustomerModule } from './customer/customer.module';
 
 @Module({
   imports: [
@@ -15,11 +15,11 @@ import { TicketAssignModule } from './ticket/assign/ticketassign.module';
       rootPath: join(__dirname, '../..', 'client/build'),
       exclude: ['/api*', '/auth'],
     }),
-    UserModule,
     TechModule,
     TicketModule,
     TicketWorkModule,
     TicketAssignModule,
+    CustomerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
