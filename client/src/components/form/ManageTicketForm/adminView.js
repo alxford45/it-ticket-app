@@ -23,7 +23,7 @@ import {
 } from "./handlers";
 import { selectOptions } from "../selectOptions";
 import { MyDatePicker } from "../MyDatePicker";
-import { TicketAssignmentTable } from "../../table/assignedTo";
+import { TicketAssignmentTable } from "../../table/AssignedToTable";
 import { AddTechnicianPopover } from "../../popover/TechnicianPopover";
 import { TimeLogTable } from "../../table/TimeLogTable";
 
