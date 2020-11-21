@@ -31,6 +31,17 @@ postgres://brvuirrqqcjzsb:37f36b1e7cb6167c12f84c9e356c14535824e0a6c7e0dfe5fb7141
 Heroku CLI
 heroku pg:psql postgresql-octagonal-80370 --app lsu-it-support-demo
 
+# SQL
+
+schema.sql will serve as reference source for both api and client. Make changes here first to eliminate confusion on how request/response should be structured.
+
+TODO:
+
+- finalize base table names and structure
+- finalize field names and corresponding postgres types
+- define relations
+- define relation tables
+
 # Scripts
 
 ## Production
@@ -52,4 +63,4 @@ yarn run dev
 npm run dev
 ```
 
-Run client @ http://localhost:3000 and sever @ http://localhost:5000 concurrently
+Runs client @ http://localhost:3000 and sever @ http://localhost:5000 concurrently from root directory.
