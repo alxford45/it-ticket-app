@@ -64,17 +64,27 @@ export const ManageTicket = (props) => {
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
-    data: null,
+    data: fields,
   });
-  const [isLoadingStat, setStatLoading] = useState(false);
+
   const [selectedTicket, setSelectedTicket] = useState(false);
 
-  const [data, setData] = useState(fields);
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_INIT" });
+      // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA FOR TABLE
+      try {
+        const result = await axios.get("ticket");
+        // TODO: CHANGE BACK! change payloud back to result.data once backend is setup
+        dispatch({ type: "FETCH_SUCCESS", payload: fields });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE" });
+      }
+    };
 
-  // TODO: get request for open and closed tickets.  /api/ticket
-  // useEffect(async () => {
-  //   const result = await axios.get();
-  // });
+    fetchData();
+  }, []);
+
   const handleTicketSelection = (e, id) => {
     setSelectedTicket(id);
   };
@@ -109,7 +119,7 @@ export const ManageTicket = (props) => {
         </h1>
       </EuiTitle>
       <EuiPanel>
-        <TicketForm data={data} setData={setData} />
+        <TicketForm data={state.data} dispatch={dispatch} />
       </EuiPanel>
     </>
   );

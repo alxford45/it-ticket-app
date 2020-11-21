@@ -1,6 +1,10 @@
 import { personFields } from "../person/fields";
 import { selectOptions } from "../selectOptions";
 
+export const required_field_props = {
+  error: false,
+  error_type: "none",
+};
 export const fields = [
   ...personFields,
   {

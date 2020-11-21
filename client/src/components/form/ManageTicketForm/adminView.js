@@ -29,7 +29,7 @@ import { TimeLogTable } from "../../table/TimeLogTable";
 
 var _ = require("lodash");
 
-export const AdminView = ({ data, setData }, ...props) => {
+export const AdminView = ({ data, dispatch }, ...props) => {
   return (
     <>
       <EuiSpacer />
@@ -42,8 +42,8 @@ export const AdminView = ({ data, setData }, ...props) => {
             data={data}
             name={"core_issue"}
             selectOptions={selectOptions}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem>
@@ -51,8 +51,8 @@ export const AdminView = ({ data, setData }, ...props) => {
             data={data}
             name={"component"}
             selectOptions={selectOptions}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
           />
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -76,8 +76,8 @@ export const AdminView = ({ data, setData }, ...props) => {
             <EuiTextArea
               placeholder={"Ticket notes..."}
               name={_.find(data, ["name", "notes"]).name}
-              onChange={(e) => handleFormFieldChange(e, data, setData)}
-              onBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              onChange={(e) => handleFormFieldChange(e, data, dispatch)}
+              onBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
             />
           </EuiFormRow>
         </EuiFlexItem>
@@ -117,7 +117,7 @@ export const AdminView = ({ data, setData }, ...props) => {
               data={data}
               name={"start_datetime"}
               handleChange={(date) =>
-                handleDateChange(date, "start_datetime", data, setData)
+                handleDateChange(date, "start_datetime", data, dispatch)
               }
             />
           </EuiFormRow>
@@ -127,9 +127,9 @@ export const AdminView = ({ data, setData }, ...props) => {
             <MyDatePicker
               data={data}
               name={"end_datetime"}
-              // handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              // handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
               handleChange={(e) =>
-                handleDateChange(e, "end_datetime", data, setData)
+                handleDateChange(e, "end_datetime", data, dispatch)
               }
             />
           </EuiFormRow>
@@ -144,8 +144,8 @@ export const AdminView = ({ data, setData }, ...props) => {
         <EuiFlexItem>
           <EuiFormRow>
             <MySelectField
-              handleChange={(e) => handleFormFieldChange(e, data, setData)}
-              handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+              handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
               selectOptions={selectOptions}
               data={data}
               name={"status"}

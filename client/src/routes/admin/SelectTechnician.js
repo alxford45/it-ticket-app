@@ -30,14 +30,13 @@ import { dataFetchReducer } from "../../api/reducers";
 var _ = require("lodash");
 
 export const SelectTechnician = ({ setTechnician }, ...props) => {
-  const [data, setData] = useState(fields);
   const [options, setOptions] = useState(selectOptions);
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
-    data: null,
+    data: fields,
   });
 
   useEffect(() => {
@@ -46,7 +45,8 @@ export const SelectTechnician = ({ setTechnician }, ...props) => {
       // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA
       try {
         const result = await axios.get("ticket");
-        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+        // TODO: REMOVE! change back to result.data
+        dispatch({ type: "FETCH_SUCCESS", payload: fields });
       } catch (error) {
         dispatch({ type: "FETCH_FAILURE" });
       }
@@ -77,10 +77,12 @@ export const SelectTechnician = ({ setTechnician }, ...props) => {
           <EuiForm>
             <MySelectField
               name={"technician"}
-              data={data}
+              data={state.data}
               selectOptions={selectOptions}
-              handleChange={(e) => handleFormFieldChange(e, data, setData)}
-              handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              handleChange={(e) =>
+                handleFormFieldChange(e, state.data, dispatch)
+              }
+              handleBlur={(e) => handleFormFieldBlur(e, state.data, dispatch)}
             />
             <EuiSpacer />
             <EuiFlexGroup gutterSize="s" alignItems="center">
@@ -95,13 +97,13 @@ export const SelectTechnician = ({ setTechnician }, ...props) => {
               <EuiFlexItem grow={false}>
                 <EuiButton
                   type={"submit"}
-                  onClick={(e) => handleFormSubmit(e, data)}
+                  onClick={(e) => handleFormSubmit(e, state.data)}
                 >
                   Select
                 </EuiButton>
               </EuiFlexItem>
             </EuiFlexGroup>
-            <Debug data={data} />
+            <Debug data={state.data} />
           </EuiForm>
         </EuiPageContent>
       </EuiPageBody>
