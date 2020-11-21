@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   EuiButton,
@@ -24,12 +24,22 @@ import {
   fields,
   selectOptions,
 } from "../../components/form/ManageTechnicianForm/fields";
+import axios from "../../api/api.js";
 
 var _ = require("lodash");
 
 export const SelectTechnician = ({ setTechnician }, ...props) => {
   const [data, setData] = useState(fields);
+  const [options, setOptions] = useState(selectOptions);
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
+
+  useEffect(async () => {
+    const response = await axios.get("/tech");
+    console.log(response.data);
+
+    // const newOptions = options;
+    // newOptions[options] = _.forEach(response.data);
+  });
 
   const handleFormSubmit = (e, data) => {
     const errors = _.find(data, ["error", true]);
