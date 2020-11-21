@@ -1,7 +1,9 @@
-import React from "react";
-
+import React, { useEffect, useState, useReducer } from "react";
+import axios from "../../api/api";
 import { EuiBasicTable, EuiLink, EuiHealth, EuiButton } from "@elastic/eui";
 import { AdminTicketFlyout } from "../flyout/flyout";
+import { dataFetchReducer } from "../../api/reducers";
+import { ErrorCallout } from "../callout/Callout";
 
 const userTest = [
   {
@@ -14,21 +16,29 @@ const userTest = [
     online: true,
   },
 ];
-/*
-Example user object:
-
-
-
-Example country object:
-
-{
-  code: 'NL',
-  name: 'Netherlands',
-  flag: '🇳🇱'
-}
-*/
 
 export const TicketsTable = ({ handleTicketSelection }, ...props) => {
+  const [state, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: null,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_INIT" });
+      // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA FOR TABLE
+      try {
+        const result = await axios.get("ticket");
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE" });
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const columns = [
     {
       field: "firstName",
@@ -103,12 +113,18 @@ export const TicketsTable = ({ handleTicketSelection }, ...props) => {
   };
 
   return (
-    <EuiBasicTable
-      items={items}
-      rowHeader="firstName"
-      columns={columns}
-      rowProps={getRowProps}
-      cellProps={getCellProps}
-    />
+    <div>
+      {state.isError === true ? (
+        <ErrorCallout errMsg={""} />
+      ) : (
+        <EuiBasicTable
+          items={items}
+          rowHeader="firstName"
+          columns={columns}
+          rowProps={getRowProps}
+          cellProps={getCellProps}
+        />
+      )}
+    </div>
   );
 };

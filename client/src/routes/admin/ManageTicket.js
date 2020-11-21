@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 
 import {
   EuiPage,
@@ -21,7 +21,7 @@ import {
   EuiCode,
 } from "@elastic/eui";
 import { NavBar } from "../../components/navbar/navbar";
-import { TicketsTable } from "../../components/table/openTickets";
+import { TicketsTable } from "../../components/table/TicketsTable";
 import { AdminTicketFlyout } from "../../components/flyout/flyout";
 import { UserView } from "../../components/form/ManageTicketForm/userView";
 import { handleFormSubmit } from "../../components/form/ManageTicketForm/handlers";
@@ -29,6 +29,9 @@ import { AdminView } from "../../components/form/ManageTicketForm/adminView";
 import { Debug } from "../../components/debug/debug";
 import axios from "../../api/api";
 import { fields } from "../../components/form/ManageTicketForm/fields";
+import { dataFetchReducer } from "../../api/reducers";
+import { MyStat } from "./Stats";
+
 var _ = require("lodash");
 
 const TicketForm = ({ data, setData }, ...props) => {
@@ -58,6 +61,11 @@ const TicketForm = ({ data, setData }, ...props) => {
 };
 
 export const ManageTicket = (props) => {
+  const [state, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: null,
+  });
   const [isLoadingStat, setStatLoading] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(false);
 
@@ -76,30 +84,12 @@ export const ManageTicket = (props) => {
       <div>
         <EuiFlexGroup>
           <EuiFlexItem>
-            <EuiPanel>
-              <EuiStat
-                title="50"
-                description="Open Tickets"
-                textAlign="center"
-                titleColor={"danger"}
-                isLoading={isLoadingStat}
-              >
-                <EuiIcon type="node" color={"danger"} />
-              </EuiStat>
-            </EuiPanel>
+            {/*TODO : UPDATE ENDPOINT*/}
+            <MyStat endpoint={"ticket"} color={"danger"} icon={"node"} />
           </EuiFlexItem>
           <EuiFlexItem>
-            <EuiPanel>
-              <EuiStat
-                title="2,000"
-                description="Closed Tickets"
-                titleColor="secondary"
-                textAlign="center"
-                isLoading={isLoadingStat}
-              >
-                <EuiIcon type="check" color="secondary" />
-              </EuiStat>
-            </EuiPanel>
+            {/*TODO: UPDATE ENDPOINT*/}
+            <MyStat endpoint={"ticket"} color={"secondary"} icon={"check"} />
           </EuiFlexItem>
         </EuiFlexGroup>
       </div>
@@ -108,7 +98,6 @@ export const ManageTicket = (props) => {
         <h1>All Tickets</h1>
       </EuiTitle>
       <EuiPanel>
-        Temp Table until DB is setup
         <TicketsTable handleTicketSelection={handleTicketSelection} />
       </EuiPanel>
       <EuiSpacer size={"l"} />

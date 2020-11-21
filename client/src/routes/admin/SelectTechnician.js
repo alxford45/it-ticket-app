@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 
 import {
   EuiButton,
@@ -25,6 +25,7 @@ import {
   selectOptions,
 } from "../../components/form/ManageTechnicianForm/fields";
 import axios from "../../api/api.js";
+import { dataFetchReducer } from "../../api/reducers";
 
 var _ = require("lodash");
 
@@ -33,13 +34,26 @@ export const SelectTechnician = ({ setTechnician }, ...props) => {
   const [options, setOptions] = useState(selectOptions);
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
 
-  useEffect(async () => {
-    const response = await axios.get("/tech");
-    console.log(response.data);
-
-    // const newOptions = options;
-    // newOptions[options] = _.forEach(response.data);
+  const [state, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: null,
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_INIT" });
+      // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA
+      try {
+        const result = await axios.get("ticket");
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE" });
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleFormSubmit = (e, data) => {
     const errors = _.find(data, ["error", true]);
