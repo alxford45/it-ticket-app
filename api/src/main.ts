@@ -6,7 +6,20 @@ import { Logger } from '@nestjs/common';
 
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || 'localhost';
+const ENV = process.env.NODE_ENV;
 
+const logBootstrap = () => {
+  Logger.verbose(`Now listening on port ${PORT} in ${ENV}`, 'Bootstrap');
+  Logger.verbose(
+    `View and test API Schema: http://${HOST}:${PORT}/api/docs`,
+    'Bootstrap',
+  );
+  const message =
+    ENV === 'production'
+      ? `Client bundled and served at: http://${HOST}:${PORT}`
+      : `Serve client separately at: http://${HOST}:3000`;
+  Logger.verbose(message, 'Bootstrap');
+};
 async function bootstrap() {
   const appOptions: NestApplicationOptions = { cors: true, bodyParser: true };
   const app = await NestFactory.create(AppModule, appOptions);
@@ -26,13 +39,6 @@ async function bootstrap() {
   // Starts listening for shutdown hooks emitted by heroku
   app.enableShutdownHooks();
 
-  await app.listen(PORT, () => {
-    Logger.debug(`Now listening on port ${PORT}`, 'Main.bootstrap');
-    Logger.debug(
-      `View and test API Schema: http://${HOST}:${PORT}/api/docs`,
-      'Main.bootstrap',
-    );
-    Logger.debug(`Client served: http://${HOST}:${PORT}`, 'Main.bootstrap');
-  });
+  await app.listen(PORT, logBootstrap);
 }
 bootstrap();
