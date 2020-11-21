@@ -1,9 +1,4 @@
-export class UpdateTicketDto {
-  priority: string;
-  manufacturer: string;
-  model: string;
-  os: string;
-  version: string;
-  problem: string;
-  description: string;
-}
+import { PartialType } from '@nestjs/swagger';
+import { TicketDto } from './ticket.dto';
+
+export class UpdateTicketDto extends PartialType(TicketDto) {}

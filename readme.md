@@ -1,3 +1,5 @@
+# General
+
 ABSTRACT LINK:
 https://docs.google.com/document/d/17FaeX0DGgWHz5hcuJDZ2wqT9qw_v5LO15wX-Akj1jdM/edit?usp=sharing
 
@@ -29,6 +31,25 @@ postgres://brvuirrqqcjzsb:37f36b1e7cb6167c12f84c9e356c14535824e0a6c7e0dfe5fb7141
 Heroku CLI
 heroku pg:psql postgresql-octagonal-80370 --app lsu-it-support-demo
 
-#### Scripts:
+# Scripts
 
-Root directory package.json used for heroku deployment or for running production mode in local environment.
+## Production
+
+Heroku scripts used automatically for deployment:
+
+- yarn start
+- yarn build
+- yarn build:client
+- yarn build:api
+
+## Development
+
+```
+yarn run dev
+```
+
+```
+npm run dev
+```
+
+Run client @ http://localhost:3000 and sever @ http://localhost:5000 concurrently
