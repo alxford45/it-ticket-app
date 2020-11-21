@@ -21,7 +21,7 @@ import {
   EuiCode,
 } from "@elastic/eui";
 import { NavBar } from "../../components/navbar/navbar";
-import { Table } from "../../components/table/openTickets";
+import { TicketsTable } from "../../components/table/openTickets";
 import { AdminTicketFlyout } from "../../components/flyout/flyout";
 import { UserView } from "../../components/form/ManageTicketForm/userView";
 import { handleFormSubmit } from "../../components/form/ManageTicketForm/handlers";
@@ -109,7 +109,7 @@ export const ManageTicket = (props) => {
       </EuiTitle>
       <EuiPanel>
         Temp Table until DB is setup
-        <Table handleTicketSelection={handleTicketSelection} />
+        <TicketsTable handleTicketSelection={handleTicketSelection} />
       </EuiPanel>
       <EuiSpacer size={"l"} />
       <EuiTitle size={"s"}>
