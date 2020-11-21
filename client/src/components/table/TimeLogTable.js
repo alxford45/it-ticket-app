@@ -6,12 +6,8 @@ import { AdminTicketFlyout } from "../flyout/flyout";
 const userTest = [
   {
     id: "1",
-    firstName: "john",
-    lastName: "doe",
-    github: "johndoe",
-    dateOfBirth: Date.now(),
-    nationality: "NL",
-    online: true,
+    start_datetime: "john",
+    end_datetime: "doe",
   },
 ];
 /*
@@ -28,54 +24,39 @@ Example country object:
 }
 */
 
-export const TicketsTable = ({ handleTicketSelection }, ...props) => {
-  const columns = [
+export const TimeLogTable = ({ handleTicketSelection }, ...props) => {
+  const deleteUser = (user) => {};
+
+  const actions = [
     {
-      field: "firstName",
-      name: "First Name",
-      sortable: true,
-      "data-test-subj": "firstNameCell",
-      mobileOptions: {
-        render: (item) => (
-          <span>
-            {item.firstName}{" "}
-            <EuiLink href="#" target="_blank">
-              {item.lastName}
-            </EuiLink>
-          </span>
-        ),
-        header: false,
-        truncateText: false,
-        enlarge: true,
-        fullWidth: true,
+      render: (item) => {
+        return (
+          <EuiLink onClick={() => deleteUser(item)} color="danger">
+            Delete
+          </EuiLink>
+        );
       },
     },
+  ];
+
+  const columns = [
     {
-      field: "lastName",
-      name: "Last Name",
+      field: "start_datetime",
+      name: "Start Datetime",
+      sortable: true,
+      "data-test-subj": "firstNameCell",
+    },
+    {
+      field: "end_datetime",
+      name: "End Datetime",
       truncateText: true,
-      render: (name) => (
-        <EuiLink href="#" target="_blank">
-          {name}
-        </EuiLink>
-      ),
       mobileOptions: {
         show: false,
       },
     },
     {
-      field: "github",
-      name: "Github",
-    },
-    {
-      field: "online",
-      name: "Online",
-      dataType: "boolean",
-      render: (online) => {
-        const color = online ? "success" : "danger";
-        const label = online ? "Online" : "Offline";
-        return <EuiHealth color={color}>{label}</EuiHealth>;
-      },
+      name: "Actions",
+      actions,
     },
   ];
 
