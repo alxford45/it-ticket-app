@@ -1,3 +1,5 @@
+# General
+
 ABSTRACT LINK:
 https://docs.google.com/document/d/17FaeX0DGgWHz5hcuJDZ2wqT9qw_v5LO15wX-Akj1jdM/edit?usp=sharing
 
@@ -29,6 +31,36 @@ postgres://brvuirrqqcjzsb:37f36b1e7cb6167c12f84c9e356c14535824e0a6c7e0dfe5fb7141
 Heroku CLI
 heroku pg:psql postgresql-octagonal-80370 --app lsu-it-support-demo
 
-#### Scripts:
+# SQL
 
-Root directory package.json used for heroku deployment or for running production mode in local environment.
+schema.sql will serve as reference source for both api and client. Make changes here first to eliminate confusion on how request/response should be structured.
+
+TODO:
+
+- finalize base table names and structure
+- finalize field names and corresponding postgres types
+- define relations
+- define relation tables
+
+# Scripts
+
+## Production
+
+Heroku scripts used automatically for deployment:
+
+- yarn start
+- yarn build
+- yarn build:client
+- yarn build:api
+
+## Development
+
+```
+yarn run dev
+```
+
+```
+npm run dev
+```
+
+Runs client @ http://localhost:3000 and sever @ http://localhost:5000 concurrently from root directory.
