@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller('/api')
@@ -7,6 +7,10 @@ export class AppController {
 
   @Get()
   getHello(): string {
+    Logger.log(
+      { req: { http: 'GET', params: 'none', body: 'none' } },
+      'App.getHello',
+    );
     return this.appService.getHello();
   }
 }
