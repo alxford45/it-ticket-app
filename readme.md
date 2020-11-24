@@ -6,6 +6,9 @@ https://docs.google.com/document/d/17FaeX0DGgWHz5hcuJDZ2wqT9qw_v5LO15wX-Akj1jdM/
 OUTLINE CHECKLIST:
 https://docs.google.com/document/d/1N_WtNBUiUPX-EU3sAUixegipE55KJ8FSjHKYyVpp4v4/edit?usp=sharing
 
+PRESENTATION:
+https://docs.google.com/presentation/d/1WmKdWIpRIxtzcTTVjqoQRV2DA9bop9dLcbi-z9HetiU/edit?usp=sharing
+
 Please note that these credentials are not permanent.
 
 Heroku rotates credentials periodically and updates applications where this database is attached.
