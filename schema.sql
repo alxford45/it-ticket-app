@@ -42,6 +42,7 @@ technician ---- work ---- ticket
 one to many: 1 technician works many tickets? 
 */
 CREATE TABLE work (
+    ticket_id Foreign Key(ticket.ticket_id) 
     issue varchar(50),
     component varchar(50),
     description varchar(500),
@@ -57,12 +58,12 @@ one to one to one: 1 admin/technician assigns 1 ticket to 1 technician?
 */
 
 CREATE TABLE issue (
-  assignedby Foreign Key(technician.lsu_id);
-  assignedto Foreign Key(technician.lsu_id)
-  comment varchar(500)
-  assigndate Date;
-
-)
+  ticket_id Foreign Key(ticket.ticket_id),
+  assignedby Foreign Key(technician.lsu_id),
+  assignedto Foreign Key(technician.lsu_id),
+  comment varchar(500),
+  assigndate Date,
+);
 
 
 
