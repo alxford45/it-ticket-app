@@ -26,8 +26,7 @@ create table if not exists ticket
     status varchar(20) not null,
     problem_category varchar(50) not null,
     description varchar(500),
-    core_issue varchar(50),
-    notes varchar(500)
+    core_issue varchar(50)
 );
 
 alter table ticket owner to brvuirrqqcjzsb;
