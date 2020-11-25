@@ -29,7 +29,7 @@ import { TimeLogTable } from "../../table/TimeLogTable";
 
 var _ = require("lodash");
 
-export const AdminView = ({ data, dispatch }, ...props) => {
+export const AdminView = ({ data, dispatch, workLogData }, ...props) => {
   return (
     <>
       <EuiSpacer />
@@ -114,7 +114,7 @@ export const AdminView = ({ data, dispatch }, ...props) => {
         <EuiFlexItem style={{ maxWidth: 200 }}>
           <EuiFormRow>
             <MyDatePicker
-              data={data}
+              data={workLogData}
               name={"start_datetime"}
               handleChange={(date) =>
                 handleDateChange(date, "start_datetime", data, dispatch)
@@ -125,9 +125,8 @@ export const AdminView = ({ data, dispatch }, ...props) => {
         <EuiFlexItem style={{ maxWidth: 200 }}>
           <EuiFormRow>
             <MyDatePicker
-              data={data}
+              data={workLogData}
               name={"end_datetime"}
-              // handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
               handleChange={(e) =>
                 handleDateChange(e, "end_datetime", data, dispatch)
               }
