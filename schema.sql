@@ -1,70 +1,101 @@
-/*
-Schema for tables and fields for both API and CLIENT
-Feel free to modify
-*/
-
-
-CREATE TABLE student (
-    lsu_id integer NOT NULL,
-    first_name varchar(45) NOT NULL,
-    last_name varchar(45) NOT NULL,
-    email varchar(100) NOT NULL,
-    phone_number BigInt NOT NULL,
-    department varchar(50) NOT NULL,
-    PRIMARY KEY (lsu_id) 
+create table "user"
+(
+    lsu_id integer not null
+        constraint user_pkey
+            primary key,
+    first_name varchar(45) not null,
+    last_name varchar(45) not null,
+    email varchar(100) not null,
+    phone_number bigint not null,
+    department varchar(50) not null,
+    admin boolean default false not null
 );
 
-/* Is it okay for student and technician to share so many common fields? */
-CREATE TABLE technician (
-    lsu_id integer NOT NULL,
-    first_name varchar(45) NOT NULL,
-    last_name varchar(45) NOT NULL,
-    email varchar(100) NOT NULL,
-    phone_number BigInt NOT NULL,
-    PRIMARY KEY (lsu_id)
-);
-    
-CREATE TABLE ticket (
-    ticket_id SERIAL PRIMARY KEY,
-    priority integer NOT NULL,
-    status varchar(20) NOT NULL,
-    category varchar(50) NOT NULL,
-    problem varchar(500) NOT NULL,
-    description varchar(500) NOT NULL,
-    model varchar(50) NOT NULL,
-    os varchar(20) NOT NULL,
-    version varchar(50) NOT NULL
-);
+alter table "user" owner to brvuirrqqcjzsb;
 
-/*    
-technician ---- work ---- ticket
-
-one to many: 1 technician works many tickets? 
-*/
-CREATE TABLE work (
-    issue varchar(50),
-    component varchar(50),
+create table ticket
+(
+    ticket_id serial not null
+        constraint ticket_pk
+            primary key,
+    lsu_id integer
+        constraint ticket_user_lsu_id_fk
+            references "user"
+            on update cascade on delete cascade,
+    priority integer not null,
+    status varchar(20) not null,
+    problem_category varchar(50) not null,
     description varchar(500),
-    starttime Date,
-    endtime Date,
+    core_issue varchar(50),
+    notes varchar(500),
+    submission_date timestamp not null
 );
-/*
-admin/technician ---- issue ---- technician
-                        |
-                     ticket
 
-one to one to one: 1 admin/technician assigns 1 ticket to 1 technician?
-*/
+alter table ticket owner to brvuirrqqcjzsb;
 
-CREATE TABLE issue (
-  assignedby Foreign Key(technician.lsu_id);
-  assignedto Foreign Key(technician.lsu_id)
-  comment varchar(500)
-  assigndate Date;
+create unique index ticket_ticket_id_uindex
+    on ticket (ticket_id);
 
-)
+create table device
+(
+    device_id serial not null
+        constraint device_pk
+            primary key,
+    ticket_id integer not null
+        constraint device_ticket_ticket_id_fk
+            references ticket
+            on update cascade on delete cascade,
+    model varchar(50) not null,
+    component varchar(50),
+    manufacturer varchar(50) not null,
+    operating_system varchar(20) not null,
+    operating_system_version varchar(50) not null
+);
 
+alter table device owner to brvuirrqqcjzsb;
 
+create unique index device_device_id_uindex
+    on device (device_id);
 
+create table assignment
+(
+    assignment_id serial not null
+        constraint assignment_pk
+            primary key,
+    lsu_id integer not null
+        constraint assignment_user_lsu_id_fk
+            references "user"
+            on update cascade on delete cascade,
+    ticket_id integer not null
+        constraint assignment_ticket_ticket_id_fk
+            references ticket
+            on update cascade on delete cascade
+);
 
+alter table assignment owner to brvuirrqqcjzsb;
+
+create unique index assignment_assignment_id_uindex
+    on assignment (assignment_id);
+
+create table work
+(
+    work_id serial not null
+        constraint work_pk
+            primary key,
+    ticket_id integer not null
+        constraint work_ticket_ticket_id_fk
+            references ticket
+            on update cascade on delete cascade,
+    lsu_id integer not null
+        constraint work_user_lsu_id_fk
+            references "user"
+            on update cascade on delete cascade,
+    start_datetime timestamp not null,
+    end_datetime timestamp not null
+);
+
+alter table work owner to brvuirrqqcjzsb;
+
+create unique index work_work_id_uindex
+    on work (work_id);
 

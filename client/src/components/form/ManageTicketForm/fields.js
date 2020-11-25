@@ -81,8 +81,8 @@ export const fields = [
     error_type: "none",
   },
   {
-    name: "start_datetime",
-    label: "Start Datetime",
+    name: "submission_date",
+    label: "Submission Date",
     value: "",
     error: false,
     error_type: "none",

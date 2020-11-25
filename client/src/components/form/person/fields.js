@@ -23,14 +23,6 @@ export const personFields = [
     error_type: "required",
   },
   {
-    name: "department",
-    label: "Department/College",
-    value: selectOptions.find((o) => o.name === "department").options[0].value,
-    error: false,
-    error_type: "required",
-  },
-
-  {
     name: "email",
     label: "Email Address",
     value: "",
@@ -41,6 +33,20 @@ export const personFields = [
     name: "phone_number",
     label: "Phone Number",
     value: "",
+    error: false,
+    error_type: "required",
+  },
+  {
+    name: "department",
+    label: "Department/College",
+    value: selectOptions.find((o) => o.name === "department").options[0].value,
+    error: false,
+    error_type: "required",
+  },
+  {
+    name: "admin",
+    label: "Admin",
+    value: false,
     error: false,
     error_type: "required",
   },
