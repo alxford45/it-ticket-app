@@ -90,7 +90,8 @@ create table if not exists work
             references "user"
             on update cascade on delete cascade,
     start_datetime timestamp not null,
-    end_datetime timestamp not null
+    end_datetime timestamp not null,
+    notes varchar(500)
 );
 
 alter table work owner to brvuirrqqcjzsb;
