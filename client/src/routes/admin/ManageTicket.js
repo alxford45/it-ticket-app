@@ -34,15 +34,15 @@ import { MyStat } from "./Stats";
 
 var _ = require("lodash");
 
-const TicketForm = ({ data, setData }, ...props) => {
+const TicketForm = ({ data, dispatch, workLogData }, ...props) => {
   return (
     <>
       <EuiForm>
         <EuiTitle size={"s"}>
           <h3>Customer Information</h3>
         </EuiTitle>
-        <UserView data={data} setData={setData} />
-        <AdminView data={data} setData={setData} />
+        <UserView data={data} dispatch={dispatch} />
+        <AdminView data={data} dispatch={dispatch} workLogData={workLogData} />
         <EuiSpacer />
         <EuiFlexGroup gutterSize="s" alignItems="center">
           <EuiFlexItem grow={false}>
@@ -75,8 +75,10 @@ export const ManageTicket = (props) => {
       // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA FOR TABLE
       try {
         const result = await axios.get("ticket");
-        // TODO: CHANGE BACK! change payloud back to result.data once backend is setup
+        // TODO: CHANGE BACK! change payload back to result.data once backend is setup
         dispatch({ type: "FETCH_SUCCESS", payload: fields });
+        const workLog = await axios.get("work");
+        dispatch({ type: "FETCH_WORK_LOG_SUCCESS", payload: workLog });
       } catch (error) {
         dispatch({ type: "FETCH_FAILURE" });
       }
@@ -119,7 +121,15 @@ export const ManageTicket = (props) => {
         </h1>
       </EuiTitle>
       <EuiPanel>
-        <TicketForm data={state.data} dispatch={dispatch} />
+        {state.isLoading ? (
+          "LOADING..."
+        ) : (
+          <TicketForm
+            data={state.data}
+            dispatch={dispatch}
+            workLogData={state.workLogData}
+          />
+        )}
       </EuiPanel>
     </>
   );

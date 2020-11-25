@@ -19,6 +19,7 @@ export class TechService {
      - hash password
   */
   async create(createTechDto: CreateTechDto) {
+    // TODO: CREATE USER WITH ADMIN FLAG == TRUE (FOR CREATE NEW TECH SIDEBAR ON TECH PAGE)
     const { firstname, lastname, lsuid, email, phone } = createTechDto;
 
     /* Query user by email or username */
@@ -51,6 +52,7 @@ export class TechService {
   }
   /* TODO */
   findAll() {
+    // TODO: SELECT * FROM USER WHERE ADMIN = TRUE; (SELECT TECH PAGE)
     return `This action returns all user`;
   }
   /* TODO */

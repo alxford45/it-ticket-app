@@ -1,7 +1,14 @@
+import { workLogFields } from "../components/form/ManageTicketForm/fields";
+
 export const dataFetchReducer = (state, action) => {
   switch (action.type) {
     case "FETCH_INIT":
-      return { ...state, isLoading: true, isError: false };
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+        workLogData: { ...workLogFields },
+      };
     case "FETCH_SUCCESS":
       return {
         ...state,
@@ -19,6 +26,11 @@ export const dataFetchReducer = (state, action) => {
       return {
         ...state,
         data: action.payload,
+      };
+    case "FETCH_WORK_LOG_SUCCESS":
+      return {
+        ...state,
+        workLogData: action.payload,
       };
     default:
       throw new Error();
