@@ -10,7 +10,7 @@ PRESENTATION:
 https://docs.google.com/presentation/d/1WmKdWIpRIxtzcTTVjqoQRV2DA9bop9dLcbi-z9HetiU/edit?usp=sharing
 
 WRITTEN REPORT:
-https://docs.google.com/document/d/1i0gCHNcd2_DrHxe0AfPVNPTmleN2oSsL5hiJ_87mjSA/edit?usp=sharing
+https://1drv.ms/w/s!AjYdG4Fmx1E7lyOXwYqLYMnSmTbJ?e=COQNje
 
 Please note that these credentials are not permanent.
 
