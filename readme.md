@@ -9,6 +9,9 @@ https://docs.google.com/document/d/1N_WtNBUiUPX-EU3sAUixegipE55KJ8FSjHKYyVpp4v4/
 PRESENTATION:
 https://docs.google.com/presentation/d/1WmKdWIpRIxtzcTTVjqoQRV2DA9bop9dLcbi-z9HetiU/edit?usp=sharing
 
+WRITTEN REPORT:
+https://docs.google.com/document/d/1i0gCHNcd2_DrHxe0AfPVNPTmleN2oSsL5hiJ_87mjSA/edit?usp=sharing
+
 Please note that these credentials are not permanent.
 
 Heroku rotates credentials periodically and updates applications where this database is attached.
