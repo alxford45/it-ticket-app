@@ -11,16 +11,17 @@ export class UserService {
   /* TODO: test implementation */
   async create(createCustomerDto: CreateCustomerDto) {
     const {
-      lsuid,
+      lsu_id: lsuid,
       email,
-      firstname,
-      lastname,
+      first_name: firstname,
+      last_name: lastname,
       department,
-      phone,
+      phone_number: phone,
+      admin: admin,
     } = createCustomerDto;
 
     /* Query student by lsuid or email */
-    const query = 'SELECT lsuid FROM students WHERE lsuid = $1 or email = $2';
+    const query = 'SELECT lsu_id FROM user WHERE lsu_id = $1 or email = $2';
     const queryRes = await this.connection.query(query, [lsuid, email]);
 
     /* Test to see if student exists */
@@ -36,8 +37,16 @@ export class UserService {
 
     /* Insert new student into db */
     const text =
-      'INSERT INTO students (lsuid, email, firstname, lastname, phone, department) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-    const values = [lsuid, email, firstname, lastname, department, phone];
+      'INSERT INTO user (lsu_id, email, first_name, last_name, phone, department, admin) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+    const values = [
+      lsuid,
+      email,
+      firstname,
+      lastname,
+      department,
+      phone,
+      admin,
+    ];
     try {
       const res = await this.connection.query<Customer>(text, values);
       return res.rows[0];
@@ -54,7 +63,7 @@ export class UserService {
   /* TODO: Test implementation */
   async findAll() {
     try {
-      const query = 'SELECT * FROM students';
+      const query = 'SELECT * FROM user';
       const queryRes = await this.connection.query<Customer>(query);
 
       /* If no customers found return empty array */
@@ -76,7 +85,7 @@ export class UserService {
   /* TODO: Test implementation */
   async findOne(lsu_id: number) {
     try {
-      const query = 'SELECT * FROM students WHERE lsuid = $1';
+      const query = 'SELECT * FROM user WHERE lsu_id = $1';
       const queryRes = await this.connection.query<Customer>(query, [lsu_id]);
 
       /* If customer not found return empty object */

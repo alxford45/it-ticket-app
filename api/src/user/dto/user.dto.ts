@@ -2,6 +2,14 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Customer {
   @ApiProperty({
+    minLength: 9,
+    maxLength: 9,
+    description: '9-digit number starting with 89',
+    example: 897584512,
+  })
+  lsu_id: number;
+
+  @ApiProperty({
     minLength: 11,
     description:
       'email must be at least 3 characters in format: {first initial}{lastname}{1-99}@lsu.edu',
@@ -10,24 +18,16 @@ export class Customer {
   email: string;
 
   @ApiProperty({
-    minLength: 9,
-    maxLength: 9,
-    description: '9-digit number starting with 89',
-    example: 897584512,
-  })
-  lsuid: number;
-
-  @ApiProperty({
     description: 'first name',
     example: 'john',
   })
-  firstname: string;
+  first_name: string;
 
   @ApiProperty({
     description: 'last name',
     example: 'smith',
   })
-  lastname: string;
+  last_name: string;
 
   @ApiProperty({
     minLength: 10,
@@ -35,11 +35,17 @@ export class Customer {
     description: '10 digit number encoded as a string',
     example: '2254784145',
   })
-  phone: string;
+  phone_number: string;
 
   @ApiProperty({
     description: '10 digit number encoded as a string',
     example: 'Computer Science',
   })
   department: string;
+
+  @ApiProperty({
+    description: 'admin if true; student if false;',
+    example: true,
+  })
+  admin: boolean;
 }
