@@ -1,11 +1,11 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { Customer } from './dto/customer.dto';
+import { CreateCustomerDto } from './dto/create-user.dto';
+import { Customer } from './dto/user.dto';
 
 @Injectable()
-export class CustomerService {
+export class UserService {
   constructor(@Inject(PG_CONNECTION) private connection: Pool) {}
 
   /* TODO: test implementation */
