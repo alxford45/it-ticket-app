@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-
-export class Customer {
+export enum UserType {
+  'ADMIN',
+  'STUDENT',
+  'USER',
+}
+export class User {
   @ApiProperty({
     minLength: 9,
     maxLength: 9,
