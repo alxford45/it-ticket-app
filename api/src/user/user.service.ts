@@ -1,15 +1,15 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
-import { CreateCustomerDto } from './dto/create-user.dto';
-import { Customer } from './dto/user.dto';
+import { CreateUser } from './dto/create-user.dto';
+import { User, UserType } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(@Inject(PG_CONNECTION) private connection: Pool) {}
 
   /* TODO: test implementation */
-  async create(createCustomerDto: CreateCustomerDto) {
+  async create(createCustomerDto: CreateUser) {
     const {
       lsu_id: lsuid,
       email,
@@ -28,10 +28,9 @@ export class UserService {
     if (!!queryRes.rows[0]) {
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
           error: 'LSUID and/or email already in system',
         },
-        HttpStatus.FORBIDDEN,
+        HttpStatus.BAD_REQUEST,
       );
     }
 
@@ -48,37 +47,45 @@ export class UserService {
       admin,
     ];
     try {
-      const res = await this.connection.query<Customer>(text, values);
+      const res = await this.connection.query<User>(text, values);
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
           error: error,
         },
-        HttpStatus.UNPROCESSABLE_ENTITY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
   /* TODO: Test implementation */
-  async findAll() {
-    try {
-      const query = 'SELECT * FROM user';
-      const queryRes = await this.connection.query<Customer>(query);
+  async findAll(userType: UserType) {
+    let query;
+    switch (userType) {
+      case UserType.STUDENT:
+        query = 'SELECT * FROM user WHERE admin = false';
+        break;
+      case UserType.ADMIN:
+        query = 'SELECT * FROM user WHERE admin = true';
+        break;
+      default:
+        query = 'SELECT * FROM user';
+        break;
+    }
 
-      /* If no customers found return empty array */
+    try {
+      const queryRes = await this.connection.query<User>(query);
+      /* If no users found return empty array */
       if (queryRes.rows.length < 1) {
         return [];
       }
-
       return [...queryRes.rows];
     } catch (error) {
       throw new HttpException(
         {
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
           error: error,
         },
-        HttpStatus.UNPROCESSABLE_ENTITY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -86,7 +93,7 @@ export class UserService {
   async findOne(lsu_id: number) {
     try {
       const query = 'SELECT * FROM user WHERE lsu_id = $1';
-      const queryRes = await this.connection.query<Customer>(query, [lsu_id]);
+      const queryRes = await this.connection.query<User>(query, [lsu_id]);
 
       /* If customer not found return empty object */
       if (queryRes.rows.length < 1) {
@@ -97,10 +104,9 @@ export class UserService {
     } catch (error) {
       throw new HttpException(
         {
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
           error: error,
         },
-        HttpStatus.UNPROCESSABLE_ENTITY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
