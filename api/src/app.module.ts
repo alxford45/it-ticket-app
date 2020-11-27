@@ -7,7 +7,7 @@ import { TechModule } from './tech/tech.module';
 import { TicketModule } from './ticket/ticket.module';
 import { TicketWorkModule } from './ticket/work/ticketwork.module';
 import { TicketAssignModule } from './ticket/assign/ticketassign.module';
-import { CustomerModule } from './customer/customer.module';
+import { UserModule } from './user/uer.module';
 
 /**
  *
@@ -44,7 +44,7 @@ const configImports = (modules: ModuleMetadata['imports']) => {
     TicketModule,
     TicketWorkModule,
     TicketAssignModule,
-    CustomerModule,
+    UserModule,
   ]),
   controllers: [AppController],
   providers: [AppService],

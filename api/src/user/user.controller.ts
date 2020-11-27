@@ -7,14 +7,14 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { CustomerService } from './customer.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
+import { UserService } from './user.service';
+import { CreateCustomerDto } from './dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('customer')
 @Controller('/api/customer')
-export class CustomerController {
-  constructor(private readonly userService: CustomerService) {}
+export class UserController {
+  constructor(private readonly userService: UserService) {}
   /* TODO: test implementation */
   @Post()
   async create(@Body() createUserDto: CreateCustomerDto) {
