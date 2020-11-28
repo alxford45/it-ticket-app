@@ -110,35 +110,35 @@ export const AdminView = ({ data, dispatch, workLogData }, ...props) => {
         </EuiFlexItem>
       </EuiFlexGroup>
 
-      <EuiFlexGroup style={{ maxWidth: 1000 }}>
-        <EuiFlexItem style={{ maxWidth: 200 }}>
-          <EuiFormRow>
-            <MyDatePicker
-              data={workLogData}
-              name={"start_datetime"}
-              handleChange={(date) =>
-                handleDateChange(date, "start_datetime", data, dispatch)
-              }
-            />
-          </EuiFormRow>
-        </EuiFlexItem>
-        <EuiFlexItem style={{ maxWidth: 200 }}>
-          <EuiFormRow>
-            <MyDatePicker
-              data={workLogData}
-              name={"end_datetime"}
-              handleChange={(e) =>
-                handleDateChange(e, "end_datetime", data, dispatch)
-              }
-            />
-          </EuiFormRow>
-        </EuiFlexItem>
-        <EuiFlexItem>
-          <EuiFormRow hasEmptyLabelSpace={true}>
-            <EuiButton>Add Time Entry</EuiButton>
-          </EuiFormRow>
-        </EuiFlexItem>
-      </EuiFlexGroup>
+      {/*<EuiFlexGroup style={{ maxWidth: 1000 }}>*/}
+      {/*  <EuiFlexItem style={{ maxWidth: 200 }}>*/}
+      {/*    <EuiFormRow>*/}
+      {/*      <MyDatePicker*/}
+      {/*        data={workLogData}*/}
+      {/*        name={"start_datetime"}*/}
+      {/*        handleChange={(date) =>*/}
+      {/*          handleDateChange(date, "start_datetime", data, dispatch)*/}
+      {/*        }*/}
+      {/*      />*/}
+      {/*    </EuiFormRow>*/}
+      {/*  </EuiFlexItem>*/}
+      {/*  <EuiFlexItem style={{ maxWidth: 200 }}>*/}
+      {/*    <EuiFormRow>*/}
+      {/*      <MyDatePicker*/}
+      {/*        data={workLogData}*/}
+      {/*        name={"end_datetime"}*/}
+      {/*        handleChange={(e) =>*/}
+      {/*          handleDateChange(e, "end_datetime", data, dispatch)*/}
+      {/*        }*/}
+      {/*      />*/}
+      {/*    </EuiFormRow>*/}
+      {/*  </EuiFlexItem>*/}
+      {/*  <EuiFlexItem>*/}
+      {/*    <EuiFormRow hasEmptyLabelSpace={true}>*/}
+      {/*      <EuiButton>Add Time Entry</EuiButton>*/}
+      {/*    </EuiFormRow>*/}
+      {/*  </EuiFlexItem>*/}
+      {/*</EuiFlexGroup>*/}
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
         <EuiFlexItem>
           <EuiFormRow>

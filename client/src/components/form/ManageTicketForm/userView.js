@@ -49,9 +49,10 @@ export const UserView = ({ data, setData }, ...props) => {
           />
         </EuiFlexItem>
         <EuiFlexItem>
-          <MyTextField
+          <MySelectField
             name={"department"}
             data={data}
+            selectOptions={selectOptions.find((o) => o.name === "department")}
             handleChange={(e) => handleFormFieldChange(e, data, setData)}
             handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
           />
@@ -84,7 +85,7 @@ export const UserView = ({ data, setData }, ...props) => {
           <MySelectField
             name={"priority"}
             data={data}
-            selectOptions={selectOptions}
+            selectOptions={selectOptions.find((o) => o.name === "priority")}
             handleChange={(e) => handleFormFieldChange(e, data, setData)}
             handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
           />
@@ -134,7 +135,9 @@ export const UserView = ({ data, setData }, ...props) => {
             name={"problem_category"}
             data={data}
             handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            selectOptions={selectOptions}
+            selectOptions={selectOptions.find(
+              (o) => o.name === "problem_category"
+            )}
             handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
           />
         </EuiFlexItem>

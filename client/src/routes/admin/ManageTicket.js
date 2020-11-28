@@ -34,14 +34,15 @@ import { MyStat } from "./Stats";
 
 var _ = require("lodash");
 
-const TicketForm = ({ selected, data, setData }, ...props) => {
+const TicketForm = ({ selected }, ...props) => {
   const [workLogData, setWorkLogData] = useState(null);
   const [workLogLoading, setWorkLogLoading] = useState(true);
+  const [data, setData] = useState(fields);
 
   useEffect(() => {
     const fetchWorkLog = async () => {
       try {
-        const result = await axios.get("/work");
+        const result = await axios.get("/ticket/work/" + selected.id);
         setWorkLogData(result.data);
         setWorkLogLoading(false);
       } catch (error) {
@@ -59,18 +60,7 @@ const TicketForm = ({ selected, data, setData }, ...props) => {
     };
     fetchData();
     fetchWorkLog();
-  }, []);
-
-  useEffect(() => {
-    const d = [];
-
-    let keys;
-    keys = Object.keys(data);
-    for (let x in keys) {
-      d.push({ label: x, value: keys[x] });
-    }
-    setData(d);
-  }, [data]);
+  }, [selected]);
 
   return (
     <>

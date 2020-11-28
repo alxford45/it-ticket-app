@@ -30,7 +30,19 @@ export const handleFormSubmit = (e, data) => {
   }
 };
 
-export const handleFormFieldChange = (e, data, dispatch) => {
+export const handleFormFieldChange = (e, data, setData) => {
+  const target = e.target;
+  const value = target.value;
+  const name = target.name;
+
+  const newData = data;
+  const index = newData.findIndex((o) => o.name === name);
+
+  newData[index].value = value;
+  setData(newData);
+};
+
+export const handleFormFieldChangeDispatch = (e, data, dispatch) => {
   const target = e.target;
   const value = target.value;
   const name = target.name;
@@ -50,7 +62,15 @@ export const handleDateChange = (date, name, data, dispatch) => {
   dispatch({ type: "UPDATE_DATA", payload: newData });
 };
 
-export const handleFormFieldBlur = (e, data, dispatch) => {
+export const handleDateChangeDispatch = (date, name, data, setData) => {
+  const newData = data;
+  const index = newData.findIndex((o) => o.name === name);
+
+  newData[index].value = date.toJSON();
+  setData(newData);
+};
+
+export const handleFormFieldBlurDispatch = (e, data, dispatch) => {
   const name = e.target.name;
   const value = e.target.value;
 
@@ -65,4 +85,21 @@ export const handleFormFieldBlur = (e, data, dispatch) => {
   }
 
   dispatch({ type: "UPDATE_DATA", payload: newData });
+};
+
+export const handleFormFieldBlur = (e, data, setData) => {
+  const name = e.target.name;
+  const value = e.target.value;
+
+  const newData = data;
+  const index = newData.findIndex((o) => o.name === name);
+
+  if (value === "") {
+    newData[index].error = true;
+    newData[index].error_msg = "required";
+  } else {
+    newData[index].error = false;
+  }
+
+  setData(newData);
 };

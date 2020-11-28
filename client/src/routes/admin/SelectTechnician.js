@@ -15,8 +15,11 @@ import {
 } from "@elastic/eui";
 import { MySelectField } from "../../components/form/MySelectField";
 import {
+  handleDateChangeDispatch,
   handleFormFieldBlur,
+  handleFormFieldBlurDispatch,
   handleFormFieldChange,
+  handleFormFieldChangeDispatch,
 } from "../../components/form/ManageTicketForm/handlers";
 import { NewTechnicianFlyout } from "./NewTechnicianFlyout";
 import { Debug } from "../../components/debug/debug";
@@ -26,10 +29,11 @@ import {
 } from "../../components/form/ManageTechnicianForm/fields";
 import axios from "../../api/api.js";
 import { dataFetchReducer } from "../../api/reducers";
+import { addToast } from "../../components/toast";
 
 var _ = require("lodash");
 
-export const SelectTechnician = ({ setTechnician }, ...props) => {
+export const SelectTechnician = ({ technician, setTechnician }, ...props) => {
   const [isFlyoutVisible, setIsFlyoutVisible] = useState(false);
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
@@ -62,10 +66,18 @@ export const SelectTechnician = ({ setTechnician }, ...props) => {
   }, []);
 
   const handleFormSubmit = (e, data) => {
+    e.preventDefault();
     const errors = _.find(data, ["error", true]);
     if (errors === undefined) {
-      console.log(data);
-      setTechnician(data);
+      if (data[0].value === "") {
+        addToast({
+          title: "Select technician to continue",
+          color: "danger",
+        });
+      } else {
+        console.log(data);
+        setTechnician(data);
+      }
     }
   };
 
@@ -87,11 +99,11 @@ export const SelectTechnician = ({ setTechnician }, ...props) => {
                   name={"technician"}
                   data={state.data}
                   selectOptions={state.selectTechnicianOptions}
-                  handleChange={(e) =>
-                    handleFormFieldChange(e, state.data, dispatch)
-                  }
+                  handleChange={(e) => {
+                    handleFormFieldChangeDispatch(e, state.data, dispatch);
+                  }}
                   handleBlur={(e) =>
-                    handleFormFieldBlur(e, state.data, dispatch)
+                    handleFormFieldBlurDispatch(e, state.data, dispatch)
                   }
                 />
                 <EuiSpacer />

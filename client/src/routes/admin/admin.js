@@ -43,7 +43,10 @@ export const AdminRoute = (props) => {
         <EuiPageBody component="div">
           <div>
             {technician === false ? (
-              <SelectTechnician setTechnician={setTechnician} />
+              <SelectTechnician
+                technician={technician}
+                setTechnician={setTechnician}
+              />
             ) : (
               <ManageTicket />
             )}
