@@ -8,9 +8,10 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUser } from './dto/create-user.dto';
+import { CreateUserDTO } from './dto/create-user.dto';
 import { UserType } from './dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateUserDTO } from './dto/update-user.dto';
 
 @ApiTags('user')
 @Controller('/api/user')
@@ -18,7 +19,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
   /* WORKING implementation */
   @Post()
-  async create(@Body() createUserDto: CreateUser) {
+  async create(@Body() createUserDto: CreateUserDTO) {
     return await this.userService.create(createUserDto);
   }
   /* WORKING implementation */
@@ -43,5 +44,14 @@ export class UserController {
   @Get(':lsu_id')
   findOne(@Param('lsu_id') lsu_id: number) {
     return this.userService.findOne(lsu_id);
+  }
+
+  /* WORKING implementation */
+  @Put(':lsu_id')
+  update(
+    @Param('lsu_id') lsu_id: number,
+    @Body() updateUserDTO: UpdateUserDTO,
+  ) {
+    return this.userService.update(lsu_id, updateUserDTO);
   }
 }

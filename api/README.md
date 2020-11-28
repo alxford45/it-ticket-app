@@ -110,11 +110,12 @@ req: none
 res: body: {CombineDTO}
 ```
 
-Update ticket
+Updates one ticket by ticket_id; Does NOT update user or device
 
 ```
-/* NOT WORKING */
-PUT /api​/ticket​/{id}
+PUT /api​/ticket​/{ticket_id}
+req: body: {UpdateTicketDTO}
+res: body: {TicketDTO}
 ```
 
 ## User
@@ -155,11 +156,12 @@ GET /api​/user/{lsu_id}
 res: body: {UserDTO}
 ```
 
-Update user
+Update user by lsu_id
 
 ```
-/* NOT WORKING */
 PUT /api/user/{lsu_id}
+req: body: {UpdateUserDTO}
+res: body: {UserDTO}
 ```
 
 ## Assign

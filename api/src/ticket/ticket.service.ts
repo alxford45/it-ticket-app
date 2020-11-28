@@ -7,14 +7,14 @@ import {
 } from '@nestjs/common';
 import { Pool, QueryConfig } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
-import { CreateUser } from 'src/user/dto/create-user.dto';
-import { User } from 'src/user/dto/user.dto';
-import { Combined } from './dto/combined.dto';
-import { CreateCombined } from './dto/create-combined.dto';
-import { CreateDevice } from './dto/create-device.dto';
-import { CreateTicket } from './dto/create-ticket.dto';
-import { Device } from './dto/device.dto';
-import { Ticket, TicketType } from './dto/ticket.dto';
+import { CreateUserDTO } from 'src/user/dto/create-user.dto';
+import { UserDTO } from 'src/user/dto/user.dto';
+import { CombinedDTO } from './dto/combined.dto';
+import { CreateCombinedDTO } from './dto/create-combined.dto';
+import { CreateDeviceDTO } from './dto/create-device.dto';
+import { CreateTicketDTO } from './dto/create-ticket.dto';
+import { DeviceDTO } from './dto/device.dto';
+import { TicketDTO, TicketType } from './dto/ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 
 @Injectable()
@@ -24,10 +24,10 @@ export class TicketService {
   /**
    * Queries and inserts user if user does not exists
    *
-   * @param createUser
+   * @param createUserDTO
    * @returns User
    */
-  private async createUser(createUser: CreateUser) {
+  private async createUser(createUserDTO: CreateUserDTO) {
     const {
       lsu_id,
       email,
@@ -36,29 +36,33 @@ export class TicketService {
       phone_number,
       department,
       admin,
-    } = createUser;
+    } = createUserDTO;
 
+    /* Check to see if user exists */
     const findQuery: QueryConfig = {
       name: 'select_user_by_id_or_email',
       text: 'SELECT * FROM "user" WHERE lsu_id = $1 OR email = $2',
       values: [lsu_id, email],
     };
 
-    /* Query User by lsuid or email */
     try {
-      const res = await this.connection.query<User>(findQuery);
-      /* Test to see if student exists */
+      const res = await this.connection.query<UserDTO>(findQuery);
+
+      /* If user exists abort insert operation by returning early */
       if (res.rows.length > 0) {
         return res.rows[0];
       }
     } catch (error) {
       throw new HttpException(
-        { query: findQuery, error: error },
+        {
+          query: findQuery,
+          error: error,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
-    /* Insert new student into db */
+    /* Insert new user into db */
     const insertQuery: QueryConfig = {
       name: 'insert_user',
 
@@ -75,11 +79,16 @@ export class TicketService {
       ],
     };
     try {
-      const res = await this.connection.query<User>(insertQuery);
+      const res = await this.connection.query<UserDTO>(insertQuery);
+
+      /* Return newly inserted user */
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
-        { query: insertQuery, error: error },
+        {
+          query: insertQuery,
+          error: error,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -88,21 +97,25 @@ export class TicketService {
   /**
    * Inserts ticket into ticket table
    *
-   * @param createTicket
+   * @param createTicketDTO
    * @returns Ticket
    */
-  private async createTicket(createTicket: CreateTicket) {
+  private async createTicket(createTicketDTO: CreateTicketDTO) {
     const {
       lsu_id,
       core_issue,
       description,
       problem_category,
       priority,
-    } = createTicket;
+    } = createTicketDTO;
 
+    /* Status set to open for new ticket */
     const status = 'OPEN';
+
+    /* Submission date set to current server time */
     const submission_date = this.createDate();
 
+    /* Insert new ticket into db */
     const query: QueryConfig = {
       name: 'insert_ticket',
       text:
@@ -119,12 +132,14 @@ export class TicketService {
     };
 
     try {
-      const res = await this.connection.query<Ticket>(query);
+      const res = await this.connection.query<TicketDTO>(query);
+
+      /* Return newly inserted ticket */
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -134,17 +149,19 @@ export class TicketService {
 
   /**
    * Inserts new device into device table
-   * @param createDevice
+   * @param createDeviceDTO
    * @returns Device
    */
-  private async createDevice(createDevice: CreateDevice) {
+  private async createDevice(createDeviceDTO: CreateDeviceDTO) {
     const {
       ticket_id,
       manufacturer,
       model,
       operating_system,
       operating_system_version,
-    } = createDevice;
+    } = createDeviceDTO;
+
+    /* Insert Device into db */
     const query: QueryConfig = {
       name: 'insert_device',
       text:
@@ -158,12 +175,14 @@ export class TicketService {
       ],
     };
     try {
-      const res = await this.connection.query<Device>(query);
+      const res = await this.connection.query<DeviceDTO>(query);
+
+      /* Return newly inserted device */
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -193,19 +212,22 @@ export class TicketService {
       [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
     return date;
   }
-  /* TODO: test implementation */
-  async create(createCombined: CreateCombined) {
-    /* Response Accumulator */
-    let response: Combined;
 
-    let device: Device;
-    let ticket: Ticket;
-    let user: User;
+  /* WORKING Implementation */
+  async create(createCombinedDTO: CreateCombinedDTO) {
+    /* Response Accumulator */
+    let response: CombinedDTO;
+
+    let device: DeviceDTO;
+    let ticket: TicketDTO;
+    let user: UserDTO;
 
     /* Insert or Retrieve User */
-    const createUser: CreateUser = { ...createCombined, admin: false }; // tickets are created by students so admin is false
+    const createUser: CreateUserDTO = { ...createCombinedDTO, admin: false }; // tickets are created by students so admin is false
     try {
       user = await this.createUser(createUser);
+
+      /* Accumulate user to response */
       response = { ...response, ...user };
     } catch (error) {
       Logger.error(error);
@@ -213,9 +235,11 @@ export class TicketService {
     }
 
     /* Create new Ticket */
-    const createTicket: CreateTicket = { ...createCombined };
+    const createTicket: CreateTicketDTO = { ...createCombinedDTO };
     try {
       ticket = await this.createTicket(createTicket);
+
+      /* Accumulate ticket to response */
       response = { ...response, ...ticket };
     } catch (error) {
       Logger.error(error);
@@ -223,18 +247,21 @@ export class TicketService {
     }
 
     /* Create new Device */
-    const createDevice: CreateDevice = {
-      ...createCombined,
+    const createDevice: CreateDeviceDTO = {
+      ...createCombinedDTO,
       ticket_id: ticket.ticket_id,
     };
     try {
       device = await this.createDevice(createDevice);
+
+      /* Accumulate device to response */
       response = { ...response, ...device };
     } catch (error) {
       Logger.error(error);
       return error;
     }
 
+    /* Return flat object with the intersection of properties from user, ticket, and deivce */
     return response;
   }
 
@@ -274,9 +301,9 @@ export class TicketService {
         break;
     }
     try {
-      const queryRes = await this.connection.query<Ticket>(query);
+      const queryRes = await this.connection.query<TicketDTO>(query);
 
-      /* If no tickets */
+      /* If no tickets return empty array */
       if (queryRes.rows.length === 0) {
         return [];
       }
@@ -285,7 +312,7 @@ export class TicketService {
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -295,24 +322,25 @@ export class TicketService {
 
   /* WORKING implementation */
   async findOne(ticket_id: number) {
+    /* Query ticket by ticket_id */
     const query: QueryConfig = {
       name: 'select_ticket_by_ticket_id',
       text: 'SELECT * FROM ticket WHERE ticket_id = $1',
       values: [ticket_id],
     };
     try {
-      const queryRes = await this.connection.query<Ticket>(query);
+      const res = await this.connection.query<TicketDTO>(query);
 
-      /* If no ticket found */
-      if (queryRes.rows.length === 0) {
+      /* If no ticket found return empty object*/
+      if (res.rows.length === 0) {
         return {};
       }
 
-      return queryRes.rows[0];
+      return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -320,35 +348,71 @@ export class TicketService {
     }
   }
 
-  /* NOT WORKING implementation */
-  async update(id: number, updateTicketDto: UpdateTicketDto) {
-    id = Number(id);
-    let keys = [];
-    let values = [];
+  /* WORKING Implementation */
+  async update(ticket_id: number, updateTicketDto: UpdateTicketDto) {
+    const {
+      core_issue,
+      description,
+      problem_category,
+      status,
+      priority,
+    } = updateTicketDto;
 
-    /* unknown properties to be updated */
-    for (let key in updateTicketDto) {
-      if (!!updateTicketDto[key]) {
-        keys = [...keys, key];
-        values = [...values, updateTicketDto[key]];
-      }
-    }
-    /* keys variable defined by interface NOT user so avoids sql injection */
-    const columns = keys.map((val, idx) => `${val} = $${idx + 1}`).join(', ');
-    let txt = String.raw`UPDATE ticket SET ${columns} WHERE ticket_id = $${keys.length}`;
-
-    const query = {
-      name: 'update_ticket',
-      text: txt,
-      values: [...values, id],
+    /* Check to see if ticket exist */
+    const findQuery: QueryConfig = {
+      name: 'select_ticket_by_ticket_id',
+      text: 'SELECT * FROM ticket WHERE ticket_id = $1',
+      values: [ticket_id],
     };
     try {
-      const queryRes = await this.connection.query(query, [...values, id]);
-      return queryRes.rows;
+      const res = await this.connection.query<TicketDTO>(findQuery);
+
+      /* If no ticket found throw custom error*/
+      if (res.rows.length < 1) {
+        throw new Error('BAD_REQUEST');
+      }
+    } catch (error) {
+      /* catch custom error for ticket not found */
+      if (error.message === 'BAD_REQUEST') {
+        /* Throw HttpException for ticket not found */
+        throw new HttpException(
+          {
+            message: `Ticket with ticket_id: ${ticket_id} DOES NOT EXIST`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      /* Throw HttpException for postgres errors */
+      throw new HttpException(
+        {
+          query: findQuery,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    /* Update ticket */
+    const updateQuery = {
+      name: 'update_ticket',
+      text:
+        'UPDATE ticket SET core_issue = $1, description = $2, problem_category = $3, status = $4, priority = $5 WHERE ticket_id = $6 RETURNING *',
+      values: [
+        core_issue,
+        description,
+        problem_category,
+        status,
+        priority,
+        ticket_id,
+      ],
+    };
+    try {
+      const res = await this.connection.query(updateQuery);
+      return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: updateQuery,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,

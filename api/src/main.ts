@@ -30,7 +30,7 @@ async function bootstrap() {
     .setVersion('0.1.0')
     .setExternalDoc(
       'additional documentation',
-      `http://${HOST}:${PORT}/api/docs/more`,
+      `https://github.com/cdalton713/CSC_4402_DB_Project/blob/master/api/README.md`,
     )
     .build();
   const document = SwaggerModule.createDocument(app, options);

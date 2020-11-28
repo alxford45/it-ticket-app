@@ -1,4 +1,4 @@
 import { OmitType as Omit } from '@nestjs/swagger';
-import { Device } from './device.dto';
+import { DeviceDTO } from './device.dto';
 
-export class CreateDevice extends Omit(Device, ['device_id']) {}
+export class CreateDeviceDTO extends Omit(DeviceDTO, ['device_id']) {}
