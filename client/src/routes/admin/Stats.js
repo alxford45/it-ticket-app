@@ -29,7 +29,6 @@ export const MyStat = ({ data, color, icon, description }, ...props) => {
   return (
     <>
       {state.isLoading === true ? null : (
-        // <ErrorCallout errMsg={""} />
         <EuiPanel>
           <EuiStat
             title={data}
