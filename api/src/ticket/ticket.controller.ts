@@ -18,7 +18,7 @@ import { TicketService } from './ticket.service';
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
 
-  /* TODO: test implementation */
+  /* WORKING Implementation */
   @Post()
   create(@Body() createCombined: CreateCombined) {
     Logger.log(
@@ -35,44 +35,46 @@ export class TicketController {
     return this.ticketService.create(createCombined);
   }
 
-  /* Working implementation */
+  /* WORKING Implementation */
   @Get()
   findAll() {
     return this.ticketService.findAll(TicketType.ANY);
   }
-  /* Working implementation */
+  /* WORKING Implementation */
   @Get('/opened')
   findAllOpened() {
     return this.ticketService.findAll(TicketType.OPENED);
   }
 
-  /* Working implementation */
+  /* WORKING Implementation */
   @Get('/closed')
   findAllClosed() {
     return this.ticketService.findAll(TicketType.CLOSED);
   }
 
-  /* Working implementation */
+  /* WORKING Implementation */
   @Get('/user/:lsu_id')
   findAllByLsuId(@Param('lsu_id') lsu_id: number) {
     return this.ticketService.findAll(lsu_id);
   }
 
-  /* Working implementation */
+  /* WORKING Implementation */
   @Get(':ticket_id')
   findOne(@Param('ticket_id') ticket_id: number) {
     return this.ticketService.findOne(+ticket_id);
   }
 
-  /* TODO: FIX */
-  /* NOT WORKING */
-  @Put(':id')
-  update(@Param('id') id: number, @Body() updateTicketDto: UpdateTicketDto) {
+  /* WORKING Implementation */
+  @Put(':ticket_id')
+  update(
+    @Param('ticket_id') ticket_id: number,
+    @Body() updateTicketDto: UpdateTicketDto,
+  ) {
     Logger.log(
       {
         req: {
-          http: `PUT /api/ticket/${id}`,
-          params: id,
+          http: `PUT /api/ticket/${ticket_id}`,
+          params: ticket_id,
           body: updateTicketDto,
         },
       },
@@ -80,6 +82,6 @@ export class TicketController {
       false,
     );
 
-    return this.ticketService.update(id, updateTicketDto);
+    return this.ticketService.update(ticket_id, updateTicketDto);
   }
 }
