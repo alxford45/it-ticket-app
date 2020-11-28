@@ -1,28 +1,36 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-enum Priority {
-  low = 'low',
-  medium = 'medium',
-  high = 'high',
+export enum TicketType {
+  'OPENED',
+  'CLOSED',
+  'ANY',
 }
-export class TicketDto {
+
+export class Ticket {
   @ApiProperty({ readOnly: true })
   ticket_id: number;
 
   @ApiProperty({
-    minLength: 3,
-    maxLength: 5,
-    enum: Priority,
-    description: 'low, medium, high',
-    example: Priority.low,
+    minLength: 9,
+    maxLength: 9,
+    description: '9-digit number starting with 89',
+    example: 897584512,
   })
-  priority: string;
+  lsu_id: number;
+
+  @ApiProperty({
+    minimum: 1,
+    maximum: 3,
+    description: 'low=1, medium=2, high=3',
+    example: 1,
+  })
+  priority: number;
 
   @ApiProperty({ description: 'opened or closed', example: 'opened' })
   status: string;
 
   @ApiProperty({ description: 'category of issue', example: 'General Help' })
-  category: string;
+  problem_category: string;
 
   @ApiProperty({
     description: 'description of issue',
@@ -35,26 +43,30 @@ export class TicketDto {
     description: 'label of problem student is facing',
     example: 'computer slowdown',
   })
-  problem: string;
-
-  @ApiProperty({ description: 'manufacturer of device', example: 'dell' })
-  manufacturer: string;
+  core_issue: string;
 
   @ApiProperty({
-    minLength: 1,
-    description: 'model of device',
-    example: '15',
+    description: 'YYYY-MM-DD HH:MM:SS',
   })
-  model: number;
-
-  @ApiProperty({
-    minLength: 1,
-    description: 'operating system',
-    example: 'windows',
-  })
-  os: string;
-
-  // Not sure of example data for os version
-  @ApiProperty({ description: 'operating system version', example: 'version1' })
-  version: string;
+  submission_date: string;
 }
+// @ApiProperty({ description: 'manufacturer of device', example: 'dell' })
+// manufacturer: string;
+
+// @ApiProperty({
+//   minLength: 1,
+//   description: 'model of device',
+//   example: '15',
+// })
+// model: number;
+
+// @ApiProperty({
+//   minLength: 1,
+//   description: 'operating system',
+//   example: 'windows',
+// })
+// os: string;
+
+// // Not sure of example data for os version
+// @ApiProperty({ description: 'operating system version', example: 'version1' })
+// version: string;
