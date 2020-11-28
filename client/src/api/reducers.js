@@ -16,6 +16,19 @@ export const dataFetchReducer = (state, action) => {
         isError: false,
         data: action.payload,
       };
+    case "FETCH_ALL_TICKETS_SUCCESS":
+      return {
+        ...state,
+        isTicketsLoading: false,
+        isError: false,
+        allTickets: action.payload,
+        closedTickets: action.payload.filter((o) => o.status === "CLOSE")
+          .length,
+        inProgressTickets: action.payload.filter(
+          (o) => o.status === "IN PROGRESS"
+        ).length,
+        openTickets: action.payload.filter((o) => o.status === "OPEN").length,
+      };
     case "FETCH_TECHNICIANS_SUCCESS":
       return {
         ...state,
