@@ -5,7 +5,7 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { Pool } from 'pg';
+import { Pool, QueryConfig } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
 import { CreateUser } from './dto/create-user.dto';
 import { User, UserType } from './dto/user.dto';
@@ -15,21 +15,25 @@ export class UserService {
   constructor(@Inject(PG_CONNECTION) private connection: Pool) {}
 
   /* WORKING implementation */
-  async create(createCustomerDto: CreateUser) {
+  async create(createUser: CreateUser) {
     const {
       lsu_id,
       email,
       first_name,
       last_name,
-      department,
       phone_number,
+      department,
       admin,
-    } = createCustomerDto;
+    } = createUser;
 
-    /* Query student by lsuid or email */
+    const findQuery: QueryConfig = {
+      name: 'select_user_by_id_or_email',
+      text: 'SELECT lsu_id FROM "user" WHERE lsu_id = $1 OR email = $2',
+      values: [lsu_id, email],
+    };
     try {
-      const query = 'SELECT lsu_id FROM "user" WHERE lsu_id = $1 OR email = $2';
-      const queryRes = await this.connection.query(query, [lsu_id, email]);
+      /* Query student by lsuid or email */
+      const queryRes = await this.connection.query(findQuery);
 
       /* Test to see if student exists */
       if (queryRes.rows.length > 0) {
@@ -51,6 +55,7 @@ export class UserService {
       /* Catch postgres error and throw Internal Error HttpException */
       throw new HttpException(
         {
+          message: findQuery,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -58,23 +63,28 @@ export class UserService {
     }
 
     /* Insert new student into db */
-    const text =
-      'INSERT INTO "user" (lsu_id, email, first_name, last_name, phone_number, department, admin) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
-    const values = [
-      lsu_id,
-      email,
-      first_name,
-      last_name,
-      phone_number,
-      department,
-      admin,
-    ];
+    const insertQuery: QueryConfig = {
+      name: 'insert_user',
+
+      text:
+        'INSERT INTO "user" (lsu_id, email, first_name, last_name, phone_number, department, admin) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      values: [
+        lsu_id,
+        email,
+        first_name,
+        last_name,
+        phone_number,
+        department,
+        admin,
+      ],
+    };
     try {
-      const res = await this.connection.query<User>(text, values);
+      const res = await this.connection.query<User>(insertQuery);
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
+          message: insertQuery,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -83,16 +93,22 @@ export class UserService {
   }
   /* WORKING implementation */
   async findAll(userType: UserType) {
-    let query;
+    let query: QueryConfig;
     switch (userType) {
       case UserType.STUDENT:
-        query = 'SELECT * FROM "user" WHERE admin = false';
+        query = {
+          name: 'select_all_students',
+          text: 'SELECT * FROM "user" WHERE admin = false',
+        };
         break;
       case UserType.ADMIN:
-        query = 'SELECT * FROM "user" WHERE admin = true';
+        query = {
+          name: 'select_all_admin',
+          text: 'SELECT * FROM "user" WHERE admin = true',
+        };
         break;
       default:
-        query = 'SELECT * FROM "user"';
+        query = { name: 'select_all_users', text: 'SELECT * FROM "user"' };
         break;
     }
 
@@ -106,6 +122,7 @@ export class UserService {
     } catch (error) {
       throw new HttpException(
         {
+          message: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -114,8 +131,11 @@ export class UserService {
   }
   /* WORKING implementation */
   async findOne(lsu_id: number) {
+    const query = {
+      name: 'select_user_by_id',
+      text: 'SELECT * FROM "user" WHERE "lsu_id" = $1',
+    };
     try {
-      const query = 'SELECT * FROM "user" WHERE "lsu_id" = $1';
       const queryRes = await this.connection.query<User>(query, [lsu_id]);
       /* If customer not found return empty object */
       if (queryRes.rows.length < 1) {
@@ -126,6 +146,7 @@ export class UserService {
     } catch (error) {
       throw new HttpException(
         {
+          message: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
