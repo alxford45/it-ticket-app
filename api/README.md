@@ -65,96 +65,107 @@ client handles all routing on https://lsu-it-support-demo.herokuapp.com excludin
 
 # API Routes
 
-## technician
+Check https://lsu-it-support-demo.herokuapp.com/api/docs for schema DTO definitions
 
-```
-POST /api​/tech
-```
+## Ticket
 
-```
-GET /api​/tech
-```
-
-```
-GET /api​/tech​/{id}
-```
-
-```
-PUT /api​/tech​/{id}
-```
-
-```
-DELETE /api​/tech​/{id}
-```
-
-## ticket
+Create new user, ticket, and device
 
 ```
 POST /api​/ticket
+req: body: {createCombinedDTO}
+res: body: {CombinedDTO}
+
 ```
+
+Get all tickets with user/ticket/device info
 
 ```
 GET /api​/ticket
+req: none
+res: body: {CombinedDTO[]}
 ```
 
-```
-GET /api​/ticket​/{id}
-```
+Get all opened tickets with user/ticket/device info
 
 ```
+GET /api​/ticket/opened
+req: none
+res: body: {CombinedDTO[]}
+```
+
+Get all closed tickets with user/ticket/device info
+
+```
+GET /api​/ticket/closed
+req: none
+res: body: {CombinedDTO[]}
+```
+
+Get one ticket by ticket_id with user/ticket/device info
+
+```
+GET /api​/ticket​/{ticket_id}
+req: none
+res: body: {CombineDTO}
+```
+
+Update ticket
+
+```
+/* NOT WORKING */
 PUT /api​/ticket​/{id}
 ```
 
-```
-POST /api​/ticket​/work
-```
+## User
+
+Create new user
 
 ```
-GET /api​/ticket​/work
+POST /api​/user
+req: body: {CreateUserDTO}
+res: body: {UserDTO}
 ```
 
-```
-GET /api​/ticket​/work​/{id}
-```
+Get all users
 
 ```
-PUT /api​/ticket​/work​/{id}
+GET /api​/user
+res: body: {UserDTO[]}
 ```
 
-```
-DELETE /api​/ticket​/work​/{id}
-```
+Get all users who are admins
 
 ```
-POST /api​/ticket​/assign
+GET /api​/user/admin
+res: body: {UserDTO[]}
 ```
 
-```
-GET /api​/ticket​/assign
-```
+Get all users who are not admins
 
 ```
-GET /api​/ticket​/assign​/{id}
+GET /api​/user/student
+res: body: {UserDTO[]}
 ```
 
-```
-PUT /api​/ticket​/assign​/{id}
-```
+Get user by lsu_id
 
 ```
-DELETE /api​/ticket​/assign​/{id}
+GET /api​/user/{lsu_id}
+res: body: {UserDTO}
 ```
 
-## Customer
+Update user
 
 ```
-POST /api​/customer
+/* NOT WORKING */
+PUT /api/user/{lsu_id}
 ```
 
-```
-GET /api​/customer
-```
+## Assign
 
-```
-GET /api​/customer​/{id}
-```
+TODO
+
+## Work
+
+TODO
