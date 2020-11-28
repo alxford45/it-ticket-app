@@ -43,7 +43,6 @@ export const SelectTechnician = ({ technician, setTechnician }, ...props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch({ type: "FETCH_INIT" });
       try {
         const result = await axios.get("/user/admin");
         const final = {

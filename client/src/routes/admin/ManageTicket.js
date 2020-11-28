@@ -31,58 +31,129 @@ import axios from "../../api/api";
 import { fields } from "../../components/form/ManageTicketForm/fields";
 import { dataFetchReducer } from "../../api/reducers";
 import { MyStat } from "./Stats";
+import { personFields } from "../../components/form/person/fields";
 
 var _ = require("lodash");
 
-const TicketForm = ({ selected }, ...props) => {
-  const [workLogData, setWorkLogData] = useState(null);
-  const [workLogLoading, setWorkLogLoading] = useState(true);
-  const [data, setData] = useState(fields);
+const TicketForm = ({ setSelectedTicket, selectedTicket }, ...props) => {
+  const [state, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: fields,
+    workLogData: null,
+    workLogLoading: true,
+    assignLog: null,
+    assignLogLoading: true,
+  });
 
   useEffect(() => {
-    const fetchWorkLog = async () => {
+    const fetchWorkLog = async (selectedTicket) => {
       try {
-        const result = await axios.get("/ticket/work/" + selected.id);
-        setWorkLogData(result.data);
-        setWorkLogLoading(false);
+        const result = await axios.get(
+          "/ticket/work/" + selectedTicket.ticket_id
+        );
+        dispatch({ type: "FETCH_WORK_LOG_SUCCESS", payload: result.data });
       } catch (error) {
         console.log(error);
       }
     };
 
-    const fetchData = () => {
+    const fetchAssignLog = async (selectedTicket) => {
       try {
-        const ticketFields = axios.get("/ticket/" + selected.id);
-        const userFields = axios.get("/user/" + selected.lsu_id);
+        const result = await axios.get(
+          "/ticket/assign/" + selectedTicket.ticket_id
+        );
+        dispatch({ type: "FETCH_ASSIGN_LOG_SUCCESS", payload: result.data });
       } catch (error) {
         console.log(error);
       }
     };
-    fetchData();
-    fetchWorkLog();
-  }, [selected]);
 
+    const fetchData = async (selectedTicket) => {
+      String.prototype.toProperCase = function () {
+        return this.replace(/\w\S*/g, function (txt) {
+          return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+      };
+
+      try {
+        const result = await axios.get("/ticket/" + selectedTicket.ticket_id);
+        const userResult = await axios.get("/user/" + selectedTicket.lsu_id);
+        let final = [];
+        for (const [key, value] of Object.entries(result.data)) {
+          console.log(`${key}: ${value}`);
+          final.push({
+            name: key,
+            value: value,
+            error: false,
+            error_type: "none",
+            label: key.replace("_", " ").toProperCase(),
+          });
+        }
+
+        for (const [key, value] of Object.entries(userResult.data)) {
+          console.log(`${key}: ${value}`);
+          final.push({
+            name: key,
+            value: value,
+            error: false,
+            error_type: "none",
+            label: key.replace("_", " ").toProperCase(),
+          });
+        }
+        const union = _.unionBy(final, fields, "name");
+        dispatch({
+          type: "FETCH_TICKET_SUCCESS",
+          payload: union,
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (selectedTicket != null) {
+      fetchData(selectedTicket);
+      fetchWorkLog(selectedTicket);
+      fetchAssignLog(selectedTicket);
+    }
+  }, [selectedTicket]);
+
+  const internalFormSubmit = async (e, data) => {
+    const response = await handleFormSubmit(e, data, "/ticket");
+    if (response.status === 201) {
+      dispatch({ type: "CLEAR_FORM" });
+    }
+  };
   return (
     <>
       <EuiForm>
         <EuiTitle size={"s"}>
           <h3>Customer Information</h3>
         </EuiTitle>
-        <UserView data={data} setData={setData} />
-        <AdminView data={data} setData={setData} workLogData={workLogData} />
+        {state.isLoading ? null : (
+          <>
+            <UserView data={state.data} dispatch={dispatch} />
+            <AdminView
+              data={state.data}
+              dispatch={dispatch}
+              workLogData={state.workLogData}
+              assignLogData={state.assignLogData}
+            />
+          </>
+        )}
+
         <EuiSpacer />
         <EuiFlexGroup gutterSize="s" alignItems="center">
           <EuiFlexItem grow={false}>
             <EuiButton
               type={"submit"}
-              onClick={(e) => handleFormSubmit(e, data)}
+              onClick={(e) => internalFormSubmit(e, state.data)}
             >
               Submit
             </EuiButton>
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiForm>
-      <Debug data={data} />
+      <Debug data={state.data} />
     </>
   );
 };
@@ -171,7 +242,10 @@ export const ManageTicket = (props) => {
         {selectedTicket == null ? (
           "Please select ticket."
         ) : (
-          <TicketForm selected={selectedTicket} setData={setSelectedTicket} />
+          <TicketForm
+            selectedTicket={selectedTicket}
+            setSelectedTicket={setSelectedTicket}
+          />
         )}
       </EuiPanel>
     </>

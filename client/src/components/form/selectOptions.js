@@ -12,8 +12,16 @@ export const selectOptions = [
     name: "problem_category",
     options: [
       { value: "", text: "" },
+
       { value: "general_help", text: "General Help" },
-      { value: "problem_2", text: "Problem 2" },
+      { value: "login_help", text: "Login Help" },
+      { value: "missing_documents", text: "Missing Documents" },
+      { value: "class_access", text: "Can't access your class?" },
+      { value: "view_grades_help", text: "Can't see your grades?" },
+      { value: "upload_help", text: "Upload Help" },
+      { value: "download_help", text: "Download Help" },
+      { value: "tigerware_support", text: "Tigerware support" },
+      { value: "hardware_support", text: "Hardware support" },
     ],
   },
   {
@@ -258,6 +266,11 @@ export const selectOptions = [
       { value: "broken_screen", text: "Broken Screen" },
       { value: "expanded_battery", text: "Expanded Battery" },
       { value: "faulty_ram", text: "Faulty RAM" },
+      { value: "network_problem", text: "Network Problem" },
+      { value: "post_error", text: "Post Error" },
+      { value: "virus_infection", text: "Malware or Spyware Infection" },
+      { value: "system_overheat", text: "System overheating" },
+      { value: "system_crash", text: "System Crash" },
     ],
   },
   {
@@ -269,6 +282,10 @@ export const selectOptions = [
       { value: "storage_device", text: "Storage Device" },
       { value: "power_supply", text: "Power Supply" },
       { value: "gpu", text: "GPU" },
+      { value: "motherboard", text: "Motherboard" },
+      { value: "heatsink", text: "Heatsink" },
+      { value: "case_fans", text: "Case Fans" },
+      { value: "usb_port", text: "USB Port" },
     ],
   },
   {

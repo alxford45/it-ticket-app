@@ -8,13 +8,25 @@ const postData = async (endpoint, data) => {
   return response;
 };
 
-export const handleFormSubmit = async (e, data, endpoint) => {
+const putData = async (endpoint, data) => {
+  console.log(data);
+  const response = await axios.put(endpoint, data);
+  return response;
+};
+
+export const handleFormSubmit = async (e, data, endpoint, put) => {
   const errors = _.find(data, ["error", true]);
   if (errors === undefined) {
     let d = data.map((o) => ({ [o.name]: o.value }));
     const dd = Object.assign({}, ...d);
 
-    const response = await postData(endpoint, dd);
+    let response;
+    if (put === true) {
+      response = await putData(endpoint, dd);
+    } else {
+      response = await postData(endpoint, dd);
+    }
+
     addToast({
       title: "Ticket Submitted!",
       color: "success",
