@@ -6,7 +6,7 @@ export enum TicketType {
   'ANY',
 }
 
-export class Ticket {
+export class TicketDTO {
   @ApiProperty({ readOnly: true })
   ticket_id: number;
 
