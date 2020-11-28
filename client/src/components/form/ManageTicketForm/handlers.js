@@ -3,27 +3,30 @@ import axios from "../../../api/api";
 var _ = require("lodash");
 
 const postData = async (endpoint, data) => {
+  console.log(data);
   const response = await axios.post(endpoint, data);
-  console.log(response);
+  return response;
 };
 
 export const handleFormSubmit = (e, data) => {
   const errors = _.find(data, ["error", true]);
   if (errors === undefined) {
-    const d = data.map((o) => ({ [o.name]: o.value }));
-    console.log(d);
+    let d = data.map((o) => ({ [o.name]: o.value }));
+    const dd = Object.assign({}, ...d);
 
-    postData("/tech", d);
-
+    const response = postData("/user", dd);
     addToast({
       title: "Ticket Submitted!",
       color: "success",
     });
+    return response;
   } else {
     addToast({
       title: "Check Form for Errors",
       color: "danger",
     });
+
+    return null;
   }
 };
 

@@ -34,15 +34,52 @@ import { MyStat } from "./Stats";
 
 var _ = require("lodash");
 
-const TicketForm = ({ data, dispatch, workLogData }, ...props) => {
+const TicketForm = ({ selected, data, setData }, ...props) => {
+  const [workLogData, setWorkLogData] = useState(null);
+  const [workLogLoading, setWorkLogLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchWorkLog = async () => {
+      try {
+        const result = await axios.get("/work");
+        setWorkLogData(result.data);
+        setWorkLogLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchData = () => {
+      try {
+        const ticketFields = axios.get("/ticket/" + selected.id);
+        const userFields = axios.get("/user/" + selected.lsu_id);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+    fetchWorkLog();
+  }, []);
+
+  useEffect(() => {
+    const d = [];
+
+    let keys;
+    keys = Object.keys(data);
+    for (let x in keys) {
+      d.push({ label: x, value: keys[x] });
+    }
+    setData(d);
+  }, [data]);
+
   return (
     <>
       <EuiForm>
         <EuiTitle size={"s"}>
           <h3>Customer Information</h3>
         </EuiTitle>
-        <UserView data={data} dispatch={dispatch} />
-        <AdminView data={data} dispatch={dispatch} workLogData={workLogData} />
+        <UserView data={data} setData={setData} />
+        <AdminView data={data} setData={setData} workLogData={workLogData} />
         <EuiSpacer />
         <EuiFlexGroup gutterSize="s" alignItems="center">
           <EuiFlexItem grow={false}>
@@ -61,29 +98,7 @@ const TicketForm = ({ data, dispatch, workLogData }, ...props) => {
 };
 
 export const ManageTicket = (props) => {
-  const [state, dispatch] = useReducer(dataFetchReducer, {
-    isTicketsLoading: false,
-    isError: false,
-    data: fields,
-    allTickets: {},
-  });
-
   const [selectedTicket, setSelectedTicket] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      dispatch({ type: "FETCH_INIT" });
-      try {
-        const workLog = await axios.get("work");
-        dispatch({ type: "FETCH_WORK_LOG_SUCCESS", payload: workLog });
-      } catch (error) {
-        dispatch({ type: "FETCH_FAILURE" });
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const [tickets, setTickets] = useState(null);
   const [isTicketsLoading, setIsTicketsLoading] = useState(true);
 
@@ -108,7 +123,7 @@ export const ManageTicket = (props) => {
   return (
     <>
       <div>
-        {state.isTicketsLoading === true ? null : (
+        {isTicketsLoading === true ? null : (
           <EuiFlexGroup>
             <EuiFlexItem>
               <MyStat
@@ -159,20 +174,16 @@ export const ManageTicket = (props) => {
         <h1>
           {selectedTicket === null
             ? "Create New Ticket"
-            : "Edit " + selectedTicket + "'s Ticket"}
+            : "Edit " + selectedTicket.lsu_id + "'s Ticket"}
         </h1>
       </EuiTitle>
-      {/*<EuiPanel>*/}
-      {/*  {state.isLoading ? (*/}
-      {/*    "LOADING..."*/}
-      {/*  ) : (*/}
-      {/*    <TicketForm*/}
-      {/*      data={state.data}*/}
-      {/*      dispatch={dispatch}*/}
-      {/*      workLogData={state.workLogData}*/}
-      {/*    />*/}
-      {/*  )}*/}
-      {/*</EuiPanel>*/}
+      <EuiPanel>
+        {selectedTicket == null ? (
+          "Please select ticket."
+        ) : (
+          <TicketForm selected={selectedTicket} setData={setSelectedTicket} />
+        )}
+      </EuiPanel>
     </>
   );
 };
