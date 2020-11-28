@@ -1,14 +1,24 @@
-import { workLogFields } from "../components/form/ManageTicketForm/fields";
+import {
+  fields,
+  workLogFields,
+} from "../components/form/ManageTicketForm/fields";
 
 export const dataFetchReducer = (state, action) => {
   switch (action.type) {
+    case "CLEAR_FORM":
+      const newData = state.data;
+      newData.map((o) => (o.value = ""));
+      return {
+        ...state,
+        data: newData,
+      };
     case "FETCH_INIT":
       return {
         ...state,
         isLoading: true,
         isError: false,
         allTickets: {},
-        workLogData: { ...workLogFields },
+        data: fields,
       };
     case "FETCH_SUCCESS":
       return {

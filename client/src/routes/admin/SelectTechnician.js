@@ -15,11 +15,9 @@ import {
 } from "@elastic/eui";
 import { MySelectField } from "../../components/form/MySelectField";
 import {
-  handleDateChangeDispatch,
+  handleDateChange,
   handleFormFieldBlur,
-  handleFormFieldBlurDispatch,
   handleFormFieldChange,
-  handleFormFieldChangeDispatch,
 } from "../../components/form/ManageTicketForm/handlers";
 import { NewTechnicianFlyout } from "./NewTechnicianFlyout";
 import { Debug } from "../../components/debug/debug";
@@ -100,10 +98,10 @@ export const SelectTechnician = ({ technician, setTechnician }, ...props) => {
                   data={state.data}
                   selectOptions={state.selectTechnicianOptions}
                   handleChange={(e) => {
-                    handleFormFieldChangeDispatch(e, state.data, dispatch);
+                    handleFormFieldChange(e, state.data, dispatch);
                   }}
                   handleBlur={(e) =>
-                    handleFormFieldBlurDispatch(e, state.data, dispatch)
+                    handleFormFieldBlur(e, state.data, dispatch)
                   }
                 />
                 <EuiSpacer />
