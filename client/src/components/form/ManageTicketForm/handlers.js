@@ -1,10 +1,20 @@
 import { addToast } from "../../toast";
+import axios from "../../../api/api";
 var _ = require("lodash");
+
+const postData = async (endpoint, data) => {
+  const response = await axios.post(endpoint, data);
+  console.log(response);
+};
 
 export const handleFormSubmit = (e, data) => {
   const errors = _.find(data, ["error", true]);
   if (errors === undefined) {
-    console.log(data);
+    const d = data.map((o) => ({ [o.name]: o.value }));
+    console.log(d);
+
+    postData("/tech", d);
+
     addToast({
       title: "Ticket Submitted!",
       color: "success",

@@ -28,22 +28,21 @@ export const NewTechnicianFlyout = (
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
-    data: null,
+    data: personFields,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      dispatch({ type: "FETCH_INIT" });
-      try {
-        const result = await axios.get("ticket");
-        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
-      } catch (error) {
-        dispatch({ type: "FETCH_FAILURE" });
-      }
-    };
-
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     dispatch({ type: "FETCH_INIT" });
+  //     try {
+  //       dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+  //     } catch (error) {
+  //       dispatch({ type: "FETCH_FAILURE" });
+  //     }
+  //   };
+  //
+  //   fetchData();
+  // }, []);
 
   const showFlyout = () => setIsFlyoutVisible(true);
 
@@ -55,26 +54,32 @@ export const NewTechnicianFlyout = (
         ownFocus={true}
         aria-labelledby="flyoutSmallTitle"
       >
-        <EuiFlyoutHeader hasBorder>
-          <EuiTitle size="s">
-            <h2 id="flyoutSmallTitle">New Technician</h2>
-          </EuiTitle>
-        </EuiFlyoutHeader>
-        <EuiFlyoutBody>
-          <EuiForm>
-            <NewTechnicianForm data={state.data} dispatch={dispatch} />
-            <EuiSpacer />
-            <EuiFlexItem grow={false}>
-              <EuiButton
-                type={"submit"}
-                onClick={(e) => handleFormSubmit(e, state.data)}
-              >
-                Save
-              </EuiButton>
-            </EuiFlexItem>
-            <Debug data={state.data} />
-          </EuiForm>
-        </EuiFlyoutBody>
+        {state.isLoading ? null : (
+          <>
+            <EuiFlyoutHeader hasBorder>
+              <EuiTitle size="s">
+                <h2 id="flyoutSmallTitle">New Technician</h2>
+              </EuiTitle>
+            </EuiFlyoutHeader>
+            <EuiFlyoutBody>
+              <EuiForm>
+                <NewTechnicianForm data={state.data} dispatch={dispatch} />
+                <EuiSpacer />
+                <EuiFlexItem grow={false}>
+                  <EuiButton
+                    type={"submit"}
+                    onClick={(e) => {
+                      handleFormSubmit(e, state.data);
+                    }}
+                  >
+                    Save
+                  </EuiButton>
+                </EuiFlexItem>
+                <Debug data={state.data} />
+              </EuiForm>
+            </EuiFlyoutBody>
+          </>
+        )}
       </EuiFlyout>
     );
   } else {
