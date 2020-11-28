@@ -20,7 +20,7 @@ import { selectOptions } from "../selectOptions";
 
 var _ = require("lodash");
 
-export const UserView = ({ data, setData }, ...props) => {
+export const UserView = ({ data, dispatch }, ...props) => {
   return (
     <>
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
@@ -28,32 +28,32 @@ export const UserView = ({ data, setData }, ...props) => {
           <MyTextField
             name={"first_name"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem>
           <MyTextField
             name={"last_name"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem>
           <MyTextField
             name={"lsu_id"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem>
           <MyTextField
             name={"department"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -62,16 +62,16 @@ export const UserView = ({ data, setData }, ...props) => {
           <MyTextField
             name={"email"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem grow={false} style={{ width: 200 }}>
           <MyTextField
             name={"phone_number"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -85,8 +85,8 @@ export const UserView = ({ data, setData }, ...props) => {
             name={"priority"}
             data={data}
             selectOptions={selectOptions}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -95,32 +95,32 @@ export const UserView = ({ data, setData }, ...props) => {
           <MyTextField
             name={"manufacturer"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem>
           <MyTextField
             name={"model"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem>
           <MyTextField
             name={"operating_system"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem>
           <MyTextField
             name={"operating_system_version"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -133,9 +133,9 @@ export const UserView = ({ data, setData }, ...props) => {
           <MySelectField
             name={"problem_category"}
             data={data}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
             selectOptions={selectOptions}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
           />
         </EuiFlexItem>
       </EuiFlexGrid>
@@ -154,8 +154,8 @@ export const UserView = ({ data, setData }, ...props) => {
             <EuiTextArea
               placeholder={"Computer crashes when..."}
               name={_.find(data, ["name", "description"]).name}
-              onChange={(e) => handleFormFieldChange(e, data, setData)}
-              onBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              onChange={(e) => handleFormFieldChange(e, data, dispatch)}
+              onBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
             />
           </EuiFormRow>
         </EuiFlexItem>

@@ -50,13 +50,6 @@ export const UserRoute = (props) => {
             </EuiPageHeaderSection>
           </EuiPageHeader>
           <EuiPageContent>
-            {/*<EuiPageContentHeader>*/}
-            {/*    <EuiPageContentHeaderSection>*/}
-            {/*        <EuiTitle>*/}
-            {/*            <h2>Submit Ticket</h2>*/}
-            {/*        </EuiTitle>*/}
-            {/*    </EuiPageContentHeaderSection>*/}
-            {/*</EuiPageContentHeader>*/}
             <EuiPageContentBody>
               <EuiTitle size={"s"}>
                 <h3>My Information</h3>
