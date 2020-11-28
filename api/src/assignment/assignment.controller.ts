@@ -7,18 +7,18 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { TicketAssignService } from './ticketassign.service';
-import { CreateTicketAssignDto } from './dto/create-ticketassign.dto';
-import { UpdateTicketAssignDto } from './dto/update-ticketassign.dto';
+import { AssignmentService } from './assignment.service';
+import { CreateAssignmentDTO } from './dto/create-assignment.dto';
+import { UpdateAssignmentDTO } from './dto/update-assignment.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('ticket')
 @Controller('/api/ticket/assign')
-export class TicketAssignController {
-  constructor(private readonly ticketAssignService: TicketAssignService) {}
+export class AssignmentController {
+  constructor(private readonly ticketAssignService: AssignmentService) {}
   /* Working Implementation */
   @Post()
-  async create(@Body() createTicketAssignDto: CreateTicketAssignDto) {
+  async create(@Body() createTicketAssignDto: CreateAssignmentDTO) {
     return await this.ticketAssignService.create(createTicketAssignDto);
   }
   /* TODO */
@@ -35,7 +35,7 @@ export class TicketAssignController {
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() updateTicketAssignDto: UpdateTicketAssignDto,
+    @Body() updateTicketAssignDto: UpdateAssignmentDTO,
   ) {
     return this.ticketAssignService.update(+id, updateTicketAssignDto);
   }

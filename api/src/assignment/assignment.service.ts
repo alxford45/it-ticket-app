@@ -1,25 +1,20 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Pool } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
-import { CreateTicketAssignDto } from './dto/create-ticketassign.dto';
-import { UpdateTicketAssignDto } from './dto/update-ticketassign.dto';
-import { TicketAssign } from './entities/ticketassign.entity';
+import { CreateAssignmentDTO } from './dto/create-assignment.dto';
+import { UpdateAssignmentDTO } from './dto/update-assignment.dto';
+import { AssignmentDTO } from './dto/assignment.dto';
 
 /* TODO: 
    - Implement remaining methods
    - Find solution to abstract SQL
 */
 @Injectable()
-export class TicketAssignService {
+export class AssignmentService {
   constructor(@Inject(PG_CONNECTION) private connection: Pool) {}
 
-  async create(createTicketAssignDto: CreateTicketAssignDto) {
-    const {
-      assignedby,
-      assignedto,
-      comment,
-      assigndate,
-    } = createTicketAssignDto;
+  async create(createAssignmentDTO: CreateAssignmentDTO) {
+    const { assignedby, assignedto, comment, assigndate } = createAssignmentDTO;
 
     /* Insert new user into db 
          TODO: implement error handling for pg request
@@ -47,7 +42,7 @@ export class TicketAssignService {
     return `This action returns a #${id} user`;
   }
   /* TODO */
-  update(id: number, updateTicketAssignDto: UpdateTicketAssignDto) {
+  update(id: number, updateAssignmentDTO: UpdateAssignmentDTO) {
     return `This action updates a #${id} user`;
   }
   /* TODO */
