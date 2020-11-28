@@ -16,31 +16,31 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('/api/user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  /* TODO: test implementation */
+  /* WORKING implementation */
   @Post()
   async create(@Body() createUserDto: CreateUser) {
     return await this.userService.create(createUserDto);
   }
-  /* TODO: test implementation */
+  /* WORKING implementation */
   @Get()
   findAll() {
     return this.userService.findAll(UserType.USER);
   }
 
-  /* TODO: test implementation */
+  /* WORKING implementation */
   @Get('/admin')
   findAllAdmin() {
     return this.userService.findAll(UserType.ADMIN);
   }
 
-  /* TODO: test implementation */
+  /* WORKING implementation */
   @Get('/student')
   findAllStudents() {
     return this.userService.findAll(UserType.STUDENT);
   }
 
-  /* TODO: test implementation */
-  @Get(':id')
+  /* WORKING implementation */
+  @Get(':lsu_id')
   findOne(@Param('lsu_id') lsu_id: number) {
     return this.userService.findOne(lsu_id);
   }
