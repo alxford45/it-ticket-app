@@ -8,6 +8,7 @@ import {
 import { Pool, QueryConfig } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
 import { CreateUser } from './dto/create-user.dto';
+import { UpdateUser } from './dto/update-user.dto';
 import { User, UserType } from './dto/user.dto';
 
 @Injectable()
@@ -147,6 +148,84 @@ export class UserService {
       throw new HttpException(
         {
           message: query,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  /* WORKING implementation */
+  async update(updateUser: UpdateUser, old_lsu_id: number) {
+    const {
+      lsu_id,
+      email,
+      first_name,
+      last_name,
+      phone_number,
+      department,
+      admin,
+    } = updateUser;
+
+    const findQuery: QueryConfig = {
+      name: 'select_user_by_id',
+      text: 'SELECT lsu_id FROM "user" WHERE lsu_id = $1',
+      values: [old_lsu_id],
+    };
+    try {
+      const res = await this.connection.query(findQuery);
+
+      /* Test to see if student exists */
+      if (res.rows.length < 1) {
+        /*Throw custom error to be handled in catch*/
+        throw new Error('BAD_REQUEST');
+      }
+    } catch (error) {
+      /* Catch custom error if user does not exist
+         Then throw Bad Request HttpException
+       */
+      if (error.message === 'BAD_REQUEST') {
+        throw new HttpException(
+          {
+            error: `User with lsu_id ${lsu_id} DOES NOT EXIST`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      /* Catch postgres error and throw Internal Error HttpException */
+      throw new HttpException(
+        {
+          message: findQuery,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    /* Update user in db */
+    const updateQuery: QueryConfig = {
+      name: 'update_user',
+
+      text:
+        'UPDATE "user" SET lsu_id = $1, email = $2, first_name = $3, last_name = $4, phone_number = $5, department = $6, admin = $7 WHERE lsu_id = $8 RETURNING *',
+      values: [
+        lsu_id,
+        email,
+        first_name,
+        last_name,
+        phone_number,
+        department,
+        admin,
+        old_lsu_id,
+      ],
+    };
+    try {
+      const res = await this.connection.query<User>(updateQuery);
+      return res.rows[0];
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: updateQuery,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,

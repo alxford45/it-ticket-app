@@ -11,6 +11,7 @@ import { UserService } from './user.service';
 import { CreateUser } from './dto/create-user.dto';
 import { UserType } from './dto/user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { UpdateUser } from './dto/update-user.dto';
 
 @ApiTags('user')
 @Controller('/api/user')
@@ -43,5 +44,11 @@ export class UserController {
   @Get(':lsu_id')
   findOne(@Param('lsu_id') lsu_id: number) {
     return this.userService.findOne(lsu_id);
+  }
+
+  /* WORKING implementation */
+  @Put(':lsu_id')
+  update(@Body() updateUser: UpdateUser, @Param('lsu_id') lsu_id: number) {
+    return this.userService.update(updateUser, lsu_id);
   }
 }
