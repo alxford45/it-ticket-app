@@ -8,17 +8,19 @@ import {
   Logger,
 } from '@nestjs/common';
 import { TicketService } from './ticket.service';
-import { CreateTicketDto } from './dto/create-ticket.dto';
+import { CreateTicket } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Ticket, TicketType } from './dto/ticket.dto';
 
 @ApiTags('ticket')
 @Controller('/api/ticket')
 export class TicketController {
   constructor(private readonly ticketService: TicketService) {}
+
   /* TODO: test implementation */
   @Post()
-  create(@Body() createTicketDto: CreateTicketDto) {
+  create(@Body() createTicketDto: CreateTicket) {
     Logger.log(
       {
         req: {
@@ -32,41 +34,38 @@ export class TicketController {
     );
     return this.ticketService.create(createTicketDto);
   }
-  /* TODO: test implementation */
+
+  /* Working implementation */
   @Get()
   findAll() {
-    Logger.log(
-      {
-        req: {
-          http: 'GET /api/ticket',
-          params: 'none',
-          body: 'none',
-        },
-      },
-      'TicketController.findAll',
-      false,
-    );
-
-    return this.ticketService.findAll();
+    return this.ticketService.findAll(TicketType.ANY);
   }
-  /* TODO: test implementation */
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    Logger.log(
-      {
-        req: {
-          http: `GET /api/ticket/${id}`,
-          params: id,
-          body: 'none',
-        },
-      },
-      'TicketController.findOne',
-      false,
-    );
-
-    return this.ticketService.findOne(+id);
+  /* Working implementation */
+  @Get('/opened')
+  findAllOpened() {
+    return this.ticketService.findAll(TicketType.OPENED);
   }
-  /* TODO: test implementation */
+
+  /* Working implementation */
+  @Get('/closed')
+  findAllClosed() {
+    return this.ticketService.findAll(TicketType.CLOSED);
+  }
+
+  /* Working implementation */
+  @Get('/user/:lsu_id')
+  findAllByLsuId(@Param('lsu_id') lsu_id: number) {
+    return this.ticketService.findAll(lsu_id);
+  }
+
+  /* Working implementation */
+  @Get(':ticket_id')
+  findOne(@Param('ticket_id') ticket_id: number) {
+    return this.ticketService.findOne(+ticket_id);
+  }
+
+  /* TODO: FIX */
+  /* NOT WORKING */
   @Put(':id')
   update(@Param('id') id: number, @Body() updateTicketDto: UpdateTicketDto) {
     Logger.log(
