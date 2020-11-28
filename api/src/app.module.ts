@@ -4,8 +4,8 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TicketModule } from './ticket/ticket.module';
-import { TicketWorkModule } from './ticket/work/ticketwork.module';
-import { TicketAssignModule } from './ticket/assign/ticketassign.module';
+import { TicketWorkModule } from './work/ticketwork.module';
+import { TicketAssignModule } from './assign/ticketassign.module';
 import { UserModule } from './user/uer.module';
 
 /**
