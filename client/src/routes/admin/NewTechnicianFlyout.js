@@ -17,7 +17,6 @@ import { personFields } from "../../components/form/person/fields";
 import { handleFormSubmit } from "../../components/form/ManageTicketForm/handlers";
 import { Debug } from "../../components/debug/debug";
 import { dataFetchReducer } from "../../api/reducers";
-import axios from "../../api/api";
 
 export const NewTechnicianFlyout = (
   { isFlyoutVisible, setIsFlyoutVisible },
@@ -31,20 +30,13 @@ export const NewTechnicianFlyout = (
     data: personFields,
   });
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     dispatch({ type: "FETCH_INIT" });
-  //     try {
-  //       dispatch({ type: "FETCH_SUCCESS", payload: result.data });
-  //     } catch (error) {
-  //       dispatch({ type: "FETCH_FAILURE" });
-  //     }
-  //   };
-  //
-  //   fetchData();
-  // }, []);
-
   const showFlyout = () => setIsFlyoutVisible(true);
+
+  const localFormSubmit = (e, data) => {
+    if (handleFormSubmit(e, data) != null) {
+      setIsFlyoutVisible(false);
+    }
+  };
 
   if (isFlyoutVisible) {
     return (
@@ -69,7 +61,7 @@ export const NewTechnicianFlyout = (
                   <EuiButton
                     type={"submit"}
                     onClick={(e) => {
-                      handleFormSubmit(e, state.data);
+                      localFormSubmit(e, state.data);
                     }}
                   >
                     Save

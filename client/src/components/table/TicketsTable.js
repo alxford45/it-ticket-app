@@ -67,7 +67,7 @@ export const TicketsTable = (
       "data-test-subj": `row-${lsu_id}`,
       className: "customRowClass",
       onClick: (e) => {
-        handleTicketSelection(e, lsu_id);
+        handleTicketSelection(e, item);
       },
     };
   };
