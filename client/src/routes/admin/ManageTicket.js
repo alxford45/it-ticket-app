@@ -62,9 +62,10 @@ const TicketForm = ({ data, dispatch, workLogData }, ...props) => {
 
 export const ManageTicket = (props) => {
   const [state, dispatch] = useReducer(dataFetchReducer, {
-    isLoading: false,
+    isTicketsLoading: false,
     isError: false,
     data: fields,
+    allTickets: {},
   });
 
   const [selectedTicket, setSelectedTicket] = useState(false);
@@ -76,7 +77,7 @@ export const ManageTicket = (props) => {
       try {
         const result = await axios.get("ticket");
         // TODO: CHANGE BACK! change payload back to result.data once backend is setup
-        dispatch({ type: "FETCH_SUCCESS", payload: fields });
+        dispatch({ type: "FETCH_ALL_TICKETS_SUCCESS", payload: result.data });
         const workLog = await axios.get("work");
         dispatch({ type: "FETCH_WORK_LOG_SUCCESS", payload: workLog });
       } catch (error) {
@@ -94,16 +95,34 @@ export const ManageTicket = (props) => {
   return (
     <>
       <div>
-        <EuiFlexGroup>
-          <EuiFlexItem>
-            {/*TODO : UPDATE ENDPOINT*/}
-            <MyStat endpoint={"ticket"} color={"danger"} icon={"node"} />
-          </EuiFlexItem>
-          <EuiFlexItem>
-            {/*TODO: UPDATE ENDPOINT*/}
-            <MyStat endpoint={"ticket"} color={"secondary"} icon={"check"} />
-          </EuiFlexItem>
-        </EuiFlexGroup>
+        {state.isTicketsLoading === true ? null : (
+          <EuiFlexGroup>
+            <EuiFlexItem>
+              <MyStat
+                data={state.openTickets}
+                color={"danger"}
+                icon={"node"}
+                description={"Open Tickets"}
+              />
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <MyStat
+                data={state.inProgressTickets}
+                color={"primary"}
+                icon={"boxesHorizontal"}
+                description={"In Progress"}
+              />
+            </EuiFlexItem>
+            <EuiFlexItem>
+              <MyStat
+                data={state.closedTickets}
+                color={"secondary"}
+                icon={"check"}
+                description={"Closed Tickets"}
+              />
+            </EuiFlexItem>
+          </EuiFlexGroup>
+        )}
       </div>
       <EuiSpacer size={"l"} />
       <EuiTitle size={"s"}>
@@ -120,17 +139,17 @@ export const ManageTicket = (props) => {
             : "Edit ____'s Ticket"}
         </h1>
       </EuiTitle>
-      <EuiPanel>
-        {state.isLoading ? (
-          "LOADING..."
-        ) : (
-          <TicketForm
-            data={state.data}
-            dispatch={dispatch}
-            workLogData={state.workLogData}
-          />
-        )}
-      </EuiPanel>
+      {/*<EuiPanel>*/}
+      {/*  {state.isLoading ? (*/}
+      {/*    "LOADING..."*/}
+      {/*  ) : (*/}
+      {/*    <TicketForm*/}
+      {/*      data={state.data}*/}
+      {/*      dispatch={dispatch}*/}
+      {/*      workLogData={state.workLogData}*/}
+      {/*    />*/}
+      {/*  )}*/}
+      {/*</EuiPanel>*/}
     </>
   );
 };
