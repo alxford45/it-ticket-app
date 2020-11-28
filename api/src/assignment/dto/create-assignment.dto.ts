@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateTicketAssignDto {
+export class CreateAssignmentDTO {
   @ApiProperty({ minLength: 3 })
   assignedby: string;
 

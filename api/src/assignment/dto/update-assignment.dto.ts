@@ -1,4 +1,4 @@
-export class UpdateTicketAssignDto {
+export class UpdateAssignmentDTO {
   assignedby: string;
   assignedto: string;
   comment: string;
