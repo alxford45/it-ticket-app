@@ -33,7 +33,7 @@ export const NewTechnicianFlyout = (
   const showFlyout = () => setIsFlyoutVisible(true);
 
   const localFormSubmit = (e, data) => {
-    if (handleFormSubmit(e, data) != null) {
+    if (handleFormSubmit(e, data, "/user") != null) {
       setIsFlyoutVisible(false);
     }
   };

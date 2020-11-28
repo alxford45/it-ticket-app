@@ -2,14 +2,16 @@ export const selectOptions = [
   {
     name: "priority",
     options: [
-      { value: "low", text: "Low" },
-      { value: "medium", text: "Medium" },
-      { value: "high", text: "High" },
+      { value: "", text: "" },
+      { value: "1", text: "Low" },
+      { value: "2", text: "Medium" },
+      { value: "3", text: "High" },
     ],
   },
   {
     name: "problem_category",
     options: [
+      { value: "", text: "" },
       { value: "general_help", text: "General Help" },
       { value: "problem_2", text: "Problem 2" },
     ],
@@ -17,6 +19,7 @@ export const selectOptions = [
   {
     name: "department",
     options: [
+      { value: "", text: "" },
       { value: "accounting", text: "Accounting" },
       {
         value: "administrative_foundation_se",

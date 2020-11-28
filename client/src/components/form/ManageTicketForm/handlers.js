@@ -8,17 +8,18 @@ const postData = async (endpoint, data) => {
   return response;
 };
 
-export const handleFormSubmit = (e, data) => {
+export const handleFormSubmit = async (e, data, endpoint) => {
   const errors = _.find(data, ["error", true]);
   if (errors === undefined) {
     let d = data.map((o) => ({ [o.name]: o.value }));
     const dd = Object.assign({}, ...d);
 
-    const response = postData("/user", dd);
+    const response = await postData(endpoint, dd);
     addToast({
       title: "Ticket Submitted!",
       color: "success",
     });
+
     return response;
   } else {
     addToast({
@@ -30,19 +31,7 @@ export const handleFormSubmit = (e, data) => {
   }
 };
 
-export const handleFormFieldChange = (e, data, setData) => {
-  const target = e.target;
-  const value = target.value;
-  const name = target.name;
-
-  const newData = data;
-  const index = newData.findIndex((o) => o.name === name);
-
-  newData[index].value = value;
-  setData(newData);
-};
-
-export const handleFormFieldChangeDispatch = (e, data, dispatch) => {
+export const handleFormFieldChange = (e, data, dispatch) => {
   const target = e.target;
   const value = target.value;
   const name = target.name;
@@ -54,15 +43,7 @@ export const handleFormFieldChangeDispatch = (e, data, dispatch) => {
   dispatch({ type: "UPDATE_DATA", payload: newData });
 };
 
-export const handleDateChange = (date, name, data, dispatch) => {
-  const newData = data;
-  const index = newData.findIndex((o) => o.name === name);
-
-  newData[index].value = date.toJSON();
-  dispatch({ type: "UPDATE_DATA", payload: newData });
-};
-
-export const handleDateChangeDispatch = (date, name, data, setData) => {
+export const handleDateChange = (date, name, data, setData) => {
   const newData = data;
   const index = newData.findIndex((o) => o.name === name);
 
@@ -70,7 +51,7 @@ export const handleDateChangeDispatch = (date, name, data, setData) => {
   setData(newData);
 };
 
-export const handleFormFieldBlurDispatch = (e, data, dispatch) => {
+export const handleFormFieldBlur = (e, data, dispatch) => {
   const name = e.target.name;
   const value = e.target.value;
 
@@ -85,21 +66,4 @@ export const handleFormFieldBlurDispatch = (e, data, dispatch) => {
   }
 
   dispatch({ type: "UPDATE_DATA", payload: newData });
-};
-
-export const handleFormFieldBlur = (e, data, setData) => {
-  const name = e.target.name;
-  const value = e.target.value;
-
-  const newData = data;
-  const index = newData.findIndex((o) => o.name === name);
-
-  if (value === "") {
-    newData[index].error = true;
-    newData[index].error_msg = "required";
-  } else {
-    newData[index].error = false;
-  }
-
-  setData(newData);
 };
