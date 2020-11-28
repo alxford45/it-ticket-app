@@ -7,16 +7,16 @@ import {
 } from '@nestjs/common';
 import { Pool, QueryConfig } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
-import { CreateUser } from './dto/create-user.dto';
-import { UpdateUser } from './dto/update-user.dto';
-import { User, UserType } from './dto/user.dto';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { UserDTO, UserType } from './dto/user.dto';
 
 @Injectable()
 export class UserService {
   constructor(@Inject(PG_CONNECTION) private connection: Pool) {}
 
   /* WORKING implementation */
-  async create(createUser: CreateUser) {
+  async create(createUserDTO: CreateUserDTO) {
     const {
       lsu_id,
       email,
@@ -25,7 +25,7 @@ export class UserService {
       phone_number,
       department,
       admin,
-    } = createUser;
+    } = createUserDTO;
 
     const findQuery: QueryConfig = {
       name: 'select_user_by_id_or_email',
@@ -80,7 +80,7 @@ export class UserService {
       ],
     };
     try {
-      const res = await this.connection.query<User>(insertQuery);
+      const res = await this.connection.query<UserDTO>(insertQuery);
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
@@ -114,7 +114,7 @@ export class UserService {
     }
 
     try {
-      const queryRes = await this.connection.query<User>(query);
+      const queryRes = await this.connection.query<UserDTO>(query);
       /* If no users found return empty array */
       if (queryRes.rows.length < 1) {
         return [];
@@ -137,7 +137,7 @@ export class UserService {
       text: 'SELECT * FROM "user" WHERE "lsu_id" = $1',
     };
     try {
-      const queryRes = await this.connection.query<User>(query, [lsu_id]);
+      const queryRes = await this.connection.query<UserDTO>(query, [lsu_id]);
       /* If customer not found return empty object */
       if (queryRes.rows.length < 1) {
         return {};
@@ -156,7 +156,7 @@ export class UserService {
   }
 
   /* WORKING implementation */
-  async update(updateUser: UpdateUser, old_lsu_id: number) {
+  async update(old_lsu_id: number, updateUserDTO: UpdateUserDTO) {
     const {
       lsu_id,
       email,
@@ -165,8 +165,9 @@ export class UserService {
       phone_number,
       department,
       admin,
-    } = updateUser;
+    } = updateUserDTO;
 
+    /* Find user by old_lsu_id supplied in route i.e. /api/user/{lsu_id} */
     const findQuery: QueryConfig = {
       name: 'select_user_by_id',
       text: 'SELECT lsu_id FROM "user" WHERE lsu_id = $1',
@@ -175,7 +176,7 @@ export class UserService {
     try {
       const res = await this.connection.query(findQuery);
 
-      /* Test to see if student exists */
+      /* Test to see if user exists */
       if (res.rows.length < 1) {
         /*Throw custom error to be handled in catch*/
         throw new Error('BAD_REQUEST');
@@ -220,7 +221,7 @@ export class UserService {
       ],
     };
     try {
-      const res = await this.connection.query<User>(updateQuery);
+      const res = await this.connection.query<UserDTO>(updateQuery);
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
