@@ -38,27 +38,31 @@ export class TicketService {
       admin,
     } = createUser;
 
+    /* Check to see if user exists */
     const findQuery: QueryConfig = {
       name: 'select_user_by_id_or_email',
       text: 'SELECT * FROM "user" WHERE lsu_id = $1 OR email = $2',
       values: [lsu_id, email],
     };
 
-    /* Query User by lsuid or email */
     try {
       const res = await this.connection.query<User>(findQuery);
-      /* Test to see if student exists */
+
+      /* If user exists abort insert operation by returning early */
       if (res.rows.length > 0) {
         return res.rows[0];
       }
     } catch (error) {
       throw new HttpException(
-        { query: findQuery, error: error },
+        {
+          query: findQuery,
+          error: error,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
 
-    /* Insert new student into db */
+    /* Insert new user into db */
     const insertQuery: QueryConfig = {
       name: 'insert_user',
 
@@ -76,10 +80,15 @@ export class TicketService {
     };
     try {
       const res = await this.connection.query<User>(insertQuery);
+
+      /* Return newly inserted user */
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
-        { query: insertQuery, error: error },
+        {
+          query: insertQuery,
+          error: error,
+        },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -100,9 +109,13 @@ export class TicketService {
       priority,
     } = createTicket;
 
+    /* Status set to open for new ticket */
     const status = 'OPEN';
+
+    /* Submission date set to current server time */
     const submission_date = this.createDate();
 
+    /* Insert new ticket into db */
     const query: QueryConfig = {
       name: 'insert_ticket',
       text:
@@ -120,11 +133,13 @@ export class TicketService {
 
     try {
       const res = await this.connection.query<Ticket>(query);
+
+      /* Return newly inserted ticket */
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -145,6 +160,8 @@ export class TicketService {
       operating_system,
       operating_system_version,
     } = createDevice;
+
+    /* Insert Device into db */
     const query: QueryConfig = {
       name: 'insert_device',
       text:
@@ -159,11 +176,13 @@ export class TicketService {
     };
     try {
       const res = await this.connection.query<Device>(query);
+
+      /* Return newly inserted device */
       return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -193,7 +212,8 @@ export class TicketService {
       [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
     return date;
   }
-  /* TODO: test implementation */
+
+  /* WORKING Implementation */
   async create(createCombined: CreateCombined) {
     /* Response Accumulator */
     let response: Combined;
@@ -206,6 +226,8 @@ export class TicketService {
     const createUser: CreateUser = { ...createCombined, admin: false }; // tickets are created by students so admin is false
     try {
       user = await this.createUser(createUser);
+
+      /* Accumulate user to response */
       response = { ...response, ...user };
     } catch (error) {
       Logger.error(error);
@@ -216,6 +238,8 @@ export class TicketService {
     const createTicket: CreateTicket = { ...createCombined };
     try {
       ticket = await this.createTicket(createTicket);
+
+      /* Accumulate ticket to response */
       response = { ...response, ...ticket };
     } catch (error) {
       Logger.error(error);
@@ -229,12 +253,15 @@ export class TicketService {
     };
     try {
       device = await this.createDevice(createDevice);
+
+      /* Accumulate device to response */
       response = { ...response, ...device };
     } catch (error) {
       Logger.error(error);
       return error;
     }
 
+    /* Return flat object with the intersection of properties from user, ticket, and deivce */
     return response;
   }
 
@@ -276,7 +303,7 @@ export class TicketService {
     try {
       const queryRes = await this.connection.query<Ticket>(query);
 
-      /* If no tickets */
+      /* If no tickets return empty array */
       if (queryRes.rows.length === 0) {
         return [];
       }
@@ -285,7 +312,7 @@ export class TicketService {
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -303,7 +330,7 @@ export class TicketService {
     try {
       const queryRes = await this.connection.query<Ticket>(query);
 
-      /* If no ticket found */
+      /* If no ticket found return empty object*/
       if (queryRes.rows.length === 0) {
         return {};
       }
@@ -312,7 +339,7 @@ export class TicketService {
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: query,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -320,35 +347,71 @@ export class TicketService {
     }
   }
 
-  /* NOT WORKING implementation */
-  async update(id: number, updateTicketDto: UpdateTicketDto) {
-    id = Number(id);
-    let keys = [];
-    let values = [];
+  /* WORKING Implementation */
+  async update(ticket_id: number, updateTicketDto: UpdateTicketDto) {
+    const {
+      core_issue,
+      description,
+      problem_category,
+      status,
+      priority,
+    } = updateTicketDto;
 
-    /* unknown properties to be updated */
-    for (let key in updateTicketDto) {
-      if (!!updateTicketDto[key]) {
-        keys = [...keys, key];
-        values = [...values, updateTicketDto[key]];
-      }
-    }
-    /* keys variable defined by interface NOT user so avoids sql injection */
-    const columns = keys.map((val, idx) => `${val} = $${idx + 1}`).join(', ');
-    let txt = String.raw`UPDATE ticket SET ${columns} WHERE ticket_id = $${keys.length}`;
-
-    const query = {
-      name: 'update_ticket',
-      text: txt,
-      values: [...values, id],
+    /* Check to see if ticket exist */
+    const findQuery: QueryConfig = {
+      name: 'select_ticket_by_ticket_id',
+      text: 'SELECT * FROM ticket WHERE ticket_id = $1',
+      values: [ticket_id],
     };
     try {
-      const queryRes = await this.connection.query(query, [...values, id]);
-      return queryRes.rows;
+      const res = await this.connection.query<Ticket>(findQuery);
+
+      /* If no ticket found throw custom error*/
+      if (res.rows.length < 1) {
+        throw new Error('BAD_REQUEST');
+      }
+    } catch (error) {
+      /* catch custom error for ticket not found */
+      if (error.message === 'BAD_REQUEST') {
+        /* Throw HttpException for ticket not found */
+        throw new HttpException(
+          {
+            message: `Ticket with ticket_id: ${ticket_id} DOES NOT EXIST`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      /* Throw HttpException for postgres errors */
+      throw new HttpException(
+        {
+          query: findQuery,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    /* Update ticket */
+    const updateQuery = {
+      name: 'update_ticket',
+      text:
+        'UPDATE ticket SET core_issue = $1, description = $2, problem_category = $3, status = $4, priority = $5 WHERE ticket_id = $6 RETURNING *',
+      values: [
+        core_issue,
+        description,
+        problem_category,
+        status,
+        priority,
+        ticket_id,
+      ],
+    };
+    try {
+      const res = await this.connection.query(updateQuery);
+      return res.rows[0];
     } catch (error) {
       throw new HttpException(
         {
-          message: query,
+          query: updateQuery,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
