@@ -164,7 +164,7 @@ export const ManageTicket = (props) => {
         <h1>
           {selectedTicket === null
             ? "Create New Ticket"
-            : "Edit " + selectedTicket.lsu_id + "'s Ticket"}
+            : "Edit " + selectedTicket.first_name + "'s Ticket"}
         </h1>
       </EuiTitle>
       <EuiPanel>
