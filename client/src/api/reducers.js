@@ -7,6 +7,7 @@ export const dataFetchReducer = (state, action) => {
         ...state,
         isLoading: true,
         isError: false,
+        allTickets: {},
         workLogData: { ...workLogFields },
       };
     case "FETCH_SUCCESS":

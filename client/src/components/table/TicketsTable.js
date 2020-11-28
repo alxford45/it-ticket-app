@@ -18,21 +18,17 @@ const userTest = [
 ];
 
 export const TicketsTable = ({ handleTicketSelection }, ...props) => {
-  const [state, dispatch] = useReducer(dataFetchReducer, {
-    isLoading: false,
-    isError: false,
-    data: null,
-  });
+  const [items, setItems] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch({ type: "FETCH_INIT" });
-      // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA FOR TABLE
       try {
         const result = await axios.get("ticket");
-        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+        setItems(result.data);
+        setIsLoading(false);
       } catch (error) {
-        dispatch({ type: "FETCH_FAILURE" });
+        console.log(error);
       }
     };
 
@@ -41,7 +37,7 @@ export const TicketsTable = ({ handleTicketSelection }, ...props) => {
 
   const columns = [
     {
-      field: "firstName",
+      field: "first_name",
       name: "First Name",
       sortable: true,
       "data-test-subj": "firstNameCell",
@@ -64,32 +60,20 @@ export const TicketsTable = ({ handleTicketSelection }, ...props) => {
       field: "lastName",
       name: "Last Name",
       truncateText: true,
-      render: (name) => (
-        <EuiLink href="#" target="_blank">
-          {name}
-        </EuiLink>
-      ),
-      mobileOptions: {
-        show: false,
-      },
     },
     {
-      field: "github",
-      name: "Github",
+      field: "lsu_id",
+      name: "LSU ID",
     },
     {
-      field: "online",
-      name: "Online",
-      dataType: "boolean",
-      render: (online) => {
-        const color = online ? "success" : "danger";
-        const label = online ? "Online" : "Offline";
-        return <EuiHealth color={color}>{label}</EuiHealth>;
-      },
+      field: "problem_category",
+      name: "Problem Category",
+    },
+    {
+      field: "status",
+      name: "Status",
     },
   ];
-
-  const items = userTest.filter((user, index) => index < 10);
 
   const getRowProps = (item) => {
     const { id } = item;
@@ -114,12 +98,10 @@ export const TicketsTable = ({ handleTicketSelection }, ...props) => {
 
   return (
     <div>
-      {state.isError === true ? (
-        <ErrorCallout errMsg={""} />
-      ) : (
+      {isLoading === true ? null : (
         <EuiBasicTable
           items={items}
-          rowHeader="firstName"
+          rowHeader="first_name"
           columns={columns}
           rowProps={getRowProps}
           cellProps={getCellProps}
