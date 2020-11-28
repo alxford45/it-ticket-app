@@ -37,9 +37,9 @@ export class User {
     minLength: 10,
     maxLength: 10,
     description: '10 digit number encoded as a string',
-    example: '2254784145',
+    example: 2254784145,
   })
-  phone_number: string;
+  phone_number: number;
 
   @ApiProperty({
     description: '10 digit number encoded as a string',
