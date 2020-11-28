@@ -17,24 +17,10 @@ const userTest = [
   },
 ];
 
-export const TicketsTable = ({ handleTicketSelection }, ...props) => {
-  const [items, setItems] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await axios.get("ticket");
-        setItems(result.data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
+export const TicketsTable = (
+  { handleTicketSelection, tickets, isLoading },
+  ...props
+) => {
   const columns = [
     {
       field: "first_name",
@@ -76,12 +62,12 @@ export const TicketsTable = ({ handleTicketSelection }, ...props) => {
   ];
 
   const getRowProps = (item) => {
-    const { id } = item;
+    const { lsu_id } = item;
     return {
-      "data-test-subj": `row-${id}`,
+      "data-test-subj": `row-${lsu_id}`,
       className: "customRowClass",
       onClick: (e) => {
-        handleTicketSelection(e, id);
+        handleTicketSelection(e, lsu_id);
       },
     };
   };
@@ -100,7 +86,7 @@ export const TicketsTable = ({ handleTicketSelection }, ...props) => {
     <div>
       {isLoading === true ? null : (
         <EuiBasicTable
-          items={items}
+          items={tickets}
           rowHeader="first_name"
           columns={columns}
           rowProps={getRowProps}
