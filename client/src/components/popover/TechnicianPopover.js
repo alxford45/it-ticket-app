@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 
 import {
   EuiButton,
@@ -14,9 +14,30 @@ import {
   handleFormFieldBlur,
   handleFormFieldChange,
 } from "../form/ManageTicketForm/handlers";
+import { dataFetchReducer } from "../../api/reducers";
+import axios from "../../api/api";
 
 export const AddTechnicianPopover = () => {
-  const [data, setData] = useState(fields);
+  const [state, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: null,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_INIT" });
+      // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA FOR TABLE
+      try {
+        const result = await axios.get("ticket");
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE" });
+      }
+    };
+    fetchData();
+  }, []);
+
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const onButtonClick = () =>
@@ -40,10 +61,12 @@ export const AddTechnicianPopover = () => {
           <EuiFlexItem style={{ minWidth: 250 }}>
             <MySelectField
               name={"technician"}
-              data={data}
+              data={state.data}
               selectOptions={selectOptions}
-              handleChange={(e) => handleFormFieldChange(e, data, setData)}
-              handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              handleChange={(e) =>
+                handleFormFieldChange(e, state.data, dispatch)
+              }
+              handleBlur={(e) => handleFormFieldBlur(e, state.data, dispatch)}
             />
           </EuiFlexItem>
           <EuiFlexItem>
