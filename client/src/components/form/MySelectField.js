@@ -13,10 +13,11 @@ export const MySelectField = (
       <EuiSelect
         name={item.name}
         id={item.name}
-        options={selectOptions.find((o) => o.name === name).options}
+        options={selectOptions.options}
         value={item.value}
         onChange={(e) => handleChange(e)}
         onBlur={(e) => handleBlur(e)}
+        hasNoInitialSelection={true}
       />
     </EuiFormRow>
   );

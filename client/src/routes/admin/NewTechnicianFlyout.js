@@ -24,6 +24,7 @@ export const NewTechnicianFlyout = (
   ...props
 ) => {
   const closeFlyout = () => setIsFlyoutVisible(false);
+
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
@@ -33,7 +34,6 @@ export const NewTechnicianFlyout = (
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: "FETCH_INIT" });
-      // TODO: ONCE BACKEND IS SET UP, FORMAT AND IMPLEMENT DATA FOR TABLE
       try {
         const result = await axios.get("ticket");
         dispatch({ type: "FETCH_SUCCESS", payload: result.data });

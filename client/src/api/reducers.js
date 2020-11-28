@@ -16,6 +16,13 @@ export const dataFetchReducer = (state, action) => {
         isError: false,
         data: action.payload,
       };
+    case "FETCH_TECHNICIANS_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        selectTechnicianOptions: action.payload,
+      };
     case "FETCH_FAILURE":
       return {
         ...state,

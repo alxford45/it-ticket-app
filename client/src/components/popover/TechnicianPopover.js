@@ -9,7 +9,10 @@ import {
   EuiFlexItem,
 } from "@elastic/eui";
 import { MySelectField } from "../form/MySelectField";
-import { fields, selectOptions } from "../form/ManageTechnicianForm/fields";
+import {
+  fields,
+  selectTechnicianOptions_default,
+} from "../form/ManageTechnicianForm/fields";
 import {
   handleFormFieldBlur,
   handleFormFieldChange,
@@ -62,7 +65,7 @@ export const AddTechnicianPopover = () => {
             <MySelectField
               name={"technician"}
               data={state.data}
-              selectOptions={selectOptions}
+              selectOptions={selectTechnicianOptions_default}
               handleChange={(e) =>
                 handleFormFieldChange(e, state.data, dispatch)
               }
