@@ -29,7 +29,10 @@ import { TimeLogTable } from "../../table/TimeLogTable";
 
 var _ = require("lodash");
 
-export const AdminView = ({ data, dispatch, workLogData }, ...props) => {
+export const AdminView = (
+  { data, dispatch, workLogData, assignLogData },
+  ...props
+) => {
   return (
     <>
       <EuiSpacer />
@@ -93,9 +96,10 @@ export const AdminView = ({ data, dispatch, workLogData }, ...props) => {
         <EuiFlexItem style={{ maxWidth: 500 }}>
           <EuiFormRow hasEmptyLabelSpace={true}>
             <>
-              <TicketAssignmentTable />
-              <EuiSpacer size={"s"} />
-              <AddTechnicianPopover />
+              {/*  TODO: WAITING ON BACKEND*/}
+              {/*<TicketAssignmentTable />*/}
+              {/*<EuiSpacer size={"s"} />*/}
+              {/*<AddTechnicianPopover />*/}
             </>
           </EuiFormRow>
         </EuiFlexItem>
@@ -109,7 +113,7 @@ export const AdminView = ({ data, dispatch, workLogData }, ...props) => {
           <TimeLogTable />
         </EuiFlexItem>
       </EuiFlexGroup>
-
+      {/*  TODO: WAITING ON BACKEND*/}
       {/*<EuiFlexGroup style={{ maxWidth: 1000 }}>*/}
       {/*  <EuiFlexItem style={{ maxWidth: 200 }}>*/}
       {/*    <EuiFormRow>*/}

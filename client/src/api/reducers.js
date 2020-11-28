@@ -17,21 +17,13 @@ export const dataFetchReducer = (state, action) => {
         ...state,
         isLoading: true,
         isError: false,
-        allTickets: {},
-        data: fields,
       };
-    case "FETCH_SUCCESS":
+    case "FETCH_TICKET_SUCCESS":
       return {
         ...state,
         isLoading: false,
         isError: false,
         data: action.payload,
-      };
-    case "FETCH_ALL_TICKETS_SUCCESS":
-      return {
-        ...state,
-        isTicketsLoading: false,
-        isError: false,
       };
     case "FETCH_TECHNICIANS_SUCCESS":
       return {
@@ -55,6 +47,13 @@ export const dataFetchReducer = (state, action) => {
       return {
         ...state,
         workLogData: action.payload,
+        workLogLoading: false,
+      };
+    case "FETCH_ASSIGN_LOG_SUCCESS":
+      return {
+        ...state,
+        assignLog: action.payload,
+        assignLogLoading: false,
       };
     default:
       throw new Error();
