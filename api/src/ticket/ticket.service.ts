@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { Pool, QueryConfig } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
-import { CreateTicketDto } from './dto/create-ticket.dto';
-import { TicketDto } from './dto/ticket.dto';
+import { CreateTicket } from './dto/create-ticket.dto';
+import { Ticket, TicketType } from './dto/ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 
 @Injectable()
@@ -16,107 +16,146 @@ export class TicketService {
   constructor(@Inject(PG_CONNECTION) private connection: Pool) {}
 
   /* TODO: test implementation */
-  async create(createTicketDto: CreateTicketDto) {
+  async create(createTicketDto: CreateTicket) {
     const {
-      priority,
-      manufacturer,
-      model,
-      os,
-      problem,
+      lsu_id,
+      core_issue,
       description,
+      problem_category,
     } = createTicketDto;
+    const status = 'OPEN';
+    const priority = 1;
+    /**
+     * Adapted from:
+     * https://stackoverflow.com/questions/10632346/how-to-format-a-date-in-mm-dd-yyyy-hhmmss-format-in-javascript
+     *
+     * START
+     */
+    //@ts-ignore
+    Number.prototype.padLeft = function (base, chr) {
+      var len = String(base || 10).length - String(this).length + 1;
+      return len > 0 ? new Array(len).join(chr || '0') + this : this;
+    };
+    const d = new Date(Date.now());
+    const submission_date =
+      [d.getMonth() + 1, d.getDate(), d.getFullYear()].join('-') +
+      ' ' +
+      [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
+
+    /**END */
 
     /* Insert new ticket into db */
     const query: QueryConfig = {
-      name: 'insertTicket',
+      name: 'insert_ticket',
       text:
-        'INSERT INTO ticket(priority, manufacturer, model, os, problem, description) VALUES ($1, $2, $3, $4, $5, %6) RETURNING *',
-      values: [priority, manufacturer, model, os, problem, description],
+        'INSERT INTO ticket(lsu_id, core_issues, description, problem_category, status, priority, submission_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      values: [
+        lsu_id,
+        core_issue,
+        description,
+        problem_category,
+        status,
+        priority,
+        submission_date,
+      ],
     };
     /* Handle db errors */
     try {
-      const res = await this.connection.query<TicketDto, CreateTicketDto[]>(
-        query,
-      );
+      const res = await this.connection.query<Ticket, CreateTicket[]>(query);
       /* If no db errors return Ticket object */
       return res.rows[0];
     } catch (error) {
-      /* If db error return response with error and status code 422 */
-      const err = {
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        error: error,
-        message: { name: query.name, text: query.text, values: query.values },
-      };
-      throw new HttpException(err, HttpStatus.UNPROCESSABLE_ENTITY);
+      /* If db error return response with error */
+      throw new HttpException(
+        {
+          message: query,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  /* TODO: test implementation */
-  async findAll() {
+  /* WORKING implementation */
+  async findAll(param: TicketType | number) {
+    let query: QueryConfig;
+    switch (param) {
+      case TicketType.ANY:
+        query = {
+          name: 'find_all_tickets',
+          text: 'SELECT * FROM ticket',
+        };
+        break;
+      case TicketType.OPENED:
+        query = {
+          name: 'find_opened_tickets',
+          text: 'SELECT * FROM ticket WHERE "status" = \'OPEN\'',
+        };
+        break;
+      case TicketType.CLOSED:
+        query = {
+          name: 'find_closed_tickets',
+          text: 'SELECT * FROM ticket WHERE "status" = \'CLOSE\'',
+        };
+        break;
+      default:
+        query = {
+          name: 'find_ticket_by_lsu_id',
+          text: 'SELECT * FROM ticket WHERE lsu_id = $1',
+          values: [param],
+        };
+        break;
+    }
     try {
-      const query = 'SELECT * FROM ticket';
-      const queryRes = await this.connection.query<TicketDto>(query);
+      const queryRes = await this.connection.query<Ticket>(query);
 
       /* If no tickets */
       if (queryRes.rows.length === 0) {
         return [];
       }
 
-      return [...queryRes.rows];
+      return queryRes.rows;
     } catch (error) {
       throw new HttpException(
         {
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          message: query,
           error: error,
         },
-        HttpStatus.UNPROCESSABLE_ENTITY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
 
-  /* TODO: test implementation */
+  /* WORKING implementation */
   async findOne(ticket_id: number) {
+    const query: QueryConfig = {
+      name: 'select_ticket_by_ticket_id',
+      text: 'SELECT * FROM ticket WHERE ticket_id = $1',
+      values: [ticket_id],
+    };
     try {
-      const query = 'SELECT * FROM ticket WHERE ticket_id = $1';
-      const queryRes = await this.connection.query<TicketDto, number[]>(query, [
-        ticket_id,
-      ]);
+      const queryRes = await this.connection.query<Ticket>(query);
 
-      /* If no customer found */
+      /* If no ticket found */
       if (queryRes.rows.length === 0) {
-        Logger.verbose(
-          {
-            res: {
-              body: {},
-            },
-          },
-          'TicketService.findOne',
-          false,
-        );
         return {};
       }
-      Logger.verbose(
-        {
-          res: {
-            body: queryRes.rows[0],
-          },
-        },
-        'TicketService.findOne',
-        false,
-      );
+
       return queryRes.rows[0];
     } catch (error) {
-      const err = {
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        error: error,
-      };
-      Logger.error({ message: err, context: 'TicketService.findone' });
-      throw new HttpException(err, HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException(
+        {
+          message: query,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  /* TODO: test implementation */
+  /* NOT WORKING implementation */
   async update(id: number, updateTicketDto: UpdateTicketDto) {
+    id = Number(id);
     let keys = [];
     let values = [];
 
@@ -129,17 +168,23 @@ export class TicketService {
     }
     /* keys variable defined by interface NOT user so avoids sql injection */
     const columns = keys.map((val, idx) => `${val} = $${idx + 1}`).join(', ');
+    let txt = String.raw`UPDATE ticket SET ${columns} WHERE ticket_id = $${keys.length}`;
+
+    const query = {
+      name: 'update_ticket',
+      text: txt,
+      values: [...values, id],
+    };
     try {
-      const query = `UPDATE ticket SET ${columns} WHERE id = $${keys.length}`;
       const queryRes = await this.connection.query(query, [...values, id]);
       return queryRes.rows;
     } catch (error) {
       throw new HttpException(
         {
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          message: query,
           error: error,
         },
-        HttpStatus.UNPROCESSABLE_ENTITY,
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }
