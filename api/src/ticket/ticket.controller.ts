@@ -1,17 +1,17 @@
 import {
+  Body,
   Controller,
   Get,
-  Post,
-  Body,
-  Put,
-  Param,
   Logger,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
-import { TicketService } from './ticket.service';
-import { CreateTicket } from './dto/create-ticket.dto';
-import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { Ticket, TicketType } from './dto/ticket.dto';
+import { CreateCombined } from './dto/create-combined.dto';
+import { TicketType } from './dto/ticket.dto';
+import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { TicketService } from './ticket.service';
 
 @ApiTags('ticket')
 @Controller('/api/ticket')
@@ -20,19 +20,19 @@ export class TicketController {
 
   /* TODO: test implementation */
   @Post()
-  create(@Body() createTicketDto: CreateTicket) {
+  create(@Body() createCombined: CreateCombined) {
     Logger.log(
       {
         req: {
           http: 'POST /api/ticket',
           params: 'none',
-          body: createTicketDto,
+          body: createCombined,
         },
       },
       'TicketController.create',
       false,
     );
-    return this.ticketService.create(createTicketDto);
+    return this.ticketService.create(createCombined);
   }
 
   /* Working implementation */
