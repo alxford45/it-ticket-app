@@ -43,7 +43,7 @@ export const TicketsTable = (
       },
     },
     {
-      field: "lastName",
+      field: "last_name",
       name: "Last Name",
       truncateText: true,
     },
@@ -58,6 +58,21 @@ export const TicketsTable = (
     {
       field: "status",
       name: "Status",
+      render: (status) => {
+        const color =
+          status === "OPEN"
+            ? "danger"
+            : status === "IN PROGRESS"
+            ? "primary"
+            : "success";
+        const label =
+          status === "OPEN"
+            ? "Open"
+            : status === "IN PROGRESS"
+            ? "In Progress"
+            : "Closed";
+        return <EuiHealth color={color}>{label}</EuiHealth>;
+      },
     },
   ];
 
