@@ -50,23 +50,3 @@ export class Ticket {
   })
   submission_date: string;
 }
-// @ApiProperty({ description: 'manufacturer of device', example: 'dell' })
-// manufacturer: string;
-
-// @ApiProperty({
-//   minLength: 1,
-//   description: 'model of device',
-//   example: '15',
-// })
-// model: number;
-
-// @ApiProperty({
-//   minLength: 1,
-//   description: 'operating system',
-//   example: 'windows',
-// })
-// os: string;
-
-// // Not sure of example data for os version
-// @ApiProperty({ description: 'operating system version', example: 'version1' })
-// version: string;
