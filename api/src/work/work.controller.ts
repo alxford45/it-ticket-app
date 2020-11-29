@@ -1,16 +1,8 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { WorkService } from './work.service';
-import { CreateWorkDTO } from './dto/create-work.dto';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateWorkDTO } from './dto/create-work.dto';
 import { WorkType } from './dto/work.dto';
+import { WorkService } from './work.service';
 
 @ApiTags('work')
 @Controller('/api/work')
