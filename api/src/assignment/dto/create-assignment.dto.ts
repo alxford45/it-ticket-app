@@ -1,15 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType as Omit } from '@nestjs/swagger';
+import { AssignmentDTO } from './assignment.dto';
 
-export class CreateAssignmentDTO {
-  @ApiProperty({ minLength: 3 })
-  assignedby: string;
-
-  @ApiProperty({ minLength: 3 })
-  assignedto: string;
-
-  @ApiProperty({})
-  comment: number;
-
-  @ApiProperty({})
-  assigndate: Date;
-}
+export class CreateAssignmentDTO extends Omit(AssignmentDTO, [
+  'assignment_id',
+  'assigned_date',
+]) {}
