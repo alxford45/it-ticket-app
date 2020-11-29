@@ -38,7 +38,6 @@ export class TicketDTO {
   })
   description: string;
 
-  // Not sure of difference between description and problem
   @ApiProperty({
     description: 'label of problem student is facing',
     example: 'computer slowdown',
@@ -50,4 +49,13 @@ export class TicketDTO {
     example: '2020-07-21 12:44:22',
   })
   submission_date: string;
+
+  @ApiProperty({
+    description: 'notes for admin to add',
+    example: 'TODO: some note',
+    maxLength: 500,
+    default: null,
+    nullable: true,
+  })
+  notes: string | null;
 }
