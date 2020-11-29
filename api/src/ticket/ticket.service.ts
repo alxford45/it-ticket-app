@@ -171,7 +171,7 @@ export class TicketService {
     const query: QueryConfig = {
       name: 'insert_device',
       text:
-        'INSERT INTO device(ticket_id, manufacturer, model, operating_system, operating_system_version, component) VALUES ($1, $2, $3, $4, $5 $6) RETURNING *',
+        'INSERT INTO device(ticket_id, manufacturer, model, operating_system, operating_system_version, component) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
       values: [
         ticket_id,
         manufacturer,
