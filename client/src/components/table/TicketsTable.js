@@ -5,18 +5,6 @@ import { AdminTicketFlyout } from "../flyout/flyout";
 import { dataFetchReducer } from "../../api/reducers";
 import { ErrorCallout } from "../callout/Callout";
 
-const userTest = [
-  {
-    id: "1",
-    firstName: "john",
-    lastName: "doe",
-    github: "johndoe",
-    dateOfBirth: Date.now(),
-    nationality: "NL",
-    online: true,
-  },
-];
-
 export const TicketsTable = (
   { handleTicketSelection, tickets, isLoading },
   ...props
@@ -54,6 +42,15 @@ export const TicketsTable = (
     {
       field: "problem_category",
       name: "Problem Category",
+      render: (problem_category) => {
+        String.prototype.toProperCase = function () {
+          return this.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+          });
+        };
+
+        return problem_category.replace("_", " ").toProperCase();
+      },
     },
     {
       field: "status",

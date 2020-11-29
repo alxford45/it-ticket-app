@@ -159,6 +159,7 @@ export const UserView = ({ data, dispatch }, ...props) => {
               name={_.find(data, ["name", "description"]).name}
               onChange={(e) => handleFormFieldChange(e, data, dispatch)}
               onBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
+              value={_.find(data, ["name", "description"]).value}
             />
           </EuiFormRow>
         </EuiFlexItem>

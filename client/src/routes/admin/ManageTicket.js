@@ -77,8 +77,8 @@ const TicketForm = ({ setSelectedTicket, selectedTicket }, ...props) => {
       };
 
       try {
+        dispatch({ type: "CLEAR_FORM" });
         const result = await axios.get("/ticket/" + selectedTicket.ticket_id);
-        const userResult = await axios.get("/user/" + selectedTicket.lsu_id);
         let final = [];
         for (const [key, value] of Object.entries(result.data)) {
           console.log(`${key}: ${value}`);
@@ -91,16 +91,6 @@ const TicketForm = ({ setSelectedTicket, selectedTicket }, ...props) => {
           });
         }
 
-        for (const [key, value] of Object.entries(userResult.data)) {
-          console.log(`${key}: ${value}`);
-          final.push({
-            name: key,
-            value: value,
-            error: false,
-            error_type: "none",
-            label: key.replace("_", " ").toProperCase(),
-          });
-        }
         const union = _.unionBy(final, fields, "name");
         dispatch({
           type: "FETCH_TICKET_SUCCESS",
