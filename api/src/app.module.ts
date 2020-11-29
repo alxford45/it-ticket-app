@@ -5,7 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TicketModule } from './ticket/ticket.module';
 import { TicketWorkModule } from './work/ticketwork.module';
-import { TicketAssignModule } from './assign/ticketassign.module';
+import { AssignmentModule } from './assignment/assignment.module.';
 import { UserModule } from './user/uer.module';
 
 /**
@@ -41,7 +41,7 @@ const configImports = (modules: ModuleMetadata['imports']) => {
   imports: configImports([
     TicketModule,
     TicketWorkModule,
-    TicketAssignModule,
+    AssignmentModule,
     UserModule,
   ]),
   controllers: [AppController],
