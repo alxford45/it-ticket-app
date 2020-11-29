@@ -11,10 +11,7 @@ import {
   EuiTitle,
 } from "@elastic/eui";
 import React, { useState } from "react";
-import { MyTextField } from "../MyTextField";
 import { MySelectField } from "../MySelectField";
-import { addToast } from "../../toast";
-import { DEBUG } from "../../app/app";
 import { errorMessages } from "./fields";
 import {
   handleDateChange,
@@ -22,9 +19,6 @@ import {
   handleFormFieldChange,
 } from "./handlers";
 import { selectOptions } from "../selectOptions";
-import { MyDatePicker } from "../MyDatePicker";
-import { TicketAssignmentTable } from "../../table/AssignedToTable";
-import { AddTechnicianPopover } from "../../popover/TechnicianPopover";
 import { TimeLogTable } from "../../table/TimeLogTable";
 
 var _ = require("lodash");
@@ -44,7 +38,7 @@ export const AdminView = (
           <MySelectField
             data={data}
             name={"core_issue"}
-            selectOptions={selectOptions}
+            selectOptions={selectOptions.find((o) => o.name === "core_issue")}
             handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
             handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
           />
@@ -53,7 +47,7 @@ export const AdminView = (
           <MySelectField
             data={data}
             name={"component"}
-            selectOptions={selectOptions}
+            selectOptions={selectOptions.find((o) => o.name === "component")}
             handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
             handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
           />
@@ -67,20 +61,21 @@ export const AdminView = (
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
         <EuiFlexItem style={{ maxWidth: 1000 }}>
           <EuiFormRow
-            label={_.find(data, ["name", "description"]).label}
+            label={_.find(data, ["name", "notes"]).label}
             error={[
               _.find(errorMessages, [
                 "error_type",
-                _.find(data, ["name", "description"]).error_type,
+                _.find(data, ["name", "notes"]).error_type,
               ]).error_message,
             ]}
-            isInvalid={_.find(data, ["name", "description"]).error}
+            isInvalid={_.find(data, ["name", "notes"]).error}
           >
             <EuiTextArea
               placeholder={"Ticket notes..."}
               name={_.find(data, ["name", "notes"]).name}
               onChange={(e) => handleFormFieldChange(e, data, dispatch)}
               onBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
+              value={_.find(data, ["name", "description"]).value}
             />
           </EuiFormRow>
         </EuiFlexItem>
@@ -149,7 +144,7 @@ export const AdminView = (
             <MySelectField
               handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
               handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
-              selectOptions={selectOptions}
+              selectOptions={selectOptions.find((o) => o.name === "status")}
               data={data}
               name={"status"}
             />
