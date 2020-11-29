@@ -17,6 +17,10 @@ import { DeviceDTO } from './dto/device.dto';
 import { TicketDTO, TicketType } from './dto/ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { createDate } from 'src/util';
+import { UpdateCombinedDTO } from './dto/update-combined.dto';
+import { UpdateUserDTO } from 'src/user/dto/update-user.dto';
+import { UpdateDeviceDTO } from './dto/update-device.dto';
+import { response } from 'express';
 
 @Injectable()
 export class TicketService {
@@ -160,19 +164,21 @@ export class TicketService {
       model,
       operating_system,
       operating_system_version,
+      component,
     } = createDeviceDTO;
 
     /* Insert Device into db */
     const query: QueryConfig = {
       name: 'insert_device',
       text:
-        'INSERT INTO device(ticket_id, manufacturer, model, operating_system, operating_system_version) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+        'INSERT INTO device(ticket_id, manufacturer, model, operating_system, operating_system_version, component) VALUES ($1, $2, $3, $4, $5 $6) RETURNING *',
       values: [
         ticket_id,
         manufacturer,
         model,
         operating_system,
         operating_system_version,
+        component,
       ],
     };
     try {
@@ -400,14 +406,9 @@ export class TicketService {
   }
 
   /* WORKING Implementation */
-  async update(ticket_id: number, updateTicketDto: UpdateTicketDto) {
-    const {
-      core_issue,
-      description,
-      problem_category,
-      status,
-      priority,
-    } = updateTicketDto;
+  async update(ticket_id: number, updateCombinedDTO: UpdateCombinedDTO) {
+    let response: CombinedDTO;
+    let old_lsu_id;
 
     /* Check to see if ticket exist */
     const findQuery: QueryConfig = {
@@ -422,6 +423,7 @@ export class TicketService {
       if (res.rows.length < 1) {
         throw new Error('BAD_REQUEST');
       }
+      old_lsu_id = res.rows[0].lsu_id;
     } catch (error) {
       /* catch custom error for ticket not found */
       if (error.message === 'BAD_REQUEST') {
@@ -442,32 +444,154 @@ export class TicketService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+    /* Update User */
+    const updateUser: UpdateUserDTO = { ...updateCombinedDTO };
+    const {
+      lsu_id,
+      email,
+      first_name,
+      last_name,
+      department,
+      phone_number,
+    } = updateUser;
+    const updateUserQuery: QueryConfig = {
+      name: 'update_user',
+      text:
+        'UPDATE "user" SET lsu_id = $1, email = $2, first_name = $3, last_name = $4, department = $5, phone_number = $6 WHERE lsu_id = $7 RETURNING *',
+      values: [
+        lsu_id,
+        email,
+        first_name,
+        last_name,
+        department,
+        phone_number,
+        old_lsu_id,
+      ],
+    };
+    try {
+      const res = await this.connection.query<UserDTO>(updateUserQuery);
+      if (res.rows.length < 1) {
+        throw new Error('BAD_REQUEST');
+      }
+      const user = res.rows[0];
+      response = { ...response, ...user };
+    } catch (error) {
+      if (error.message === 'BAD_REQUEST') {
+        throw new HttpException(
+          {
+            query: updateUserQuery,
+            error: `Update query could not find existing user to update`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw new HttpException(
+        {
+          query: updateUserQuery,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
 
     /* Update ticket */
-    const updateQuery = {
+    const updateTicket: UpdateTicketDto = { ...updateCombinedDTO };
+    const {
+      core_issue,
+      description,
+      problem_category,
+      status,
+      priority,
+      notes,
+    } = updateTicket;
+    const updateTicketQuery = {
       name: 'update_ticket',
       text:
-        'UPDATE ticket SET core_issue = $1, description = $2, problem_category = $3, status = $4, priority = $5 WHERE ticket_id = $6 RETURNING *',
+        'UPDATE ticket SET core_issue = $1, description = $2, problem_category = $3, status = $4, priority = $5, notes = $6 WHERE ticket_id = $7 RETURNING *',
       values: [
         core_issue,
         description,
         problem_category,
         status,
         priority,
+        notes,
         ticket_id,
       ],
     };
     try {
-      const res = await this.connection.query(updateQuery);
-      return res.rows[0];
+      const res = await this.connection.query<TicketDTO>(updateTicketQuery);
+      if (res.rows.length < 1) {
+        throw new Error('BAD_REQUEST');
+      }
+      const ticket = res.rows[0];
+      response = { ...response, ...ticket };
     } catch (error) {
+      if (error.message === 'BAD_REQUEST') {
+        throw new HttpException(
+          {
+            query: updateUserQuery,
+            error: `Update query could not find existing user to update`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
       throw new HttpException(
         {
-          query: updateQuery,
+          query: updateTicketQuery,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+
+    /* Update device */
+    const updateDevice: UpdateDeviceDTO = { ...updateCombinedDTO };
+    const {
+      manufacturer,
+      model,
+      operating_system,
+      operating_system_version,
+      component,
+    } = updateDevice;
+    const updateDeviceQuery = {
+      name: 'update_device',
+      text:
+        'UPDATE device SET manufacturer = $1, model = $2, operating_system = $3, operating_system_version = $4, component = $5 WHERE ticket_id = $6 RETURNING *',
+      values: [
+        manufacturer,
+        model,
+        operating_system,
+        operating_system_version,
+        component,
+        ticket_id,
+      ],
+    };
+    try {
+      const res = await this.connection.query<DeviceDTO>(updateDeviceQuery);
+      if (res.rows.length < 1) {
+        throw new Error('BAD_REQUEST');
+      }
+      const device = res.rows[0];
+      response = { ...response, ...device };
+    } catch (error) {
+      if (error.message === 'BAD_REQUEST') {
+        throw new HttpException(
+          {
+            query: updateDeviceQuery,
+            error: `Update query could not find existing device to update`,
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      throw new HttpException(
+        {
+          query: updateDeviceQuery,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+
+    return response;
   }
 }
