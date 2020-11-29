@@ -4,7 +4,7 @@ export enum UserType {
   'STUDENT',
   'USER',
 }
-export class User {
+export class UserDTO {
   @ApiProperty({
     minLength: 9,
     maxLength: 9,
