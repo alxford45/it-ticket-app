@@ -18,8 +18,9 @@ export class DeviceDTO {
     description: 'physical hardware part that is damaged',
     example: 'screen',
     nullable: true,
+    default: null,
   })
-  component: string;
+  component: string | null;
 
   @ApiProperty({ description: 'manufacturer of device', example: 'dell' })
   manufacturer: string;

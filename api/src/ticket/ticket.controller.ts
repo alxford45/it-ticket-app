@@ -10,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { CreateCombinedDTO } from './dto/create-combined.dto';
 import { TicketType } from './dto/ticket.dto';
+import { UpdateCombinedDTO } from './dto/update-combined.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { TicketService } from './ticket.service';
 
@@ -68,20 +69,8 @@ export class TicketController {
   @Put(':ticket_id')
   update(
     @Param('ticket_id') ticket_id: number,
-    @Body() updateTicketDto: UpdateTicketDto,
+    @Body() updateCombinedDTO: UpdateCombinedDTO,
   ) {
-    Logger.log(
-      {
-        req: {
-          http: `PUT /api/ticket/${ticket_id}`,
-          params: ticket_id,
-          body: updateTicketDto,
-        },
-      },
-      'TicketController.update',
-      false,
-    );
-
-    return this.ticketService.update(ticket_id, updateTicketDto);
+    return this.ticketService.update(ticket_id, updateCombinedDTO);
   }
 }
