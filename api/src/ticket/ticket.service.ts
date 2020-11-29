@@ -300,30 +300,103 @@ export class TicketService {
 
   /* WORKING implementation */
   async findOne(ticket_id: number) {
+    let response: CombinedDTO;
+
     /* Query ticket by ticket_id */
-    const query: QueryConfig = {
+    const ticketQuery: QueryConfig = {
       name: 'select_ticket_by_ticket_id',
       text: 'SELECT * FROM ticket WHERE ticket_id = $1',
       values: [ticket_id],
     };
     try {
-      const res = await this.connection.query<TicketDTO>(query);
+      const res = await this.connection.query<TicketDTO>(ticketQuery);
 
       /* If no ticket found return empty object*/
       if (res.rows.length === 0) {
         return {};
       }
-
-      return res.rows[0];
+      /* Accumulate ticket into response */
+      const ticket = res.rows[0];
+      response = { ...response, ...ticket };
     } catch (error) {
       throw new HttpException(
         {
-          query: query,
+          query: ticketQuery,
           error: error,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+
+    /* Query user by ticket_id */
+    const userQuery: QueryConfig = {
+      name: 'select_user_by_lsu_id',
+      text: 'SELECT * FROM "user" WHERE lsu_id = $1',
+      values: [response.lsu_id],
+    };
+    try {
+      const res = await this.connection.query<UserDTO>(userQuery);
+
+      /* If no ticket throw custom error*/
+      if (res.rows.length === 0) {
+        throw new Error('BAD_REQUEST');
+      }
+      /* Accumulate ticket into response */
+      const user = res.rows[0];
+      response = { ...response, ...user };
+    } catch (error) {
+      if ((error.message = 'BAD_REQUEST')) {
+        throw new HttpException(
+          {
+            query: ticketQuery,
+            error: `Could not find user with lsu_id: ${userQuery.values[0]}`,
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw new HttpException(
+        {
+          query: ticketQuery,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    /* Query device by ticket_id */
+    const deviceQuery: QueryConfig = {
+      name: 'select_device_by_ticket_id',
+      text: 'SELECT * FROM "device" WHERE ticket_id = $1',
+      values: [ticket_id],
+    };
+    try {
+      const res = await this.connection.query<DeviceDTO>(deviceQuery);
+
+      /* If no device found throw custom error*/
+      if (res.rows.length === 0) {
+        throw new Error('BAD_REQUEST');
+      }
+      /* Accumulate device into response */
+      const device = res.rows[0];
+      response = { ...response, ...device };
+    } catch (error) {
+      if (error.message === 'BAD_REQUEST') {
+        throw new HttpException(
+          {
+            query: deviceQuery,
+            error: `Could not find device with ticket_id: ${deviceQuery.values[0]}`,
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+      throw new HttpException(
+        {
+          query: ticketQuery,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+    return response;
   }
 
   /* WORKING Implementation */
