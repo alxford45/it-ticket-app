@@ -32,7 +32,7 @@ export const NewTechnicianFlyout = (
 
   const showFlyout = () => setIsFlyoutVisible(true);
 
-  const localFormSubmit = (e, data) => {
+  const internalFormSubmit = (e, data) => {
     if (handleFormSubmit(e, data, "/user") != null) {
       setIsFlyoutVisible(false);
     }
@@ -61,7 +61,7 @@ export const NewTechnicianFlyout = (
                   <EuiButton
                     type={"submit"}
                     onClick={(e) => {
-                      localFormSubmit(e, state.data);
+                      internalFormSubmit(e, state.data);
                     }}
                   >
                     Save

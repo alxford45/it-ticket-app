@@ -52,7 +52,7 @@ export const dataFetchReducer = (state, action) => {
     case "FETCH_ASSIGN_LOG_SUCCESS":
       return {
         ...state,
-        assignLog: action.payload,
+        assignLogData: action.payload,
         assignLogLoading: false,
       };
     default:

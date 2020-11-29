@@ -42,7 +42,7 @@ export const AdminRoute = (props) => {
                 setTechnician={setTechnician}
               />
             ) : (
-              <ManageTicket />
+              <ManageTicket technician={technician} />
             )}
           </div>
         </EuiPageBody>
