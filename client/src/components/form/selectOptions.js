@@ -291,8 +291,9 @@ export const selectOptions = [
   {
     name: "status",
     options: [
-      { value: "open", text: "Open" },
-      { value: "closed", text: "Closed" },
+      /* Status must be OPEN or CLOSE for db */
+      { value: "OPEN", text: "Open" },
+      { value: "CLOSE", text: "Closed" },
     ],
   },
 ];
