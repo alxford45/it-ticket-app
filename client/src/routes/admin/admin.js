@@ -21,12 +21,6 @@ import {
   EuiCode,
 } from "@elastic/eui";
 import { NavBar } from "../../components/navbar/navbar";
-import { TicketsTable } from "../../components/table/openTickets";
-import { AdminTicketFlyout } from "../../components/flyout/flyout";
-import { UserView } from "../../components/form/ManageTicketForm/userView";
-import { fields } from "../../components/form/ManageTicketForm/fields";
-import { handleFormSubmit } from "../../components/form/ManageTicketForm/handlers";
-import { AdminView } from "../../components/form/ManageTicketForm/adminView";
 import { SelectTechnician } from "./SelectTechnician";
 import { ManageTicket } from "./ManageTicket";
 
@@ -43,9 +37,12 @@ export const AdminRoute = (props) => {
         <EuiPageBody component="div">
           <div>
             {technician === false ? (
-              <SelectTechnician setTechnician={setTechnician} />
+              <SelectTechnician
+                technician={technician}
+                setTechnician={setTechnician}
+              />
             ) : (
-              <ManageTicket />
+              <ManageTicket technician={technician} />
             )}
           </div>
         </EuiPageBody>

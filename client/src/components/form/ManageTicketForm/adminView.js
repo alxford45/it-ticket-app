@@ -11,25 +11,53 @@ import {
   EuiTitle,
 } from "@elastic/eui";
 import React, { useState } from "react";
-import { MyTextField } from "../MyTextField";
 import { MySelectField } from "../MySelectField";
-import { addToast } from "../../toast";
-import { DEBUG } from "../../app/app";
-import { errorMessages } from "./fields";
+import { errorMessages, workLogFields } from "./fields";
 import {
   handleDateChange,
   handleFormFieldBlur,
   handleFormFieldChange,
+  handleFormSubmit,
 } from "./handlers";
 import { selectOptions } from "../selectOptions";
-import { MyDatePicker } from "../MyDatePicker";
-import { TicketAssignmentTable } from "../../table/assignedTo";
+import { WorkLogTable } from "../../table/WorkLogTable";
+import { TicketAssignmentTable } from "../../table/TicketAssignmentTable";
 import { AddTechnicianPopover } from "../../popover/TechnicianPopover";
-import { TimeLogTable } from "../../table/TimeLogTable";
+import { MyDatePicker } from "../MyDatePicker";
 
 var _ = require("lodash");
 
-export const AdminView = ({ data, setData }, ...props) => {
+export const AdminView = (
+  {
+    technician,
+    selectedTicket,
+    data,
+    dispatch,
+    workLogData,
+    workLogLoading,
+    assignLogData,
+    assignLogLoading,
+    assignmentRefresh,
+    setAssignmentRefresh,
+    workRefresh,
+    setWorkRefresh,
+  },
+  ...props
+) => {
+  const internalFormSubmit = async (e, data) => {
+    const d = [];
+    d.push({ name: "start_datetime", value: data[0].value });
+    d.push({ name: "end_datetime", value: data[1].value });
+    d.push({ name: "ticket_id", value: selectedTicket.ticket_id });
+    d.push({ name: "lsu_id", value: technician[0].value });
+
+    const response = await handleFormSubmit(e, d, "/work");
+    if (response != null) {
+      const w = !workRefresh;
+      setWorkRefresh(w);
+    }
+  };
+  const [timeData, setTimeData] = useState(workLogFields);
   return (
     <>
       <EuiSpacer />
@@ -41,18 +69,18 @@ export const AdminView = ({ data, setData }, ...props) => {
           <MySelectField
             data={data}
             name={"core_issue"}
-            selectOptions={selectOptions}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
+            selectOptions={selectOptions.find((o) => o.name === "core_issue")}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
           />
         </EuiFlexItem>
         <EuiFlexItem>
           <MySelectField
             data={data}
             name={"component"}
-            selectOptions={selectOptions}
-            handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
-            handleChange={(e) => handleFormFieldChange(e, data, setData)}
+            selectOptions={selectOptions.find((o) => o.name === "component")}
+            handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
+            handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
           />
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -64,20 +92,21 @@ export const AdminView = ({ data, setData }, ...props) => {
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
         <EuiFlexItem style={{ maxWidth: 1000 }}>
           <EuiFormRow
-            label={_.find(data, ["name", "description"]).label}
+            label={_.find(data, ["name", "notes"]).label}
             error={[
               _.find(errorMessages, [
                 "error_type",
-                _.find(data, ["name", "description"]).error_type,
+                _.find(data, ["name", "notes"]).error_type,
               ]).error_message,
             ]}
-            isInvalid={_.find(data, ["name", "description"]).error}
+            isInvalid={_.find(data, ["name", "notes"]).error}
           >
             <EuiTextArea
               placeholder={"Ticket notes..."}
               name={_.find(data, ["name", "notes"]).name}
-              onChange={(e) => handleFormFieldChange(e, data, setData)}
-              onBlur={(e) => handleFormFieldBlur(e, data, setData)}
+              onChange={(e) => handleFormFieldChange(e, data, dispatch)}
+              onBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
+              value={_.find(data, ["name", "description"]).value}
             />
           </EuiFormRow>
         </EuiFlexItem>
@@ -93,9 +122,20 @@ export const AdminView = ({ data, setData }, ...props) => {
         <EuiFlexItem style={{ maxWidth: 500 }}>
           <EuiFormRow hasEmptyLabelSpace={true}>
             <>
-              <TicketAssignmentTable />
-              <EuiSpacer size={"s"} />
-              <AddTechnicianPopover />
+              {assignLogLoading === true ? null : (
+                <>
+                  <TicketAssignmentTable
+                    items={assignLogData}
+                    isLoading={assignLogLoading}
+                  />
+                  <EuiSpacer size={"s"} />
+                  <AddTechnicianPopover
+                    selectedTicket={selectedTicket}
+                    assignmentRefresh={assignmentRefresh}
+                    setAssignmentRefresh={setAssignmentRefresh}
+                  />
+                </>
+              )}
             </>
           </EuiFormRow>
         </EuiFlexItem>
@@ -105,19 +145,20 @@ export const AdminView = ({ data, setData }, ...props) => {
         <h2>Work Log</h2>
       </EuiTitle>
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
-        <EuiFlexItem style={{ maxWidth: 400 }}>
-          <TimeLogTable />
+        <EuiFlexItem>
+          {workLogLoading === true ? null : (
+            <WorkLogTable items={workLogData} isLoading={workLogLoading} />
+          )}
         </EuiFlexItem>
       </EuiFlexGroup>
-
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
         <EuiFlexItem style={{ maxWidth: 200 }}>
           <EuiFormRow>
             <MyDatePicker
-              data={data}
+              data={timeData}
               name={"start_datetime"}
               handleChange={(date) =>
-                handleDateChange(date, "start_datetime", data, setData)
+                handleDateChange(date, "start_datetime", timeData, setTimeData)
               }
             />
           </EuiFormRow>
@@ -125,18 +166,19 @@ export const AdminView = ({ data, setData }, ...props) => {
         <EuiFlexItem style={{ maxWidth: 200 }}>
           <EuiFormRow>
             <MyDatePicker
-              data={data}
+              data={timeData}
               name={"end_datetime"}
-              // handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
               handleChange={(e) =>
-                handleDateChange(e, "end_datetime", data, setData)
+                handleDateChange(e, "end_datetime", timeData, setTimeData)
               }
             />
           </EuiFormRow>
         </EuiFlexItem>
         <EuiFlexItem>
           <EuiFormRow hasEmptyLabelSpace={true}>
-            <EuiButton>Add Time Entry</EuiButton>
+            <EuiButton onClick={(e) => internalFormSubmit(e, timeData)}>
+              Add Time Entry
+            </EuiButton>
           </EuiFormRow>
         </EuiFlexItem>
       </EuiFlexGroup>
@@ -144,9 +186,9 @@ export const AdminView = ({ data, setData }, ...props) => {
         <EuiFlexItem>
           <EuiFormRow>
             <MySelectField
-              handleChange={(e) => handleFormFieldChange(e, data, setData)}
-              handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
-              selectOptions={selectOptions}
+              handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+              handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
+              selectOptions={selectOptions.find((o) => o.name === "status")}
               data={data}
               name={"status"}
             />
