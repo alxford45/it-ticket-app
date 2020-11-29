@@ -118,12 +118,12 @@ req: none
 res: body: {CombineDTO}
 ```
 
-Updates one ticket by ticket_id; Does NOT update user or device
+Updates user, ticket, and device by ticket_id;
 
 ```
 PUT /api​/ticket​/{ticket_id}
-req: body: {UpdateTicketDTO}
-res: body: {TicketDTO}
+req: body: {UpdateCombinedDTO}
+res: body: {CombinedDTO}
 ```
 
 ## User
