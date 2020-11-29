@@ -49,7 +49,7 @@ export const SelectTechnician = ({ technician, setTechnician }, ...props) => {
           name: "technician",
           options: result.data.map((o) => ({
             ...o,
-            value: (o.first_name + "_" + o.last_name).toLowerCase(),
+            value: o.lsu_id,
             text: o.first_name + " " + o.last_name,
           })),
         };

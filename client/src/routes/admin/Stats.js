@@ -20,15 +20,17 @@ export const MyStat = (
   return (
     <>
       <EuiPanel>
-        <EuiStat
-          title={items}
-          description={description}
-          textAlign="center"
-          titleColor={color}
-          isLoading={isLoading}
-        >
-          <EuiIcon type={icon} color={color} />
-        </EuiStat>
+        {isLoading ? null : (
+          <EuiStat
+            title={items == null ? "" : items}
+            description={description}
+            textAlign="center"
+            titleColor={color}
+            isLoading={isLoading}
+          >
+            <EuiIcon type={icon} color={color} />
+          </EuiStat>
+        )}
       </EuiPanel>
     </>
   );

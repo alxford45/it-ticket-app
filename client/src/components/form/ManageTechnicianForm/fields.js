@@ -4,6 +4,7 @@ export const selectTechnicianOptions_default = [
     options: [{ value: "", text: "" }],
   },
 ];
+
 export const fields = [
   {
     name: "technician",

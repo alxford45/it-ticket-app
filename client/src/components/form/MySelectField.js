@@ -14,7 +14,7 @@ export const MySelectField = (
         name={item.name}
         id={item.name}
         options={selectOptions.options}
-        value={item.value}
+        value={item.value === null ? "" : item.value}
         onChange={(e) => handleChange(e)}
         onBlur={(e) => handleBlur(e)}
         hasNoInitialSelection={true}

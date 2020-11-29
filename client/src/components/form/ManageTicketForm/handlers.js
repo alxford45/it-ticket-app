@@ -28,7 +28,7 @@ export const handleFormSubmit = async (e, data, endpoint, put) => {
     }
 
     addToast({
-      title: "Ticket Submitted!",
+      title: "Saved!",
       color: "success",
     });
 

@@ -103,6 +103,7 @@ export const TicketsTable = (
           columns={columns}
           rowProps={getRowProps}
           cellProps={getCellProps}
+          tableLayout={"auto"}
         />
       )}
     </div>

@@ -28,14 +28,20 @@ import { handleFormSubmit } from "../../components/form/ManageTicketForm/handler
 import { AdminView } from "../../components/form/ManageTicketForm/adminView";
 import { Debug } from "../../components/debug/debug";
 import axios from "../../api/api";
-import { fields } from "../../components/form/ManageTicketForm/fields";
+import {
+  fields,
+  workLogFields,
+} from "../../components/form/ManageTicketForm/fields";
 import { dataFetchReducer } from "../../api/reducers";
 import { MyStat } from "./Stats";
 import { personFields } from "../../components/form/person/fields";
 
 var _ = require("lodash");
 
-const TicketForm = ({ setSelectedTicket, selectedTicket }, ...props) => {
+const TicketForm = (
+  { technician, setSelectedTicket, selectedTicket },
+  ...props
+) => {
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
@@ -46,29 +52,60 @@ const TicketForm = ({ setSelectedTicket, selectedTicket }, ...props) => {
     assignLogLoading: true,
   });
 
+  const [workRefresh, setWorkRefresh] = useState(false);
+  const [assignmentRefresh, setAssignmentRefresh] = useState(false);
+  const [dataRefresh, setDataRefresh] = useState(false);
+
   useEffect(() => {
     const fetchWorkLog = async (selectedTicket) => {
       try {
         const result = await axios.get(
-          "/ticket/work/" + selectedTicket.ticket_id
+          "/work/ticket/" + selectedTicket.ticket_id
         );
-        dispatch({ type: "FETCH_WORK_LOG_SUCCESS", payload: result.data });
+        const userResult = await axios.get("/user/admin");
+        let final = [];
+
+        for (let i = 0; i < result.data.length; i++) {
+          final.push({
+            ...result.data[i],
+            ...userResult.data.find(
+              (itmInner) => itmInner.lsu_id === result.data[i].lsu_id
+            ),
+          });
+        }
+        dispatch({ type: "FETCH_WORK_LOG_SUCCESS", payload: final });
       } catch (error) {
         console.log(error);
       }
     };
+    if (selectedTicket != null) {
+      fetchWorkLog(selectedTicket);
+    }
+  }, [workRefresh, selectedTicket]);
 
+  useEffect(() => {
     const fetchAssignLog = async (selectedTicket) => {
       try {
         const result = await axios.get(
-          "/ticket/assign/" + selectedTicket.ticket_id
+          "/assign/ticket/" + selectedTicket.ticket_id
         );
-        dispatch({ type: "FETCH_ASSIGN_LOG_SUCCESS", payload: result.data });
+
+        const userResult = await axios.get("/user/admin");
+        const final = userResult.data.filter((o) =>
+          result.data.find(({ lsu_id }) => o.lsu_id === lsu_id)
+        );
+
+        dispatch({ type: "FETCH_ASSIGN_LOG_SUCCESS", payload: final });
       } catch (error) {
         console.log(error);
       }
     };
+    if (selectedTicket != null) {
+      fetchAssignLog(selectedTicket);
+    }
+  }, [assignmentRefresh, selectedTicket]);
 
+  useEffect(() => {
     const fetchData = async (selectedTicket) => {
       String.prototype.toProperCase = function () {
         return this.replace(/\w\S*/g, function (txt) {
@@ -102,10 +139,8 @@ const TicketForm = ({ setSelectedTicket, selectedTicket }, ...props) => {
     };
     if (selectedTicket != null) {
       fetchData(selectedTicket);
-      fetchWorkLog(selectedTicket);
-      fetchAssignLog(selectedTicket);
     }
-  }, [selectedTicket]);
+  }, [dataRefresh, selectedTicket]);
 
   const internalFormSubmit = async (e, data) => {
     const response = await handleFormSubmit(e, data, "/ticket");
@@ -123,10 +158,18 @@ const TicketForm = ({ setSelectedTicket, selectedTicket }, ...props) => {
           <>
             <UserView data={state.data} dispatch={dispatch} />
             <AdminView
+              technician={technician}
+              assignmentRefresh={assignmentRefresh}
+              setAssignmentRefresh={setAssignmentRefresh}
+              workRefresh={workRefresh}
+              setWorkRefresh={setWorkRefresh}
+              selectedTicket={selectedTicket}
               data={state.data}
               dispatch={dispatch}
               workLogData={state.workLogData}
+              workLogLoading={state.workLogLoading}
               assignLogData={state.assignLogData}
+              assignLogLoading={state.assignLogLoading}
             />
           </>
         )}
@@ -148,7 +191,7 @@ const TicketForm = ({ setSelectedTicket, selectedTicket }, ...props) => {
   );
 };
 
-export const ManageTicket = (props) => {
+export const ManageTicket = ({ technician }, ...props) => {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [tickets, setTickets] = useState(null);
   const [isTicketsLoading, setIsTicketsLoading] = useState(true);
@@ -233,6 +276,7 @@ export const ManageTicket = (props) => {
           "Please select ticket."
         ) : (
           <TicketForm
+            technician={technician}
             selectedTicket={selectedTicket}
             setSelectedTicket={setSelectedTicket}
           />

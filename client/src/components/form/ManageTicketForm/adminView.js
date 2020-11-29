@@ -12,21 +12,52 @@ import {
 } from "@elastic/eui";
 import React, { useState } from "react";
 import { MySelectField } from "../MySelectField";
-import { errorMessages } from "./fields";
+import { errorMessages, workLogFields } from "./fields";
 import {
   handleDateChange,
   handleFormFieldBlur,
   handleFormFieldChange,
+  handleFormSubmit,
 } from "./handlers";
 import { selectOptions } from "../selectOptions";
-import { TimeLogTable } from "../../table/TimeLogTable";
+import { WorkLogTable } from "../../table/WorkLogTable";
+import { TicketAssignmentTable } from "../../table/TicketAssignmentTable";
+import { AddTechnicianPopover } from "../../popover/TechnicianPopover";
+import { MyDatePicker } from "../MyDatePicker";
 
 var _ = require("lodash");
 
 export const AdminView = (
-  { data, dispatch, workLogData, assignLogData },
+  {
+    technician,
+    selectedTicket,
+    data,
+    dispatch,
+    workLogData,
+    workLogLoading,
+    assignLogData,
+    assignLogLoading,
+    assignmentRefresh,
+    setAssignmentRefresh,
+    workRefresh,
+    setWorkRefresh,
+  },
   ...props
 ) => {
+  const internalFormSubmit = async (e, data) => {
+    const d = [];
+    d.push({ name: "start_datetime", value: data[0].value });
+    d.push({ name: "end_datetime", value: data[1].value });
+    d.push({ name: "ticket_id", value: selectedTicket.ticket_id });
+    d.push({ name: "lsu_id", value: technician[0].value });
+
+    const response = await handleFormSubmit(e, d, "/work");
+    if (response != null) {
+      const w = !workRefresh;
+      setWorkRefresh(w);
+    }
+  };
+  const [timeData, setTimeData] = useState(workLogFields);
   return (
     <>
       <EuiSpacer />
@@ -91,10 +122,20 @@ export const AdminView = (
         <EuiFlexItem style={{ maxWidth: 500 }}>
           <EuiFormRow hasEmptyLabelSpace={true}>
             <>
-              {/*  TODO: WAITING ON BACKEND*/}
-              {/*<TicketAssignmentTable />*/}
-              {/*<EuiSpacer size={"s"} />*/}
-              {/*<AddTechnicianPopover />*/}
+              {assignLogLoading === true ? null : (
+                <>
+                  <TicketAssignmentTable
+                    items={assignLogData}
+                    isLoading={assignLogLoading}
+                  />
+                  <EuiSpacer size={"s"} />
+                  <AddTechnicianPopover
+                    selectedTicket={selectedTicket}
+                    assignmentRefresh={assignmentRefresh}
+                    setAssignmentRefresh={setAssignmentRefresh}
+                  />
+                </>
+              )}
             </>
           </EuiFormRow>
         </EuiFlexItem>
@@ -104,40 +145,43 @@ export const AdminView = (
         <h2>Work Log</h2>
       </EuiTitle>
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
-        <EuiFlexItem style={{ maxWidth: 400 }}>
-          <TimeLogTable />
+        <EuiFlexItem>
+          {workLogLoading === true ? null : (
+            <WorkLogTable items={workLogData} isLoading={workLogLoading} />
+          )}
         </EuiFlexItem>
       </EuiFlexGroup>
-      {/*  TODO: WAITING ON BACKEND*/}
-      {/*<EuiFlexGroup style={{ maxWidth: 1000 }}>*/}
-      {/*  <EuiFlexItem style={{ maxWidth: 200 }}>*/}
-      {/*    <EuiFormRow>*/}
-      {/*      <MyDatePicker*/}
-      {/*        data={workLogData}*/}
-      {/*        name={"start_datetime"}*/}
-      {/*        handleChange={(date) =>*/}
-      {/*          handleDateChange(date, "start_datetime", data, dispatch)*/}
-      {/*        }*/}
-      {/*      />*/}
-      {/*    </EuiFormRow>*/}
-      {/*  </EuiFlexItem>*/}
-      {/*  <EuiFlexItem style={{ maxWidth: 200 }}>*/}
-      {/*    <EuiFormRow>*/}
-      {/*      <MyDatePicker*/}
-      {/*        data={workLogData}*/}
-      {/*        name={"end_datetime"}*/}
-      {/*        handleChange={(e) =>*/}
-      {/*          handleDateChange(e, "end_datetime", data, dispatch)*/}
-      {/*        }*/}
-      {/*      />*/}
-      {/*    </EuiFormRow>*/}
-      {/*  </EuiFlexItem>*/}
-      {/*  <EuiFlexItem>*/}
-      {/*    <EuiFormRow hasEmptyLabelSpace={true}>*/}
-      {/*      <EuiButton>Add Time Entry</EuiButton>*/}
-      {/*    </EuiFormRow>*/}
-      {/*  </EuiFlexItem>*/}
-      {/*</EuiFlexGroup>*/}
+      <EuiFlexGroup style={{ maxWidth: 1000 }}>
+        <EuiFlexItem style={{ maxWidth: 200 }}>
+          <EuiFormRow>
+            <MyDatePicker
+              data={timeData}
+              name={"start_datetime"}
+              handleChange={(date) =>
+                handleDateChange(date, "start_datetime", timeData, setTimeData)
+              }
+            />
+          </EuiFormRow>
+        </EuiFlexItem>
+        <EuiFlexItem style={{ maxWidth: 200 }}>
+          <EuiFormRow>
+            <MyDatePicker
+              data={timeData}
+              name={"end_datetime"}
+              handleChange={(e) =>
+                handleDateChange(e, "end_datetime", timeData, setTimeData)
+              }
+            />
+          </EuiFormRow>
+        </EuiFlexItem>
+        <EuiFlexItem>
+          <EuiFormRow hasEmptyLabelSpace={true}>
+            <EuiButton onClick={(e) => internalFormSubmit(e, timeData)}>
+              Add Time Entry
+            </EuiButton>
+          </EuiFormRow>
+        </EuiFlexItem>
+      </EuiFlexGroup>
       <EuiFlexGroup style={{ maxWidth: 1000 }}>
         <EuiFlexItem>
           <EuiFormRow>
