@@ -110,11 +110,12 @@ req: none
 res: body: {CombineDTO}
 ```
 
-Update ticket
+Updates one ticket by ticket_id; Does NOT update user or device
 
 ```
-/* NOT WORKING */
-PUT /api​/ticket​/{id}
+PUT /api​/ticket​/{ticket_id}
+req: body: {UpdateTicketDTO}
+res: body: {TicketDTO}
 ```
 
 ## User
@@ -155,16 +156,51 @@ GET /api​/user/{lsu_id}
 res: body: {UserDTO}
 ```
 
-Update user
+Update user by lsu_id
 
 ```
-/* NOT WORKING */
 PUT /api/user/{lsu_id}
+req: body: {UpdateUserDTO}
+res: body: {UserDTO}
 ```
 
-## Assign
+## Assignment
 
-TODO
+Get all assignments
+
+```
+GET /api/assignment
+res: body: {AssignmentDTO}
+```
+
+Get all assignments assigned to admin by lsu_id
+
+```
+GET /api/assignment/user/{lsu_id}
+res: body: {AssignmentDTO[]}
+```
+
+Get all assignments assigned to ticket by ticket_id
+
+```
+GET /api/assignment/ticket/{ticket_id}
+res: body: {AssignmentDTO[]}
+```
+
+Get one assignment by assignment_id
+
+```
+GET /api/assignment/{assignment_id}
+res: body: {AssignmentDTO}
+```
+
+Post new assignment
+
+```
+POST /api/assignment
+req: body: {CreateAssignmentDTO}
+res: body: {AssignmentDTO}
+```
 
 ## Work
 

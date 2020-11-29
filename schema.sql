@@ -26,7 +26,8 @@ create table if not exists ticket
     status varchar(20) not null,
     problem_category varchar(50) not null,
     description varchar(500),
-    core_issue varchar(50)
+    core_issue varchar(50),
+    submission_date timestamp without time zone
 );
 
 alter table ticket owner to brvuirrqqcjzsb;
@@ -67,7 +68,9 @@ create table if not exists assignment
     ticket_id integer not null
         constraint assignment_ticket_ticket_id_fk
             references ticket
-            on update cascade on delete cascade
+            on update cascade on delete cascade,
+    assigned_date timestamp without time zone
+    
 );
 
 alter table assignment owner to brvuirrqqcjzsb;

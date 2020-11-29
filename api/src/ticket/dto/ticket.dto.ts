@@ -6,7 +6,7 @@ export enum TicketType {
   'ANY',
 }
 
-export class Ticket {
+export class TicketDTO {
   @ApiProperty({ readOnly: true })
   ticket_id: number;
 
@@ -47,6 +47,7 @@ export class Ticket {
 
   @ApiProperty({
     description: 'YYYY-MM-DD HH:MM:SS',
+    example: '2020-07-21 12:44:22',
   })
   submission_date: string;
 }
