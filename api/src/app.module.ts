@@ -4,7 +4,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TicketModule } from './ticket/ticket.module';
-import { TicketWorkModule } from './work/ticketwork.module';
+import { WorkModule } from './work/work.module';
 import { AssignmentModule } from './assignment/assignment.module.';
 import { UserModule } from './user/uer.module';
 
@@ -40,7 +40,7 @@ const configImports = (modules: ModuleMetadata['imports']) => {
 @Module({
   imports: configImports([
     TicketModule,
-    TicketWorkModule,
+    WorkModule,
     AssignmentModule,
     UserModule,
   ]),

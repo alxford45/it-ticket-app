@@ -1,7 +1,5 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateTicketDTO } from './create-ticket.dto';
-import { TicketDTO } from './ticket.dto';
 import { OmitType as Omit } from '@nestjs/swagger';
+import { TicketDTO } from './ticket.dto';
 
 export class UpdateTicketDto extends Omit(TicketDTO, [
   'ticket_id',
