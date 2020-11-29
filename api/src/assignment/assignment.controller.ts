@@ -1,47 +1,45 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { AssignmentService } from './assignment.service';
-import { CreateAssignmentDTO } from './dto/create-assignment.dto';
-import { UpdateAssignmentDTO } from './dto/update-assignment.dto';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AssignmentService } from './assignment.service';
+import { AssignmentType } from './dto/assignment.dto';
+import { CreateAssignmentDTO } from './dto/create-assignment.dto';
 
-@ApiTags('ticket')
-@Controller('/api/ticket/assign')
+@ApiTags('assignment')
+@Controller('/api/assign')
 export class AssignmentController {
   constructor(private readonly ticketAssignService: AssignmentService) {}
-  /* Working Implementation */
+
+  /* WORKING Implementation */
+  /* TODO: fix date formatting */
   @Post()
-  async create(@Body() createTicketAssignDto: CreateAssignmentDTO) {
-    return await this.ticketAssignService.create(createTicketAssignDto);
+  async create(@Body() createAssignmentDTO: CreateAssignmentDTO) {
+    return await this.ticketAssignService.create(createAssignmentDTO);
   }
-  /* TODO */
+
+  /* WORKING Implementation */
   @Get()
   findAll() {
     return this.ticketAssignService.findAll();
   }
-  /* TODO */
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ticketAssignService.findOne(+id);
+
+  /* WORKING Implementation */
+  @Get('user/:lsu_id')
+  findAllByLsuId(@Param('lsu_id') lsu_id: number) {
+    return this.ticketAssignService.findAllById(AssignmentType.LSU_ID, lsu_id);
   }
-  /* TODO */
-  @Put(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateTicketAssignDto: UpdateAssignmentDTO,
-  ) {
-    return this.ticketAssignService.update(+id, updateTicketAssignDto);
+
+  /* WORKING Implementation */
+  @Get('ticket/:ticket_id')
+  findAllByTicketId(@Param('ticket_id') ticket_id: number) {
+    return this.ticketAssignService.findAllById(
+      AssignmentType.TICKET_ID,
+      ticket_id,
+    );
   }
-  /* TODO */
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ticketAssignService.remove(+id);
+
+  /* WORKING Implementation */
+  @Get(':assignment_id')
+  findOne(@Param('assignment_id') assignment_id: string) {
+    return this.ticketAssignService.findOne(+assignment_id);
   }
 }

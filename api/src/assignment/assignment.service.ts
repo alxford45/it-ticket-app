@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { Pool } from 'pg';
+import { Pool, Query, QueryConfig } from 'pg';
 import { PG_CONNECTION } from 'src/connection';
 import { CreateAssignmentDTO } from './dto/create-assignment.dto';
-import { UpdateAssignmentDTO } from './dto/update-assignment.dto';
-import { AssignmentDTO } from './dto/assignment.dto';
+import { AssignmentDTO, AssignmentType } from './dto/assignment.dto';
+import { createDate } from 'src/util';
 
 /* TODO: 
    - Implement remaining methods
@@ -14,39 +14,128 @@ export class AssignmentService {
   constructor(@Inject(PG_CONNECTION) private connection: Pool) {}
 
   async create(createAssignmentDTO: CreateAssignmentDTO) {
-    const { assignedby, assignedto, comment, assigndate } = createAssignmentDTO;
+    const { lsu_id, ticket_id } = createAssignmentDTO;
+    const assigned_date = createDate();
 
-    /* Insert new user into db 
-         TODO: implement error handling for pg request
-      */
-    const text =
-      'INSERT INTO ticketwork(assignedby, assignedto, comment, assigndate) VALUES ($1, $2, $3, $4) RETURNING *';
-    const values = [assignedby, assignedto, comment, assigndate];
-    const res = (await this.connection.query<TicketAssign>(text, values))
-      .rows[0];
+    /* Insert new assignment into db */
+    const query: QueryConfig = {
+      name: 'insert_assignment',
+      text:
+        'INSERT INTO assignment(lsu_id, ticket_id, assigned_date) VALUES ($1, $2, $3) RETURNING *',
+      values: [lsu_id, ticket_id, assigned_date],
+    };
+    try {
+      const res = await this.connection.query<AssignmentDTO>(query);
 
-    /* Return user object without password */
-    const ticketassign = new TicketAssign();
-    ticketassign.assignedby = res.assignedby;
-    ticketassign.assignedto = res.assignedto;
-    ticketassign.comment = res.comment;
-    ticketassign.assigndate = res.assigndate;
-    return ticketassign;
+      /* Return newly inserted assignment */
+      return res.rows[0];
+    } catch (error) {
+      throw new HttpException(
+        {
+          query: query,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
   /* TODO */
-  findAll() {
-    return `This action returns all user`;
+  async findAllById(type: AssignmentType, id: number) {
+    let query: QueryConfig;
+    switch (type) {
+      case AssignmentType.LSU_ID:
+        query = {
+          name: 'select_all_assignment_by_lsu_id',
+          text: 'SELECT * FROM assignment WHERE lsu_id = $1',
+          values: [id],
+        };
+        break;
+      case AssignmentType.TICKET_ID:
+        query = {
+          name: 'select_all_assignment_by_ticket_id',
+          text: 'SELECT * FROM assignment WHERE ticket_id = $1',
+          values: [id],
+        };
+        break;
+
+      default:
+        /* default error caused by not using controller properly */
+        throw new HttpException(
+          {
+            error:
+              'Switch statment in assignment.service.findAllById somehow failed',
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+    }
+    try {
+      const res = await this.connection.query<AssignmentDTO>(query);
+
+      /* If none exist, return empty array */
+      if (res.rows.length < 1) {
+        return [];
+      }
+      /* return array of Assignment objects */
+      return res.rows;
+    } catch (error) {
+      throw new HttpException(
+        {
+          query: query,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findAll() {
+    const query: QueryConfig = {
+      name: 'select_all_assignment',
+      text: 'SELECT * FROM assignment',
+    };
+    try {
+      const res = await this.connection.query<AssignmentDTO>(query);
+
+      /* If none exist, return empty array */
+      if (res.rows.length < 1) {
+        return [];
+      }
+      /* return array of Assignment objects */
+      return res.rows;
+    } catch (error) {
+      throw new HttpException(
+        {
+          query: query,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
   /* TODO */
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-  /* TODO */
-  update(id: number, updateAssignmentDTO: UpdateAssignmentDTO) {
-    return `This action updates a #${id} user`;
-  }
-  /* TODO */
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async findOne(assignment_id: number) {
+    const query: QueryConfig = {
+      name: 'select_assignment_by_assignment_id',
+      text: 'SELECT * FROM assignment WHERE assignment_id = $1',
+      values: [assignment_id],
+    };
+    try {
+      const res = await this.connection.query<AssignmentDTO>(query);
+
+      /* If none exist, return empty object */
+      if (res.rows.length < 1) {
+        return {};
+      }
+      /* return Assignment object */
+      return res.rows[0];
+    } catch (error) {
+      throw new HttpException(
+        {
+          query: query,
+          error: error,
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
