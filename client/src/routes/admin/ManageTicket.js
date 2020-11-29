@@ -143,7 +143,10 @@ const TicketForm = (
   }, [dataRefresh, selectedTicket]);
 
   const internalFormSubmit = async (e, data) => {
-    const response = await handleFormSubmit(e, data, "/ticket");
+    /* Get ticket id from state */
+    const ticket_id = data.filter(x => x.name === "ticket_id").map(y => y.value)[0];
+    /* set 'put' arg to true */
+    const response = await handleFormSubmit(e, data, `/ticket/${ticket_id}`, true);
     if (response.status === 201) {
       dispatch({ type: "CLEAR_FORM" });
     }
