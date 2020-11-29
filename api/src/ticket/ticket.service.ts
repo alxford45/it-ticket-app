@@ -16,6 +16,7 @@ import { CreateTicketDTO } from './dto/create-ticket.dto';
 import { DeviceDTO } from './dto/device.dto';
 import { TicketDTO, TicketType } from './dto/ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { createDate } from 'src/util';
 
 @Injectable()
 export class TicketService {
@@ -113,7 +114,7 @@ export class TicketService {
     const status = 'OPEN';
 
     /* Submission date set to current server time */
-    const submission_date = this.createDate();
+    const submission_date = createDate();
 
     /* Insert new ticket into db */
     const query: QueryConfig = {
@@ -188,29 +189,6 @@ export class TicketService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
-  }
-
-  /**
-   * Helper method for createTicket to get current date in SQL format
-   *
-   * @author KooiInc
-   * (https://stackoverflow.com/users/58186/kooiinc)
-   *
-   * @adapted from https://stackoverflow.com/questions/10632346/how-to-format-a-date-in-mm-dd-yyyy-hhmmss-format-in-javascript
-   * @returns Date (YYYY-MM-DD HH:MM:SS)
-   */
-  private createDate() {
-    //@ts-ignore
-    Number.prototype.padLeft = function (base, chr) {
-      var len = String(base || 10).length - String(this).length + 1;
-      return len > 0 ? new Array(len).join(chr || '0') + this : this;
-    };
-    const d = new Date(Date.now());
-    const date =
-      [d.getFullYear(), d.getMonth() + 1, d.getDate()].join('-') +
-      ' ' +
-      [d.getHours(), d.getMinutes(), d.getSeconds()].join(':');
-    return date;
   }
 
   /* WORKING Implementation */
