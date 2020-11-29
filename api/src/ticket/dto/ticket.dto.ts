@@ -47,6 +47,7 @@ export class TicketDTO {
 
   @ApiProperty({
     description: 'YYYY-MM-DD HH:MM:SS',
+    example: '2020-07-21 12:44:22',
   })
   submission_date: string;
 }
