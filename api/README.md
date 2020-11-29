@@ -110,6 +110,14 @@ req: none
 res: body: {CombineDTO}
 ```
 
+Get one ticket by lsu_id with user/ticket/device info
+
+```
+GET /api​/ticket​/user/{lsu_id}
+req: none
+res: body: {CombineDTO}
+```
+
 Updates one ticket by ticket_id; Does NOT update user or device
 
 ```
