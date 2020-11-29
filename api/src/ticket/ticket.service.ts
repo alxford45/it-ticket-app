@@ -502,17 +502,19 @@ export class TicketService {
       problem_category,
       status,
       priority,
+      notes,
     } = updateTicket;
     const updateTicketQuery = {
       name: 'update_ticket',
       text:
-        'UPDATE ticket SET core_issue = $1, description = $2, problem_category = $3, status = $4, priority = $5 WHERE ticket_id = $6 RETURNING *',
+        'UPDATE ticket SET core_issue = $1, description = $2, problem_category = $3, status = $4, priority = $5, notes = $6 WHERE ticket_id = $7 RETURNING *',
       values: [
         core_issue,
         description,
         problem_category,
         status,
         priority,
+        notes,
         ticket_id,
       ],
     };

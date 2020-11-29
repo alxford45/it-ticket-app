@@ -5,4 +5,5 @@ export class CreateTicketDTO extends Omit(TicketDTO, [
   'ticket_id',
   'status',
   'submission_date',
+  'notes',
 ]) {}
