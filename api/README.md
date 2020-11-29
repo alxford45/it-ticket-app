@@ -140,6 +140,7 @@ Get all users
 
 ```
 GET /api​/user
+req: none
 res: body: {UserDTO[]}
 ```
 
@@ -147,6 +148,7 @@ Get all users who are admins
 
 ```
 GET /api​/user/admin
+req: none
 res: body: {UserDTO[]}
 ```
 
@@ -154,6 +156,7 @@ Get all users who are not admins
 
 ```
 GET /api​/user/student
+req: none
 res: body: {UserDTO[]}
 ```
 
@@ -161,6 +164,7 @@ Get user by lsu_id
 
 ```
 GET /api​/user/{lsu_id}
+req: none
 res: body: {UserDTO}
 ```
 
@@ -178,6 +182,7 @@ Get all assignments
 
 ```
 GET /api/assignment
+req: none
 res: body: {AssignmentDTO}
 ```
 
@@ -185,6 +190,7 @@ Get all assignments assigned to admin by lsu_id
 
 ```
 GET /api/assignment/user/{lsu_id}
+req: none
 res: body: {AssignmentDTO[]}
 ```
 
@@ -192,6 +198,7 @@ Get all assignments assigned to ticket by ticket_id
 
 ```
 GET /api/assignment/ticket/{ticket_id}
+req: none
 res: body: {AssignmentDTO[]}
 ```
 
@@ -199,6 +206,7 @@ Get one assignment by assignment_id
 
 ```
 GET /api/assignment/{assignment_id}
+req: none
 res: body: {AssignmentDTO}
 ```
 
@@ -212,4 +220,42 @@ res: body: {AssignmentDTO}
 
 ## Work
 
-TODO
+Get all work
+
+```
+GET /api/work
+req: none
+res: body: {WorkDTO[]}
+```
+
+Get all work by ticket_id
+
+```
+GET /api/work/ticket/{ticket_id}
+req: none
+res: body: {WorkDTO[]}
+```
+
+Get all work by lsu_id
+
+```
+GET /api/work/user/{lsu_id}
+req: none
+res: body: {WorkDTO[]}
+```
+
+Get work by work_id
+
+```
+GET /api/work/{work_id}
+req: none
+res: body: {WorkDTO}
+```
+
+Post new work
+
+```
+POST /api/work
+req: body: {CreateWorkDTO}
+res: body: {WorkDTO}
+```
