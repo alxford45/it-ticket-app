@@ -15,58 +15,61 @@ import {
   handleFormFieldBlur,
   handleFormFieldChange,
 } from "../ManageTicketForm/handlers";
+import { MySelectField } from "../MySelectField";
+import { selectOptions } from "../selectOptions";
 
 var _ = require("lodash");
 
-export const NewTechnicianForm = ({ data, setData }, ...props) => {
+export const NewTechnicianForm = ({ data, dispatch }, ...props) => {
   return (
     <>
       <EuiFlexItem>
         <MyTextField
           name={"first_name"}
           data={data}
-          handleChange={(e) => handleFormFieldChange(e, data, setData)}
-          handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+          handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+          handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
         />
       </EuiFlexItem>
       <EuiFlexItem>
         <MyTextField
           name={"last_name"}
           data={data}
-          handleChange={(e) => handleFormFieldChange(e, data, setData)}
-          handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+          handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+          handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
         />
       </EuiFlexItem>
       <EuiFlexItem>
         <MyTextField
           name={"lsu_id"}
           data={data}
-          handleChange={(e) => handleFormFieldChange(e, data, setData)}
-          handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+          handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+          handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
         />
       </EuiFlexItem>
       <EuiFlexItem>
-        <MyTextField
+        <MySelectField
           name={"department"}
           data={data}
-          handleChange={(e) => handleFormFieldChange(e, data, setData)}
-          handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+          selectOptions={selectOptions.find((o) => o.name === "department")}
+          handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+          handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
         />
       </EuiFlexItem>
       <EuiFlexItem>
         <MyTextField
           name={"email"}
           data={data}
-          handleChange={(e) => handleFormFieldChange(e, data, setData)}
-          handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+          handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+          handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
         />
       </EuiFlexItem>
       <EuiFlexItem>
         <MyTextField
           name={"phone_number"}
           data={data}
-          handleChange={(e) => handleFormFieldChange(e, data, setData)}
-          handleBlur={(e) => handleFormFieldBlur(e, data, setData)}
+          handleChange={(e) => handleFormFieldChange(e, data, dispatch)}
+          handleBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
         />
       </EuiFlexItem>
     </>

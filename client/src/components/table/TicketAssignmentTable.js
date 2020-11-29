@@ -3,28 +3,7 @@ import React from "react";
 import { EuiBasicTable, EuiLink, EuiHealth, EuiButton } from "@elastic/eui";
 import { AdminTicketFlyout } from "../flyout/flyout";
 
-const userTest = [
-  {
-    id: "1",
-    start_datetime: "john",
-    end_datetime: "doe",
-  },
-];
-/*
-Example user object:
-
-
-
-Example country object:
-
-{
-  code: 'NL',
-  name: 'Netherlands',
-  flag: '🇳🇱'
-}
-*/
-
-export const TimeLogTable = ({ handleTicketSelection }, ...props) => {
+export const TicketAssignmentTable = ({ items, isLoading }, ...props) => {
   const deleteUser = (user) => {};
 
   const actions = [
@@ -41,18 +20,12 @@ export const TimeLogTable = ({ handleTicketSelection }, ...props) => {
 
   const columns = [
     {
-      field: "start_datetime",
-      name: "Start Datetime",
-      sortable: true,
-      "data-test-subj": "firstNameCell",
+      field: "first_name",
+      name: "First Name",
     },
     {
-      field: "end_datetime",
-      name: "End Datetime",
-      truncateText: true,
-      mobileOptions: {
-        show: false,
-      },
+      field: "last_name",
+      name: "Last Name",
     },
     {
       name: "Actions",
@@ -60,16 +33,14 @@ export const TimeLogTable = ({ handleTicketSelection }, ...props) => {
     },
   ];
 
-  const items = userTest.filter((user, index) => index < 10);
-
   const getRowProps = (item) => {
     const { id } = item;
     return {
       "data-test-subj": `row-${id}`,
       className: "customRowClass",
-      onClick: (e) => {
-        handleTicketSelection(e, id);
-      },
+      // onClick: (e) => {
+      //   handleTicketSelection(e, id);
+      // },
     };
   };
 
@@ -84,12 +55,17 @@ export const TimeLogTable = ({ handleTicketSelection }, ...props) => {
   };
 
   return (
-    <EuiBasicTable
-      items={items}
-      rowHeader="firstName"
-      columns={columns}
-      rowProps={getRowProps}
-      cellProps={getCellProps}
-    />
+    <div>
+      {isLoading === true ? null : (
+        <EuiBasicTable
+          items={items}
+          rowHeader="first_name"
+          columns={columns}
+          rowProps={getRowProps}
+          cellProps={getCellProps}
+          tableLayout={"auto"}
+        />
+      )}
+    </div>
   );
 };

@@ -20,6 +20,7 @@ export const MyTextField = (
         name={item.name}
         onChange={(e) => handleChange(e)}
         onBlur={(e) => handleBlur(e)}
+        value={item.value}
       />
     </EuiFormRow>
   );

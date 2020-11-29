@@ -1,6 +1,10 @@
 import { personFields } from "../person/fields";
 import { selectOptions } from "../selectOptions";
 
+export const required_field_props = {
+  error: false,
+  error_type: "none",
+};
 export const fields = [
   ...personFields,
   {
@@ -77,15 +81,8 @@ export const fields = [
     error_type: "none",
   },
   {
-    name: "start_datetime",
-    label: "Start Datetime",
-    value: "",
-    error: false,
-    error_type: "none",
-  },
-  {
-    name: "end_datetime",
-    label: "End Datetime",
+    name: "submission_date",
+    label: "Submission Date",
     value: "",
     error: false,
     error_type: "none",
@@ -102,4 +99,21 @@ export const fields = [
 export const errorMessages = [
   { error_type: "required", error_message: "This field is required." },
   { error_type: "none", error_message: "" },
+];
+
+export const workLogFields = [
+  {
+    name: "start_datetime",
+    label: "Start Datetime",
+    value: "",
+    error: false,
+    error_type: "none",
+  },
+  {
+    name: "end_datetime",
+    label: "End Datetime",
+    value: "",
+    error: false,
+    error_type: "none",
+  },
 ];

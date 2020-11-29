@@ -2,29 +2,9 @@ import React from "react";
 
 import { EuiBasicTable, EuiLink, EuiHealth, EuiButton } from "@elastic/eui";
 import { AdminTicketFlyout } from "../flyout/flyout";
+import moment from "moment";
 
-const userTest = [
-  {
-    id: "1",
-    firstName: "john",
-    lastName: "doe",
-  },
-];
-/*
-Example user object:
-
-
-
-Example country object:
-
-{
-  code: 'NL',
-  name: 'Netherlands',
-  flag: '🇳🇱'
-}
-*/
-
-export const TicketAssignmentTable = ({ handleTicketSelection }, ...props) => {
+export const WorkLogTable = ({ items, isLoading }, ...props) => {
   const deleteUser = (user) => {};
 
   const actions = [
@@ -41,17 +21,25 @@ export const TicketAssignmentTable = ({ handleTicketSelection }, ...props) => {
 
   const columns = [
     {
-      field: "firstName",
+      field: "first_name",
       name: "First Name",
-      sortable: true,
-      "data-test-subj": "firstNameCell",
     },
     {
-      field: "lastName",
+      field: "last_name",
       name: "Last Name",
-      truncateText: true,
-      mobileOptions: {
-        show: false,
+    },
+    {
+      field: "start_datetime",
+      name: "Start Datetime",
+      render: (start_datetime) => {
+        return moment(start_datetime).format("MMMM Do YYYY, h:mm a");
+      },
+    },
+    {
+      field: "end_datetime",
+      name: "End Datetime",
+      render: (end_datetime) => {
+        return moment(end_datetime).format("MMMM Do YYYY, h:mm a");
       },
     },
     {
@@ -60,16 +48,14 @@ export const TicketAssignmentTable = ({ handleTicketSelection }, ...props) => {
     },
   ];
 
-  const items = userTest.filter((user, index) => index < 10);
-
   const getRowProps = (item) => {
     const { id } = item;
     return {
       "data-test-subj": `row-${id}`,
       className: "customRowClass",
-      onClick: (e) => {
-        handleTicketSelection(e, id);
-      },
+      // onClick: (e) => {
+      //   handleTicketSelection(e, id);
+      // },
     };
   };
 
@@ -84,12 +70,17 @@ export const TicketAssignmentTable = ({ handleTicketSelection }, ...props) => {
   };
 
   return (
-    <EuiBasicTable
-      items={items}
-      rowHeader="firstName"
-      columns={columns}
-      rowProps={getRowProps}
-      cellProps={getCellProps}
-    />
+    <div>
+      {isLoading === true ? null : (
+        <EuiBasicTable
+          items={items}
+          rowHeader="first_name"
+          columns={columns}
+          rowProps={getRowProps}
+          cellProps={getCellProps}
+          tableLayout={"auto"}
+        />
+      )}
+    </div>
   );
 };
