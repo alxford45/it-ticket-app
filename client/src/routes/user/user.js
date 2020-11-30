@@ -47,7 +47,7 @@ export const UserRoute = (props) => {
     data.find((o) => o.name === "component").value = "N/A";
     const response = await handleFormSubmit(e, data, "/ticket");
     if (response.status === 201) {
-      // dispatch({ type: "CLEAR_FORM" });
+      dispatch({ type: "CLEAR_FORM" });
     }
   };
   return (
