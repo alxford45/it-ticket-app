@@ -106,7 +106,7 @@ export const AdminView = (
               name={_.find(data, ["name", "notes"]).name}
               onChange={(e) => handleFormFieldChange(e, data, dispatch)}
               onBlur={(e) => handleFormFieldBlur(e, data, dispatch)}
-              value={_.find(data, ["name", "description"]).value}
+              value={_.find(data, ["name", "notes"]).value}
             />
           </EuiFormRow>
         </EuiFlexItem>
