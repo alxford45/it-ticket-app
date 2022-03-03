@@ -3,6 +3,7 @@
 The IT Support Ticketing Web Application is a web application primarily oriented around a user who can be a technician or a customer. The user can make tickets capable of effectively reporting IT support issue and update the user on the status of the problem. The app and corresponding database also assign issues the user is facing to technicians to handle the problem.
 
 <a href="https://lsu-it-support-demo.herokuapp.com/">Interactive Full-Stack Demo</a>
+
 <a href="https://lsu-it-support-demo.herokuapp.com/api/docs/">Interactive API Docs (Swagger)</a>
 
 # Domain
